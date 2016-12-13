@@ -201,9 +201,33 @@ CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o.provides: CMakeFiles/pat
 CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o.provides.build: CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o
 
 
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o: CMakeFiles/pattern_follower.dir/flags.make
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o: ../src/camera_calibration.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o -c /home/michail/pattern_follower/src/camera_calibration.cc
+
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/michail/pattern_follower/src/camera_calibration.cc > CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.i
+
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/michail/pattern_follower/src/camera_calibration.cc -o CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.s
+
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.requires:
+
+.PHONY : CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.requires
+
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.provides: CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.requires
+	$(MAKE) -f CMakeFiles/pattern_follower.dir/build.make CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.provides.build
+.PHONY : CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.provides
+
+CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.provides.build: CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o
+
+
 CMakeFiles/pattern_follower.dir/src/pos_client.cc.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/pos_client.cc.o: ../src/pos_client.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/pattern_follower.dir/src/pos_client.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/pattern_follower.dir/src/pos_client.cc.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/pos_client.cc.o -c /home/michail/pattern_follower/src/pos_client.cc
 
 CMakeFiles/pattern_follower.dir/src/pos_client.cc.i: cmake_force
@@ -227,7 +251,7 @@ CMakeFiles/pattern_follower.dir/src/pos_client.cc.o.provides.build: CMakeFiles/p
 
 CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o: ../src/arucodetector.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o -c /home/michail/pattern_follower/src/arucodetector.cpp
 
 CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.i: cmake_force
@@ -251,7 +275,7 @@ CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o.provides.build: CMakeFil
 
 CMakeFiles/pattern_follower.dir/src/robot.cpp.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/robot.cpp.o: ../src/robot.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/pattern_follower.dir/src/robot.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pattern_follower.dir/src/robot.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/robot.cpp.o -c /home/michail/pattern_follower/src/robot.cpp
 
 CMakeFiles/pattern_follower.dir/src/robot.cpp.i: cmake_force
@@ -275,7 +299,7 @@ CMakeFiles/pattern_follower.dir/src/robot.cpp.o.provides.build: CMakeFiles/patte
 
 CMakeFiles/pattern_follower.dir/src/parser.cpp.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/parser.cpp.o: ../src/parser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/pattern_follower.dir/src/parser.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/pattern_follower.dir/src/parser.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/parser.cpp.o -c /home/michail/pattern_follower/src/parser.cpp
 
 CMakeFiles/pattern_follower.dir/src/parser.cpp.i: cmake_force
@@ -299,7 +323,7 @@ CMakeFiles/pattern_follower.dir/src/parser.cpp.o.provides.build: CMakeFiles/patt
 
 CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o: ../src/cam_calibration.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o -c /home/michail/pattern_follower/src/cam_calibration.cc
 
 CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.i: cmake_force
@@ -323,7 +347,7 @@ CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o.provides.build: CMakeFi
 
 CMakeFiles/pattern_follower.dir/src/text_socket.cc.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/text_socket.cc.o: ../src/text_socket.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/pattern_follower.dir/src/text_socket.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/pattern_follower.dir/src/text_socket.cc.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/text_socket.cc.o -c /home/michail/pattern_follower/src/text_socket.cc
 
 CMakeFiles/pattern_follower.dir/src/text_socket.cc.i: cmake_force
@@ -347,7 +371,7 @@ CMakeFiles/pattern_follower.dir/src/text_socket.cc.o.provides.build: CMakeFiles/
 
 CMakeFiles/pattern_follower.dir/src/measurement.cpp.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/measurement.cpp.o: ../src/measurement.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/pattern_follower.dir/src/measurement.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/pattern_follower.dir/src/measurement.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/measurement.cpp.o -c /home/michail/pattern_follower/src/measurement.cpp
 
 CMakeFiles/pattern_follower.dir/src/measurement.cpp.i: cmake_force
@@ -371,7 +395,7 @@ CMakeFiles/pattern_follower.dir/src/measurement.cpp.o.provides.build: CMakeFiles
 
 CMakeFiles/pattern_follower.dir/src/pid.cpp.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/pid.cpp.o: ../src/pid.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/pattern_follower.dir/src/pid.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/pattern_follower.dir/src/pid.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/pid.cpp.o -c /home/michail/pattern_follower/src/pid.cpp
 
 CMakeFiles/pattern_follower.dir/src/pid.cpp.i: cmake_force
@@ -395,7 +419,7 @@ CMakeFiles/pattern_follower.dir/src/pid.cpp.o.provides.build: CMakeFiles/pattern
 
 CMakeFiles/pattern_follower.dir/src/rcm.cpp.o: CMakeFiles/pattern_follower.dir/flags.make
 CMakeFiles/pattern_follower.dir/src/rcm.cpp.o: ../src/rcm.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/pattern_follower.dir/src/rcm.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/pattern_follower.dir/src/rcm.cpp.o"
 	/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pattern_follower.dir/src/rcm.cpp.o -c /home/michail/pattern_follower/src/rcm.cpp
 
 CMakeFiles/pattern_follower.dir/src/rcm.cpp.i: cmake_force
@@ -425,6 +449,7 @@ pattern_follower_OBJECTS = \
 "CMakeFiles/pattern_follower.dir/src/pattern.cpp.o" \
 "CMakeFiles/pattern_follower.dir/src/thread_util.cc.o" \
 "CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o" \
+"CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o" \
 "CMakeFiles/pattern_follower.dir/src/pos_client.cc.o" \
 "CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o" \
 "CMakeFiles/pattern_follower.dir/src/robot.cpp.o" \
@@ -444,6 +469,7 @@ libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/er1robot.cpp.o
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/pattern.cpp.o
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/thread_util.cc.o
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o
+libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/pos_client.cc.o
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/src/robot.cpp.o
@@ -495,7 +521,7 @@ libpattern_follower.so: /usr/local/lib/libopencv_imgcodecs.so.3.1.0
 libpattern_follower.so: /usr/local/lib/libopencv_imgproc.so.3.1.0
 libpattern_follower.so: /usr/local/lib/libopencv_core.so.3.1.0
 libpattern_follower.so: CMakeFiles/pattern_follower.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX shared library libpattern_follower.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX shared library libpattern_follower.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pattern_follower.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -509,6 +535,7 @@ CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/er
 CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/pattern.cpp.o.requires
 CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/thread_util.cc.o.requires
 CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o.requires
+CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o.requires
 CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/pos_client.cc.o.requires
 CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o.requires
 CMakeFiles/pattern_follower.dir/requires: CMakeFiles/pattern_follower.dir/src/robot.cpp.o.requires

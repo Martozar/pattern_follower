@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/pattern_follower.dir/src/pattern.cpp.o"
   "CMakeFiles/pattern_follower.dir/src/thread_util.cc.o"
   "CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o"
+  "CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o"
   "CMakeFiles/pattern_follower.dir/src/pos_client.cc.o"
   "CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o"
   "CMakeFiles/pattern_follower.dir/src/robot.cpp.o"

@@ -261,6 +261,33 @@ src/cam_calibration.cc.s:
 	$(MAKE) -f CMakeFiles/pattern_follower.dir/build.make CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.s
 .PHONY : src/cam_calibration.cc.s
 
+src/camera_calibration.o: src/camera_calibration.cc.o
+
+.PHONY : src/camera_calibration.o
+
+# target to build an object file
+src/camera_calibration.cc.o:
+	$(MAKE) -f CMakeFiles/pattern_follower.dir/build.make CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o
+.PHONY : src/camera_calibration.cc.o
+
+src/camera_calibration.i: src/camera_calibration.cc.i
+
+.PHONY : src/camera_calibration.i
+
+# target to preprocess a source file
+src/camera_calibration.cc.i:
+	$(MAKE) -f CMakeFiles/pattern_follower.dir/build.make CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.i
+.PHONY : src/camera_calibration.cc.i
+
+src/camera_calibration.s: src/camera_calibration.cc.s
+
+.PHONY : src/camera_calibration.s
+
+# target to generate assembly for a file
+src/camera_calibration.cc.s:
+	$(MAKE) -f CMakeFiles/pattern_follower.dir/build.make CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.s
+.PHONY : src/camera_calibration.cc.s
+
 src/contourfinder.o: src/contourfinder.cpp.o
 
 .PHONY : src/contourfinder.o
@@ -635,6 +662,9 @@ help:
 	@echo "... src/cam_calibration.o"
 	@echo "... src/cam_calibration.i"
 	@echo "... src/cam_calibration.s"
+	@echo "... src/camera_calibration.o"
+	@echo "... src/camera_calibration.i"
+	@echo "... src/camera_calibration.s"
 	@echo "... src/contourfinder.o"
 	@echo "... src/contourfinder.i"
 	@echo "... src/contourfinder.s"

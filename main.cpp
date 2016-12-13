@@ -1,5 +1,5 @@
-#include "includes.h"
-#include <unistd.h>
+#include <pattern_follower/includes.h>
+
 
 
 int main( int argc, char** argv )
@@ -13,14 +13,14 @@ int main( int argc, char** argv )
 
     if(p.has("calib"))
     {
-	chdir("../cam_calib/");
-        system("../cam_calib/camera_calibration");
-        return 0;
+
+	run_calibration(p.get<String>("cp"));
+	return 0;
     }
 
     bool simulation = p.has("simulation");
 
-    String camera_file = p.get<String>("cp");
+    String camera_file = p.get<String>("params");
     String patterns = p.get<String>("p");
 
     Mat grayImage, binaryImage, frame;
@@ -177,6 +177,3 @@ int main( int argc, char** argv )
     }
 
 }
-
-
-

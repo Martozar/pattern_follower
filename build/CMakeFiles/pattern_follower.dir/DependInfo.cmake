@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/michail/pattern_follower/src/arucodetector.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o"
   "/home/michail/pattern_follower/src/cam_calibration.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o"
+  "/home/michail/pattern_follower/src/camera_calibration.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o"
   "/home/michail/pattern_follower/src/contourfinder.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o"
   "/home/michail/pattern_follower/src/er1robot.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/er1robot.cpp.o"
   "/home/michail/pattern_follower/src/measurement.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/measurement.cpp.o"
@@ -24,7 +25,6 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../"
   "../include"
   "/usr/local/include"
   "/usr/local/include/opencv"

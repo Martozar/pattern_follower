@@ -6,5 +6,5 @@ CXX_FLAGS = -O3 -DNDEBUG -Wall -O4 -march=native -Wfatal-errors   -std=c++14
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/michail/pattern_follower -I/home/michail/pattern_follower/include -isystem /usr/local/include -isystem /usr/local/include/opencv 
+CXX_INCLUDES = -I/home/michail/pattern_follower/include -isystem /usr/local/include -isystem /usr/local/include/opencv 
 
