@@ -52,11 +52,6 @@ bool Robot::enableMotion()
 
 void Robot::setVel(const double & _vel)
 {
-    if(_vel < velDead && _vel > -velDead)
-    {
-        vel = 0;
-        return;
-    }
     if(vel < _vel)
         vel+= a;
     else if(vel > _vel)
@@ -69,11 +64,6 @@ void Robot::setVel(const double & _vel)
 
 void Robot::setAngVel(const double & _angVel)
 {
-    if(_angVel < angVelDead && _angVel > -angVelDead)
-    {
-        angVel = 0;
-        return;
-    }
     if(angVel > _angVel)
         angVel+= a*0.1;
     else if(angVel < _angVel)
@@ -120,5 +110,3 @@ bool Robot::move(double & vel, double & angVel)
         cv::putText(frame, s, cv::Point2f(450, 160), cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0,0,255));
 
     }
-
-

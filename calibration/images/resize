@@ -1,0 +1,5 @@
+#!/bin/bash
+
+for i in `seq 0 450`; do
+  ffmpeg -y -i $i.jpg -vf  scale=640:480 $i.jpg
+done

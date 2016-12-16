@@ -4,19 +4,17 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
-#include "rcm.h"
-#include "pos_client.h"
+#include <pattern_follower/rcm.h>
+#include <pattern_follower/pos_client.h>
 
 
 class Robot
 {
 public:
-    Robot(const double & _maxVel, const double & _maxAngVel, const double & _a, const double & _angVelDead, const double & _velDead)
+    Robot(const double & _maxVel, const double & _maxAngVel, const double & _a)
     {
         maxVel = _maxVel;
         maxAngVel = _maxAngVel;
-        angVelDead = _angVelDead;
-        velDead = _velDead;
         a = _a;
         x = 0;
         y = 0;
@@ -25,8 +23,8 @@ public:
         angVel = 0;
     };
 
-    Robot(const double & _maxVel, const double & _maxAngVel, const double & _a, const double & _angVelDead, const double & _velDead, char * IP, int & port) :
-    Robot(_maxVel, _maxAngVel, _a, _angVelDead, _velDead)
+    Robot(const double & _maxVel, const double & _maxAngVel, const double & _a, char * IP, int & port) :
+    Robot(_maxVel, _maxAngVel, _a)
     {
         client = std::make_unique<CPositionClient>(IP, port, data_callback);
 

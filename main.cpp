@@ -28,14 +28,14 @@ int main( int argc, char** argv )
     Mat cameraMatrix;
     Mat distCoeffs;
 
-    std::vector<Mat> trainingVec, negativesVec, gradiend, patternLibrary;
-    std::vector<int> labels, ids;
+    std::vector<Mat> patternLibrary;
+    std::vector<int> labels;
     std::vector<Pattern> detectedPattern;
     std::vector<Point> locations, approx;
     std::vector<std::vector<Point>>contours;
     std::vector<Vec4i> hierarchy;
     std::vector<Point2f> vertices;
-    std::vector<std::vector<Point2f>> cor;
+
 
     VideoCapture cap(0);
     loadImages(patterns, patternLibrary);
@@ -51,15 +51,15 @@ int main( int argc, char** argv )
     if(!cap.isOpened() || patternLibrary.size() == 0)
         return -1;
 
-    ArucoDetector ad;
-    ContourFinder cf(adapt_thresh, adapt_block_size);
-    RoiDetector myDetector(adapt_thresh, adapt_block_size, norm_pattern_size);
+    ArucoDetector arucoDetector;
+    ContourFinder contourFinder(adapt_thresh, adapt_block_size);
+    RoiDetector roiDetector(adapt_thresh, adapt_block_size, norm_pattern_size);
 
-    TamplateMatcher  tm(patternLibrary, confidenceThreshold,norm_pattern_size);
+    TamplateMatcher  templateMatcher(patternLibrary, confidenceThreshold,norm_pattern_size);
 
     std::unique_ptr<Robot> r;
-    if (simulation) r = std::make_unique<Robot>(MAX_VEL, MAX_ANG_VEL, ZRYCHLENI, 0.02/2, 0.7/2);
-    else r = std::make_unique<Robot>(MAX_VEL, MAX_ANG_VEL, ZRYCHLENI, 0.02/2, 0.7/2, IP, port);
+    if (simulation) r = std::make_unique<Robot>(MAX_VEL, MAX_ANG_VEL, ZRYCHLENI);
+    else r = std::make_unique<Robot>(MAX_VEL, MAX_ANG_VEL, ZRYCHLENI, IP, port);
 
     PID distanceController(DIST_KP, DIST_KI, DIST_KD, 0.00, MAX_VEL, -MAX_VEL,  5);
     PID angleController(ANGLE_KP, ANGLE_KI, ANGLE_KD, 1, MAX_ANG_VEL, -MAX_ANG_VEL, 0.15);
@@ -72,7 +72,7 @@ int main( int argc, char** argv )
 
     distCoeffs = calibrator.distortionCoefficients;
     double fovx = 2*atan((2*cameraMatrix.at<double>(0))/frame_size);
-    Measurement m(frame_size, 0.08, 30, 155, fovx);
+    Measurement measurement(frame_size, 0.08, 30, 155, fovx);
 
     cv::Point2f q(255,100);
     clock_t start, stop;
@@ -89,41 +89,29 @@ int main( int argc, char** argv )
         Mat imcopy;
         cap >> frame;
         frame.copyTo(imcopy);
-        detectedPattern.clear();
-        cf.binarize(frame, grayImage, binaryImage);
-        cf.contours(binaryImage, contours, hierarchy);
+
+        //TODO: change templateMatcher logic, do binarizing and roi detetion inside the detector;
+        /*detectedPattern.clear();
+        contourFinder.binarize(frame, grayImage, binaryImage);
+        contourFinder.contours(binaryImage, contours, hierarchy);
 
         for(int i = 0; i < contours.size(); i++)
         {
             locations.clear();
             vertices.clear();
-            myDetector.detectROI(contours[i], hierarchy, i, grayImage, vertices, vertex);
+            roiDetector.detectROI(contours[i], hierarchy, i, grayImage, vertices, vertex);
 
             if(vertices.size() == 4)
             {
-                tm.detect(myDetector.getNormROI(), cameraMatrix, distCoeffs, vertices, vertex, detectedPattern);
+                templateMatcher.detect(roiDetector.getNormROI(), cameraMatrix, distCoeffs, vertices, vertex, detectedPattern);
             }
         }
 
         for(int i = 0; i < detectedPattern.size(); i++)
         {
             detectedPattern[i].draw(frame, cameraMatrix, distCoeffs);
-        }
+        }*/
 
-
-        vector< Vec3d > rvecs, tvecs;
-
-        ad.detect(imcopy, cor, ids);
-        if(ids.size() > 0)
-            ad.drawDetected(imcopy, cor, ids);
-
-
-        if(cor.size() > 0)
-        {
-            cv::aruco::estimatePoseSingleMarkers(cor,0.08, cameraMatrix, distCoeffs, rvecs, tvecs);
-            angle = m.angle(cor.at(0));
-            dist = m.distance(cor.at(0));
-        }
 
         stop = clock();
         sample = (double)(stop - start) / CLOCKS_PER_SEC;
