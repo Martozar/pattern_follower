@@ -82,13 +82,18 @@ int main( int argc, char** argv )
     double angle = CV_PI;
     double dist = 100;
 
+
+    start = clock();
     while(true)
     {
         start = clock();
 
+
         Mat imcopy;
         cap >> frame;
-        frame.copyTo(imcopy);
+        undistort(frame, imcopy, cameraMatrix, distCoeffs);
+        imshow("Copy", imcopy);
+        imshow("Frame", frame);
 
         //TODO: change templateMatcher logic, do binarizing and roi detetion inside the detector;
         /*detectedPattern.clear();
@@ -115,6 +120,7 @@ int main( int argc, char** argv )
 
         stop = clock();
         sample = (double)(stop - start) / CLOCKS_PER_SEC;
+
 
         double angVel;
         double vel;
@@ -150,18 +156,21 @@ int main( int argc, char** argv )
         }
         else
         {
+            auto velocities = runAruco(imcopy, arucoDetector,measurement, angleController, distanceController, angle, dist, start);
             //cout << "Uhel: "<<angle*180/3.14 << endl;
             //cout<<"Vzdlenost: "<<dist << endl;
-            angVel = angleController.calculate(0.0, angle, sample);
+            angVel = get<0>(velocities);
+            vel = get<1>(velocities);
 
-            std::cout << "Distance: " << dist << std::endl;
-            std::cout << "Angle: " << angle << std::endl;
-            vel = distanceController.calculate(-40.0, -dist, sample);
+            /*std::cout << "Distance: " << dist << std::endl;
+            std::cout << "Angle: " << angle << std::endl;*/
+
             r->move(vel, angVel);
             imshow("out", imcopy);
             //imshow("input", frame);
         }
         if(waitKey(50) >= 0) break;
+        start = clock();
     }
 
 }

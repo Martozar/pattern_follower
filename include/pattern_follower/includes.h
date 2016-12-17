@@ -68,12 +68,13 @@ void detectAruco(Mat & frame, ArucoDetector & arucoDetector, Measurement & measu
   }
 }
 
-tuple<double, double> runAruco(Mat & frame, const Mat & cameraMatrix, const Mat & distCoeffs, ArucoDetector & arucoDetector, Measurement & measurement, PID & angleController, PID & distanceController, double & angle, double & distance, const double & dt = 1.0)
+tuple<double, double> runAruco(Mat & frame, ArucoDetector & arucoDetector, Measurement & measurement, PID & angleController, PID & distanceController, double & angle, double & distance, auto & dt)
 {
   std::vector<std::vector<Point2f>> cor;
   std::vector<int> ids;
   detectAruco(frame, arucoDetector, measurement, angle, distance);
-  return make_tuple(angleController.calculate(0, angle, dt), distanceController.calculate(40, distance, dt));
+  double time = (double) (dt - clock())/ CLOCKS_PER_SEC;
+  return make_tuple(angleController.calculate(0, angle, time), distanceController.calculate(40, distance, time));
 }
 
 int loadPattern(const String & filename, std::vector<cv::Mat> & library, int & patternCount)
