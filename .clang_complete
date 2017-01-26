@@ -1,0 +1,7 @@
+-I/home/michail/pattern_follower/include
+-O3
+-DNDEBUG
+-Wall
+-O4
+-march=native
+-Wfatal-errors

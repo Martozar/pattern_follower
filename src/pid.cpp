@@ -1,49 +1,47 @@
 #include <pattern_follower/pid.h>
 
-double PID::calculate(const double & setPoint, const double & systemOutput, const double & dt)
-{
-    double error = setPoint - systemOutput;
+double PID::calculate(const double &setPoint, const double &systemOutput) {
+  double error = setPoint - systemOutput;
 
-    if(error >= - eps && error <= eps)
-        return 0;
+  auto now = std::chrono::steady_clock::now();
 
-    if (error > eps)
-        error -= eps;
-    else if (error < -eps)
-        error += eps;
+  std::chrono::duration<double> diff = now - lastUpdate;
+  double dt = diff.count();
+  lastUpdate = now;
 
-    //std::cout << "Error: " << error <<std::endl;
-    double Pout = Kp*error;
+  if (error >= -eps && error <= eps)
+    return 0;
 
-    double new_integral = integral + error*dt;
+  if (error > eps)
+    error -= eps;
+  else if (error < -eps)
+    error += eps;
 
-    double Iout = Ki*new_integral;
+  double Pout = Kp * error;
 
-    //std::cout << "Int: " << integral << std::endl;
+  double new_integral = integral + error * dt;
 
-    double derivative = (error - previousError)/dt;
+  double Iout = Ki * new_integral;
 
-    double Dout = Kd*derivative;
+  double derivative = (error - previousError) / dt;
 
-    double output = Pout + Iout + Dout;
+  double Dout = Kd * derivative;
 
-    privPresatOut = output;
+  double output = Pout + Iout + Dout;
 
-    //std::cout << "Vystup: " << output << std::endl;
-    if(output > max_out){
-        output = max_out;
-        integral += error*dt*Ka;
-    }
-    else if(output < min_out){
-        output = min_out;
-        integral += error*dt*Ka;
-    }
-    else
-        integral = new_integral;
+  privPresatOut = output;
+  std::cout << "time " << dt << "\n";
+  if (output > max_out) {
+    output = max_out;
+    integral += error * dt * Ka;
+  } else if (output < min_out) {
+    output = min_out;
+    integral += error * dt * Ka;
+  } else
+    integral = new_integral;
 
+  privOut = output;
+  previousError = error;
 
-
-    privOut = output;
-    previousError = error;
-    return output;
+  return output;
 }

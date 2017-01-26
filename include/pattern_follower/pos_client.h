@@ -14,58 +14,55 @@
 #define PING_MESSAGE_HEADER "PING"
 #define ECHO_MESSAGE_HEADER "ECHO"
 
-class CPositionMessage
-{
-   public:
-	uint8_t flags;
-	int32_t x; // [mm]
-	int32_t y;
-	int32_t z;
-	int32_t a; // angle [1000 * rad]
-	int32_t b;
-	int32_t c;
-	uint32_t timestamp;
+class CPositionMessage {
+public:
+  uint8_t flags;
+  int32_t x; // [mm]
+  int32_t y;
+  int32_t z;
+  int32_t a; // angle [1000 * rad]
+  int32_t b;
+  int32_t c;
+  uint32_t timestamp;
 };
 
-class CControlMessage
-{
-	public:
-	int32_t forwardVelocity;
-	int32_t angularVelocity;
+class CControlMessage {
+public:
+  int32_t forwardVelocity;
+  int32_t angularVelocity;
 };
 
-class CPingMessage
-{
-	public:
-	uint32_t pingTimer;
-	uint32_t echoTimer;
+class CPingMessage {
+public:
+  uint32_t pingTimer;
+  uint32_t echoTimer;
 };
 
-void client_receive_data(CTextSocket*);
+void client_receive_data(CTextSocket *);
 
-class CPositionClient
-{
-   CClientTextSocket s;
-   void (*data_callback) (CPositionMessage*);
-   bool connected_to_server;
-	uint32_t timeDifference;
-	bool timeDifferenceInitialized;
+class CPositionClient {
+  CClientTextSocket s;
+  void (*data_callback)(CPositionMessage *);
+  bool connected_to_server;
+  uint32_t timeDifference;
+  bool timeDifferenceInitialized;
 
 public:
-   CPositionClient(const char * serverIp, int port, void (*callback)(CPositionMessage*));
-   ~CPositionClient();
+  CPositionClient(const char *serverIp, int port,
+                  void (*callback)(CPositionMessage *));
+  ~CPositionClient();
 
-   bool connected() { return connected_to_server; }
+  bool connected() { return connected_to_server; }
 
-	bool sendPing();
-	bool sendControl(int forward, int angular);
+  bool sendPing();
+  bool sendControl(int forward, int angular);
 
 protected:
-   friend void client_receive_data(CTextSocket*);
-   void receiveData();
+  friend void client_receive_data(CTextSocket *);
+  void receiveData();
 
-	void info(const char * fmt, ...);
-	void debug(const char * fmt, ...);
+  void info(const char *fmt, ...);
+  void debug(const char *fmt, ...);
 };
 
 #endif
