@@ -17,9 +17,9 @@ public:
          const double &pattern_width_cm, const int &distance,
          const int &pattern_width_pix, const Mat &_cameraMatrix = Mat(),
          const Mat &_distortions = Mat(),
-         const std::string &detectorType = "aruco",
+         const detectorType &detType = detectorType::PF_ARUCO,
          const std::vector<Mat> &_library = std::vector<Mat>(),
-         const double &_confThreshold = 0.0);
+         const double &_confThreshold = 0.5);
   void proceed(double &angle, double &distance);
   void proceed(cv::Mat &image, double &angle, double &distance);
 

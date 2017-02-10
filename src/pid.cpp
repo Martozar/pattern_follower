@@ -1,3 +1,4 @@
+#include <chrono>
 #include <pattern_follower/pid.h>
 
 double PID::calculate(const double &setPoint, const double &systemOutput) {
@@ -30,7 +31,6 @@ double PID::calculate(const double &setPoint, const double &systemOutput) {
   double output = Pout + Iout + Dout;
 
   privPresatOut = output;
-  std::cout << "time " << dt << "\n";
   if (output > max_out) {
     output = max_out;
     integral += error * dt * Ka;

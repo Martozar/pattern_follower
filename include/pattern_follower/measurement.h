@@ -10,12 +10,11 @@ using namespace cv;
 class Measurement {
 public:
   Measurement(const int &frame_size, const double &pattern_width_cm,
-              const int &distance, const int &pattern_width_pix,
+              const double &distance, const double &pattern_width_pix,
               const double &fovx) {
     center = frame_size / 2;
     pattern_width = pattern_width_cm;
-    focal_length = ((double)pattern_width_pix * (double)distance) /
-                   ((double)pattern_width);
+    focal_length = (pattern_width_pix * distance) / (pattern_width);
     anglePerPixel = fovx / frame_size;
   }
 
@@ -26,7 +25,7 @@ public:
     focal_length = ((double)pattern_width_pix * (double)distance) /
                    ((double)pattern_width);
 
-    double fovx = 2 * atan((2 * focal_length) / frame_size);
+    double fovx = 2 * atan(frame_size / (2 * focal_length));
     anglePerPixel = fovx / frame_size;
   }
 

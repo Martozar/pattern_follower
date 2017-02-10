@@ -1,6 +1,7 @@
 #ifndef ARUCODETECTOR_H
 #define ARUCODETECTOR_H
 
+#include <chrono>
 #include <iostream>
 #include <opencv2/aruco.hpp>
 #include <pattern_follower/detector.h>

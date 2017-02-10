@@ -1,7 +1,8 @@
+#include "opencv2/features2d/features2d.hpp"
 #include <pattern_follower/includes.h>
 
 int main(int argc, char **argv) {
-  Parser p(argc, argv, keys);
+  Parser p(argc, argv);
   p.about("Application name v1.0.0\n");
   if (p.has("help")) {
     p.printMessage();
@@ -32,13 +33,8 @@ int main(int argc, char **argv) {
   std::vector<Vec4i> hierarchy;
   std::vector<Point2f> vertices;
 
-  loadImages(patterns, patternLibrary);
-
-  int norm_pattern_size = 80;
-  int frame_size = 640;
-  int adapt_block_size = 45;
-  double adapt_thresh = 5;
-  double confidenceThreshold = 0.9;
+  Loader loader;
+  loader.loadImages(patterns, NORM_PATTERN_SIZE, patternLibrary);
 
   if (patternLibrary.size() == 0)
     return -1;
@@ -58,24 +54,25 @@ int main(int argc, char **argv) {
 
   distCoeffs = calibrator.distortionCoefficients;
 
-  double fovx = 2 * atan((2 * cameraMatrix.at<double>(0)) / frame_size);
-  Camera camera(0, frame_size, 0.8, 30, 155, cameraMatrix, distCoeffs,
-                "template", patternLibrary, confidenceThreshold);
-  Measurement measurement(frame_size, 0.08, 30, 155, fovx);
+  double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
+  Camera camera(0, FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, cameraMatrix,
+                distCoeffs, detectorType::PF_TEMPLATE, patternLibrary,
+                CONF_TRESH);
+  Measurement measurement(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, fovx);
 
   cv::Point2f q(255, 100);
   double q_x = 0.25;
   double q_y = 0.5;
-
   while (true) {
 
     double angle = 0.0;
     double dist = 80.0;
-    // imshow("Copy", imcopy);
     camera.proceed(angle, dist);
 
+    std::cout << dist << "\n";
+
     if (simulation) {
-      Mat image = Mat::zeros(480, 640, CV_32F);
+      /*Mat image = Mat::zeros(480, 640, CV_32F);
       cvtColor(image, image, CV_GRAY2BGR);
       circle(image, q, 8, Scalar(255, 0, 0), 2);
       line(image, Point2f(0, 480), Point2f(100, 480), Scalar(255, 0, 0), 10);
@@ -97,7 +94,7 @@ int main(int argc, char **argv) {
       if (q.y > 480 || q.y < 0)
         q_y = -q_y;
 
-      imshow("image", image);
+      imshow("image", image);*/
     }
 
     else {

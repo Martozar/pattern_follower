@@ -1,3 +1,5 @@
+
+#include <chrono>
 #include <pattern_follower/templatematcher.h>
 
 bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
@@ -13,7 +15,7 @@ bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
   for (unsigned int i = 0; i < library.size(); i++) {
 
     for (unsigned int j = 0; j < 4; j++) {
-      correlation = this->correlation(inter, library.at(i));
+      correlation = this->correlation(inter, library[i]);
       // std::cout << correlation << "\n";
       if (correlation > out.maxCor) {
         out.maxCor = correlation;
@@ -33,33 +35,25 @@ bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
 void TemplateMatcher::detect(Mat &frame,
                              std::vector<std::vector<Point2f>> &corners,
                              std::vector<int> &ids) {
-  Mat grayImage, binaryImage;
-  std::vector<std::vector<Point>> contours;
-  std::vector<Point2f> refinedVertices;
-  std::vector<Vec4i> hierarchy;
-  int vertex = -1;
-  contourFinder.binarize(frame, grayImage, binaryImage);
-  contourFinder.contours(binaryImage, contours, hierarchy);
-  for (unsigned int i = 0; i < contours.size(); i++) {
+  std::vector<std::vector<Point2f>> refinedVertices;
+  std::vector<Mat> ROI;
 
-    roiDetector.detectROI(contours[i], hierarchy, i, grayImage, refinedVertices,
-                          vertex);
-    if (refinedVertices.size() == 4) {
-      patInfo out;
-      if (identifyPattern(roiDetector.getNormROI(), out)) {
+  roiDetector.detectROI(frame, refinedVertices, ROI);
 
-        corners.push_back(refinedVertices);
-        if (out.ori != 0) {
-          std::cout << out.ori << std::endl;
-          int last = corners.size() - 1;
-          std::vector<Point2f> cornersCopy = corners[last];
-          for (int i = 0; i < 4; i++) {
-            corners[last][i] = cornersCopy[(i + 4 - out.ori) % 4];
-          }
+  for (unsigned int i = 0; i < ROI.size(); i++) {
+    patInfo out;
+    imshow("roi", ROI[i]);
+    if (identifyPattern(ROI[i], out)) {
+      corners.push_back(refinedVertices[i]);
+      if (out.ori != 0) {
+        int last = corners.size() - 1;
+        std::vector<Point2f> cornersCopy = corners[last];
+        for (int i = 0; i < 4; i++) {
+          corners[last][i] = cornersCopy[(i + 4 - out.ori) % 4];
         }
-
-        ids.push_back(out.index);
       }
+
+      ids.push_back(out.index);
     }
   }
 }
@@ -69,7 +63,7 @@ void TemplateMatcher::drawDetected(
     std::vector<int> &ids) {
   for (unsigned int i = 0; i < ids.size(); i++) {
     Mat currentMarker = Mat(corners[i]);
-    for (int j = 0; j < 4; j++) {
+    for (unsigned int j = 0; j < 4; j++) {
       Point2f p0, p1;
       p0 = currentMarker.ptr<Point2f>(0)[j];
       p1 = currentMarker.ptr<Point2f>(0)[(j + 1) % 4];

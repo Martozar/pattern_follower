@@ -2,16 +2,16 @@
 #include <pattern_follower/roidetector.h>
 
 RoiDetector::RoiDetector(const double &_threshAdapt, const int &_blockSize,
-                         const int &_normSize) {
+                         const int &_normSize)
+    : contourFinder() {
   threshAdapt = _threshAdapt;
   blockSize = _blockSize;
   normSize = _normSize;
-  normROI = Mat(normSize, normSize, CV_8UC1);
 
-  norm2dPRS[0] = Point2f(0, 0);
-  norm2dPRS[1] = Point2f(normSize - 1, 0);
-  norm2dPRS[2] = Point2f(normSize - 1, normSize - 1);
-  norm2dPRS[3] = Point2f(0, normSize - 1);
+  norm2dPRS.push_back(Point2f(0, 0));
+  norm2dPRS.push_back(Point2f(normSize - 1, 0));
+  norm2dPRS.push_back(Point2f(normSize - 1, normSize - 1));
+  norm2dPRS.push_back(Point2f(0, normSize - 1));
 }
 
 void RoiDetector::binarize(const Mat &src, Mat &image_gray, Mat &dst) {
@@ -26,52 +26,54 @@ void RoiDetector::binarize(const Mat &src, Mat &image_gray, Mat &dst) {
   dilate(dst, dst, Mat());
 }
 
-void RoiDetector::normalizePattern(const Mat &src, const Point2f roi[],
-                                   Rect &rec, Mat &dst) {
-
-  Mat homography(getPerspectiveTransform(roi, norm2dPRS)); // Calculates a
-                                                           // perspective
-                                                           // transform from
-                                                           // four pairs of the
-                                                           // corresponding
-                                                           // points.
-
-  Mat subImage =
-      src(Range(rec.y, rec.y + rec.height), Range(rec.x, rec.x + rec.width));
-  warpPerspective(
-      subImage, dst, homography,
-      Size(
-          dst.cols,
-          dst.rows)); // Applies a perspective transformation to an inner image.
+void RoiDetector::normalizePattern(const Mat &src,
+                                   const std::vector<Point2f> &roi, Rect &rec,
+                                   Mat &dst) {
+  /*Calculates a perspective transform from
+                                  four pairs of the corresponding points.*/
+  Mat homography(findHomography(roi, norm2dPRS, CV_RANSAC));
+  Mat subImage = src(rec);
+  /* Applies a perspective transformation to an inner image.*/
+  warpPerspective(subImage, dst, homography, Size(dst.cols, dst.rows));
+  // imshow("im", dst);
 }
 
-void RoiDetector::detectROI(const std::vector<Point> &contour,
-                            const std::vector<Vec4i> &hierarchy,
-                            const int index, const Mat &grayImage,
-                            std::vector<Point2f> &refinedVertices,
-                            int &vertex) {
+void RoiDetector::detectROI(const Mat &frame,
+                            std::vector<std::vector<Point2f>> &refinedVertices,
+                            std::vector<Mat> &regionsOfInterest) {
 
-  Point2f roi2DPts[4];
-  int averageSize = (grayImage.rows + grayImage.cols) / 2;
+  Mat grayImage, binaryImage;
+  std::vector<std::vector<Point>> contours;
+  std::vector<Vec4i> hierarchy;
 
-  Point p;
-  int pMinX, pMinY, pMaxX, pMaxY;
-  std::vector<Point> contourApprox;
+  contourFinder.binarize(frame, grayImage, binaryImage);
+  contourFinder.contours(binaryImage, contours, hierarchy);
 
-  double arcLen = arcLength(contour, true); // Calculates a contour perimeter
-  approxPolyDP(contour, contourApprox, arcLen * 0.02,
-               true); // Approximates a polygonal curve
-  if (fabs(contourArea(contour)) < 100 || !isContourConvex(contourApprox) ||
-      hierarchy[index][2] == -1) // We don't need too small, non-convex contours
-                                 // or contours at the lowest level of hierarchy
-    return;
-  if (contourApprox.size() == 4) {
-    pMinX = pMaxX = contourApprox.at(0).x;
-    pMinY = pMaxY = contourApprox.at(0).y;
-    double d;
-    double dMin = (4 * averageSize * averageSize);
-    for (int j = 0; j < 4; j++) {
-      p = contourApprox.at(j);
+  for (unsigned int i = 0; i < contours.size(); i++) {
+    /* code */
+    int vertex = -1;
+    std::vector<Point> contour = contours[i];
+    std::vector<Point2f> contourApprox;
+
+    double arcLen = arcLength(contour, true); // Calculates a contour perimeter
+    approxPolyDP(contour, contourApprox, arcLen * 0.02,
+                 true); // Approximates a polygonal curve
+
+    /*We don't need too small, non-convex contours or contours at the lowest
+    level of hierarchy*/
+    if (fabs(contourArea(contour)) < 100 || !isContourConvex(contourApprox) ||
+        hierarchy[i][2] == -1 || contourApprox.size() != 4)
+      continue;
+
+    int averageSize = (grayImage.rows + grayImage.cols) / 2;
+    double d, dMin = (4 * averageSize * averageSize);
+    Point p;
+    int pMinX, pMinY, pMaxX, pMaxY;
+    std::vector<Point2f> roi2DPts;
+    pMinX = pMaxX = contourApprox[0].x;
+    pMinY = pMaxY = contourApprox[0].y;
+    for (unsigned int j = 0; j < 4; j++) {
+      p = contourApprox[j];
       if (p.x < pMinX)
         pMinX = p.x;
       else if (p.x > pMaxX)
@@ -80,25 +82,23 @@ void RoiDetector::detectROI(const std::vector<Point> &contour,
         pMinY = p.y;
       else if (p.y > pMaxY)
         pMaxY = p.y;
-
-      d = norm(contourApprox.at(j));
+      d = norm(contourApprox[j]);
       if (d < dMin) {
         dMin = d;
         vertex = j;
       }
-      refinedVertices.push_back(contourApprox.at(j));
     }
+    refinedVertices.push_back(contourApprox);
 
     Rect box(pMinX, pMinY, pMaxX - pMinX + 1, pMaxY - pMinY + 1);
-
-    cornerSubPix(grayImage, refinedVertices, Size(3, 3), Size(-1, -1),
-                 TermCriteria(1, 3, 1));
-
-    for (int j = 0; j < 4; j++) {
-      roi2DPts[j] = Point2f(refinedVertices.at((4 + vertex - j) % 4).x - pMinX,
-                            refinedVertices.at((4 + vertex - j) % 4).y - pMinY);
+    imshow("q", frame(box));
+    for (unsigned int j = 0; j < 4; j++) {
+      roi2DPts.push_back(
+          Point2f(refinedVertices.back()[(4 + vertex - j) % 4].x - pMinX,
+                  refinedVertices.back()[(4 + vertex - j) % 4].y - pMinY));
     }
-
+    Mat normROI = Mat(normSize, normSize, CV_8UC1);
     normalizePattern(grayImage, roi2DPts, box, normROI);
+    regionsOfInterest.push_back(normROI);
   }
 }
