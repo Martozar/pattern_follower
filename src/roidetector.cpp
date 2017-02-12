@@ -7,7 +7,6 @@ RoiDetector::RoiDetector(const double &_threshAdapt, const int &_blockSize,
   threshAdapt = _threshAdapt;
   blockSize = _blockSize;
   normSize = _normSize;
-
   norm2dPRS.push_back(Point2f(0, 0));
   norm2dPRS.push_back(Point2f(normSize - 1, 0));
   norm2dPRS.push_back(Point2f(normSize - 1, normSize - 1));

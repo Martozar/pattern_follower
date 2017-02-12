@@ -7,7 +7,6 @@
 #include <pattern_follower/camera_calibration.h>
 #include <pattern_follower/contourfinder.h>
 #include <pattern_follower/measurement.h>
-#include <pattern_follower/pattern.h>
 #include <pattern_follower/roidetector.h>
 #include <pattern_follower/templatematcher.h>
 
