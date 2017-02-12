@@ -27,7 +27,6 @@ int main(int argc, char **argv) {
 
   std::vector<Mat> patternLibrary;
   std::vector<int> labels;
-  std::vector<Pattern> detectedPattern;
   std::vector<Point> locations, approx;
   std::vector<std::vector<Point>> contours;
   std::vector<Vec4i> hierarchy;
