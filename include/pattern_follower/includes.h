@@ -16,7 +16,6 @@
 #include <pattern_follower/loader.h>
 #include <pattern_follower/measurement.h>
 #include <pattern_follower/parser.h>
-#include <pattern_follower/pattern.h>
 #include <pattern_follower/pid.h>
 #include <pattern_follower/robot.h>
 #include <pattern_follower/roidetector.h>
