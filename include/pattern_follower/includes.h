@@ -13,6 +13,7 @@
 #include <pattern_follower/camera.h>
 #include <pattern_follower/camera_calibration.h>
 #include <pattern_follower/contourfinder.h>
+#include <pattern_follower/kalman_filter.h>
 #include <pattern_follower/loader.h>
 #include <pattern_follower/measurement.h>
 #include <pattern_follower/parser.h>
@@ -46,4 +47,4 @@
 char *IP = "172.43.50.193";
 int port = 50004;
 
-using namespace cv;
+// using namespace cv;

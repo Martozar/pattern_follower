@@ -18,13 +18,13 @@ Camera::Camera(const int &cameraPort, const int &frame_size,
                             _cameraMatrix, _distortions);
 }
 
-void Camera::proceed(double &angle, double &distance) {
+bool Camera::proceed(double &angle, double &distance) {
   cv::Mat image;
   cap >> image;
-  proceed(image, angle, distance);
+  return proceed(image, angle, distance);
 }
 
-void Camera::proceed(cv::Mat &image, double &angle, double &distance) {
+bool Camera::proceed(cv::Mat &image, double &angle, double &distance) {
   std::vector<std::vector<cv::Point2f>> cor;
   std::vector<int> ids;
   detector->detect(image, cor, ids);
@@ -34,4 +34,6 @@ void Camera::proceed(cv::Mat &image, double &angle, double &distance) {
     distance = measurement.distance(cor.at(0));
   }
   imshow("Frame", image);
+
+  return ids.size() > 0;
 }

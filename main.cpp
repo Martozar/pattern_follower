@@ -58,17 +58,24 @@ int main(int argc, char **argv) {
                 distCoeffs, detectorType::PF_TEMPLATE, patternLibrary,
                 CONF_TRESH);
   Measurement measurement(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, fovx);
+  KalmanFilter_ kf(80.0, 0.0);
 
   cv::Point2f q(255, 100);
   double q_x = 0.25;
   double q_y = 0.5;
+  double angle = 0.0;
+  double dist = 80.0;
   while (true) {
 
-    double angle = 0.0;
-    double dist = 80.0;
-    camera.proceed(angle, dist);
+    kf.prediction();
+    if (camera.proceed(angle, dist)) {
+      kf.update(dist, angle);
+    } else {
+      dist = kf.getX();
+      angle = kf.getY();
+    }
 
-    std::cout << dist << "\n";
+    std::cout << dist << "\n" << angle << "\n";
 
     if (simulation) {
       /*Mat image = Mat::zeros(480, 640, CV_32F);

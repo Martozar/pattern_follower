@@ -19,8 +19,8 @@ public:
          const detectorType &detType = detectorType::PF_ARUCO,
          const std::vector<Mat> &_library = std::vector<Mat>(),
          const double &_confThreshold = 0.5);
-  void proceed(double &angle, double &distance);
-  void proceed(cv::Mat &image, double &angle, double &distance);
+  bool proceed(double &angle, double &distance);
+  bool proceed(cv::Mat &image, double &angle, double &distance);
 
 private:
   Measurement measurement;
