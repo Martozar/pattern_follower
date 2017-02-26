@@ -1,6 +1,6 @@
 #include "opencv2/features2d/features2d.hpp"
 #include <pattern_follower/includes.h>
-
+#include <time.h>
 int main(int argc, char **argv) {
   Parser p(argc, argv);
   p.about("Application name v1.0.0\n");
@@ -65,8 +65,18 @@ int main(int argc, char **argv) {
   double q_y = 0.5;
   double angle = 0.0;
   double dist = 80.0;
-  while (true) {
+  Map map(21, 20);
 
+  map.init();
+  std::vector<cv::Point2d> p1;
+  srand(time(NULL));
+  for (int i = 0; i < 50; i++)
+    p1.push_back(cv::Point2d(-200 + ((double)std::rand() / RAND_MAX) * (400),
+                             -200 + ((double)std::rand() / RAND_MAX) * (400)));
+  std::cout << p1 << std::endl;
+  map.update(p1);
+  while (true) {
+    map.show();
     kf.prediction();
     if (camera.proceed(angle, dist)) {
       kf.update(dist, angle);
@@ -75,7 +85,7 @@ int main(int argc, char **argv) {
       angle = kf.getY();
     }
 
-    std::cout << dist << "\n" << angle << "\n";
+    // std::cout << dist << "\n" << angle << "\n";
 
     if (simulation) {
       /*Mat image = Mat::zeros(480, 640, CV_32F);

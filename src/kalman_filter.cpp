@@ -14,6 +14,7 @@ KalmanFilter_::KalmanFilter_(const double &init_x, const double &init_y) {
   x = (cv::Mat_<double>(6, 1) << init_x, init_y, 0, 0, 0, 0);
 }
 
+// TODO: add robot change position to prediction
 void KalmanFilter_::prediction() {
   x = F * x;
   P = F * P * F_transp;
