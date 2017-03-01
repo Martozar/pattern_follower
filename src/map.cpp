@@ -31,7 +31,6 @@ void Map::update(const std::vector<cv::Point2d> &points,
   for (int i = 0; i < points.size(); i++) {
     int x = robot_pos - std::round(-points[i].y / (double)resolution);
     int y = robot_pos - std::round(-points[i].x / (double)resolution);
-    std::cout << x << " " << y << "\n";
     map[x][y].cost++; /*
      for (int x_n = x - 1; x_n <= x + 1; x_n++) {
        for (int y_n = y - 1; y_n <= y + 1; y_n++) {
@@ -43,7 +42,6 @@ void Map::update(const std::vector<cv::Point2d> &points,
   }
   int x = robot_pos - std::round(-target.y / (double)resolution);
   int y = robot_pos - std::round(-target.x / (double)resolution);
-  std::cout << x << " " << y << "\n";
   map[x][y].cost = 0;
 }
 

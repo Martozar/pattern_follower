@@ -18,11 +18,11 @@ void Histogram::update_histogram(
       densities_[(int)floor(angle / alpha_)] += density;
     }
   }
-  std::cout << "Before smooth\n";
+  /*std::cout << "Before smooth\n";
   for (int i = 0; i < densities_.size(); i++) {
     std::cout << densities_[i] << " ";
   }
-  std::cout << "\n";
+  std::cout << "\n";*/
 }
 
 void Histogram::smooth_histogram(const int &window) {
@@ -35,9 +35,9 @@ void Histogram::smooth_histogram(const int &window) {
 
     densities_[i] = mean / window;
   }
-  std::cout << "After smooth\n";
+  /*std::cout << "After smooth\n";
   for (int i = 0; i < densities_.size(); i++) {
     std::cout << densities_[i] << " ";
   }
-  std::cout << "\n";
+  std::cout << "\n";*/
 }
