@@ -23,7 +23,7 @@ private:
   int normSize, blockSize;
   double threshAdapt;
   std::vector<Point2f> norm2dPRS;
-  ContourFinder contourFinder;
+  std::unique_ptr<ContourFinder> contourFinder;
 
   void binarize(const Mat &src, Mat &image_gray, Mat &dst);
   void normalizePattern(const Mat &src, const std::vector<Point2f> &roi,

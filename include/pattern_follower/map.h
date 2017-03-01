@@ -1,20 +1,22 @@
 #ifndef MAP_H
-#define MAP_h
+#define MAP_H
 
 #include <cmath>
 #include <opencv2/opencv.hpp>
+
 class Map {
 
+public:
   struct Grid {
     cv::Point2i location;
     double cost;
   };
 
-public:
-  Map(const int &_size, const int &_resolution)
-      : size(_size), resolution(_resolution), robot_pos(size / 2){};
+  Map(const int &_size, const int &_resolution);
+
   void init();
-  void update(const std::vector<cv::Point2d> &points);
+  void update(const std::vector<cv::Point2d> &points,
+              const cv::Point2d &target);
   void show();
   const std::vector<std::vector<Map::Grid>> getMap() const { return map; }
   const int getRobotPos() const { return robot_pos; }
@@ -28,7 +30,7 @@ private:
     OBSTACLE = 10000
   };
   int size, resolution, robot_pos;
-  std::vector<std::vector<Grid>> map;
+  std::vector<std::vector<Map::Grid>> map;
 };
 
 #endif

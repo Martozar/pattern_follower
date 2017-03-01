@@ -11,22 +11,22 @@ using namespace aruco;
 
 class ArucoDetector : public Detector {
 public:
-  ArucoDetector(const Ptr<Dictionary> &_dictionary =
+  ArucoDetector(const Ptr<Dictionary> &dictionary =
                     Ptr<Dictionary>(getPredefinedDictionary(DICT_4X4_100))) {
-    dictionary = _dictionary;
+    dictionary_ = dictionary;
   };
 
   ArucoDetector(const int &count, const int &size) {
-    dictionary = aruco::generateCustomDictionary(count, size);
+    dictionary_ = aruco::generateCustomDictionary(count, size);
   }
 
   void draw(const int &id, const int &size, Mat &output, const int &border) {
-    aruco::drawMarker(dictionary, id, size, output, border);
+    aruco::drawMarker(dictionary_, id, size, output, border);
   }
 
   virtual void detect(Mat &input, std::vector<std::vector<Point2f>> &corners,
                       std::vector<int> &ids) override {
-    aruco::detectMarkers(input, dictionary, corners, ids);
+    aruco::detectMarkers(input, dictionary_, corners, ids);
   }
 
   void drawDetected(Mat &input, std::vector<std::vector<Point2f>> &corners,
@@ -37,7 +37,7 @@ public:
 
 protected:
 private:
-  Ptr<Dictionary> dictionary;
+  Ptr<Dictionary> dictionary_;
 };
 
 #endif // ARUCODETECTOR_H

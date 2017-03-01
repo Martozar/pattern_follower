@@ -10,7 +10,6 @@ int main(int argc, char **argv) {
   }
 
   if (p.has("calib")) {
-
     run_calibration(p.get<String>("cp"));
     return 0;
   }
@@ -18,25 +17,16 @@ int main(int argc, char **argv) {
   bool simulation = p.has("simulation");
 
   String camera_file = p.get<String>("params");
-  String patterns = p.get<String>("p");
 
   Mat grayImage, binaryImage, frame;
 
   Mat cameraMatrix;
   Mat distCoeffs;
-
-  std::vector<Mat> patternLibrary;
   std::vector<int> labels;
   std::vector<Point> locations, approx;
   std::vector<std::vector<Point>> contours;
   std::vector<Vec4i> hierarchy;
   std::vector<Point2f> vertices;
-
-  Loader loader;
-  loader.loadImages(patterns, NORM_PATTERN_SIZE, patternLibrary);
-
-  if (patternLibrary.size() == 0)
-    return -1;
 
   std::unique_ptr<Robot> r;
   if (simulation)
@@ -54,9 +44,7 @@ int main(int argc, char **argv) {
   distCoeffs = calibrator.distortionCoefficients;
 
   double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
-  Camera camera(0, FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, cameraMatrix,
-                distCoeffs, detectorType::PF_TEMPLATE, patternLibrary,
-                CONF_TRESH);
+  Camera camera(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155);
   Measurement measurement(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, fovx);
   KalmanFilter_ kf(80.0, 0.0);
 
@@ -74,10 +62,10 @@ int main(int argc, char **argv) {
     p1.push_back(cv::Point2d(-200 + ((double)std::rand() / RAND_MAX) * (400),
                              -200 + ((double)std::rand() / RAND_MAX) * (400)));
   std::cout << p1 << std::endl;
-  map.update(p1);
+  // map.update(p1);
   while (true) {
     map.show();
-    kf.prediction();
+    kf.prediction(0.0, 0.0);
     if (camera.proceed(angle, dist)) {
       kf.update(dist, angle);
     } else {

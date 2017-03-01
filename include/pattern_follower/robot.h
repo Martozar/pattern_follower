@@ -24,41 +24,42 @@
 
 class Robot {
 public:
-  Robot(const double &_maxVel, const double &_maxAngVel, const double &_a);
+  Robot();
+  Robot(const double &maxVel, const double &radius, const double &acceleration);
 
-  Robot(const double &_maxVel, const double &_maxAngVel, const double &_a,
+  Robot(const double &maxVel, const double &radius, const double &acceleration,
         char *IP, int &port);
 
   static void data_callback(CPositionMessage *pos) { printf("mes"); }
 
   virtual ~Robot() {
-    rcm.close();
-    if (client)
-      client->sendControl(0, 0);
+    rcm_.close();
+    if (client_)
+      client_->sendControl(0, 0);
   };
 
-  const double &getMaxVel() const { return maxVel; }
+  const double &getMaxVel() const { return maxVel_; }
 
-  const double &getMaxAngVel() const { return maxAngVel; }
+  const double &getMaxAngVel() const { return maxAngVel_; }
 
-  const double &getX() const { return x; }
+  const double &getX() const { return x_; }
 
-  const double &getY() const { return y; }
+  const double &getY() const { return y_; }
 
-  const double &getH() const { return h; }
+  const double &getH() const { return h_; }
 
   void computeH(const double &dt) {
-    h += angVel * dt;
-    normalizeAngle(h);
+    h_ += angVel_ * dt;
+    normalizeAngle(h_);
   }
 
-  const double &getVel() const { return vel; }
+  const double &getVel() const { return vel_; }
 
-  const double &getAngVel() const { return angVel; }
+  const double &getAngVel() const { return angVel_; }
 
   void computePos(const double &dt) {
-    x += (vel * cos(h) * dt);
-    y += (vel * sin(h) * dt);
+    x_ += (vel_ * std::cos(h_) * dt);
+    y_ += (vel_ * std::sin(h_) * dt);
   }
 
   void normalizeAngle(double &angle) {
@@ -79,12 +80,13 @@ public:
 
 protected:
 private:
-  double maxVel, maxAngVel, vel, angVel, h, x, y, a, angVelDead, velDead;
-  PID angularVelControl, velControl;
-  RCM rcm;
-  std::unique_ptr<CPositionClient> client;
-  std::unique_ptr<CMessageClient> message_client;
-  std::chrono::steady_clock::time_point lastUpdate;
+  double radius_, maxVel_, maxAngVel_, velL_, velR_, vel_, angVel_, h_, x_, y_,
+      acceleration_;
+  std::unique_ptr<PID> angularVelControl_, velControl_;
+  RCM rcm_;
+  std::unique_ptr<CPositionClient> client_;
+  std::unique_ptr<CMessageClient> messageClient_;
+  std::chrono::steady_clock::time_point lastUpdate_;
   bool initRcm();
   bool enableMotion();
   void drawRobot(cv::Mat &frame, const double &angle, const double &dist);

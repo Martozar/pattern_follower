@@ -1,26 +1,38 @@
-
-#include <chrono>
 #include <pattern_follower/templatematcher.h>
+
+TemplateMatcher::TemplateMatcher() : roiDetector_() {
+  loadImages("../patterns/*.png", NORM_PATTERN_SIZE, library_);
+  confThreshold_ = CONF_TRESH;
+  normSize_ = NORM_PATTERN_SIZE;
+}
+
+TemplateMatcher::TemplateMatcher(const Mat &cameraMatrix,
+                                 const Mat &distortions)
+    : TemplateMatcher() {
+
+  cameraMatrix_ = cameraMatrix;
+  distortions_ = distortions;
+}
 
 bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
   double correlation;
 
   Mat copy;
   src.copyTo(copy);
-  Mat inter = copy(Range(normSize / 4, 3 * normSize / 4),
-                   Range(normSize / 4, 3 * normSize / 4));
+  Mat inter = copy(Range(normSize_ / 4, 3 * normSize_ / 4),
+                   Range(normSize_ / 4, 3 * normSize_ / 4));
 
   out.maxCor = -1.0;
 
-  for (unsigned int i = 0; i < library.size(); i++) {
+  for (unsigned int i = 0; i < library_.size(); i++) {
 
     for (unsigned int j = 0; j < 4; j++) {
-      correlation = this->correlation(inter, library[i]);
+      correlation = this->correlation(inter, library_[i]);
       // std::cout << correlation << "\n";
       if (correlation > out.maxCor) {
         out.maxCor = correlation;
         out.index = i + 1;
-        if (out.maxCor > confThreshold) {
+        if (out.maxCor > confThreshold_) {
           out.ori = j;
           return true;
         }
@@ -38,7 +50,7 @@ void TemplateMatcher::detect(Mat &frame,
   std::vector<std::vector<Point2f>> refinedVertices;
   std::vector<Mat> ROI;
 
-  roiDetector.detectROI(frame, refinedVertices, ROI);
+  roiDetector_->detectROI(frame, refinedVertices, ROI);
 
   for (unsigned int i = 0; i < ROI.size(); i++) {
     patInfo out;

@@ -7,24 +7,17 @@
 
 class PID {
 public:
-  PID(const double &_Kp, const double &_Ki, const double &_Kd,
-      const double &_Ka, const double &_max, const double &_min,
-      const double &_eps)
-      : Kp(_Kp), Ki(_Ki), Kd(_Kd), Ka(_Ka), max_out(_max), min_out(_min),
-        previousError(0), integral(0) {
-    privPresatOut = 0;
-    privOut = 0;
-    eps = _eps;
-    lastUpdate = std::chrono::steady_clock::now();
-  };
+  PID();
+  PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
+      const double &max, const double &min, const double &eps);
   virtual ~PID(){};
   double calculate(const double &setPoint, const double &systemOutput);
 
 protected:
 private:
-  double Kp, Ki, Kd, Ka, max_out, min_out, eps;
-  double previousError, integral, privPresatOut, privOut;
-  std::chrono::steady_clock::time_point lastUpdate;
+  double Kp_, Ki_, Kd_, Ka_, maxOut_, minOut_, eps_;
+  double previousError_, integral_, privPresatOut_, privOut_;
+  std::chrono::steady_clock::time_point lastUpdate_;
 };
 
 #endif // PID_H

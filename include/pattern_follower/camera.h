@@ -12,19 +12,23 @@
 
 class Camera {
 public:
-  Camera(const int &cameraPort, const int &frame_size,
-         const double &pattern_width_cm, const int &distance,
-         const int &pattern_width_pix, const Mat &_cameraMatrix = Mat(),
-         const Mat &_distortions = Mat(),
-         const detectorType &detType = detectorType::PF_ARUCO,
-         const std::vector<Mat> &_library = std::vector<Mat>(),
-         const double &_confThreshold = 0.5);
+  Camera();
+
+  Camera(const int &frameSize, const double &patternWidthCm,
+         const int &distance, const int &patternWidthPix);
+
+  Camera(const int &frameSize, const double &patternWidthCm,
+         const int &distance, const int &patternWidthPix,
+         const Mat &cameraMatrix, const Mat &distortions,
+         const detectorType &detType);
+
   bool proceed(double &angle, double &distance);
+
   bool proceed(cv::Mat &image, double &angle, double &distance);
 
 private:
-  Measurement measurement;
-  Detector *detector;
-  cv::VideoCapture cap;
+  std::unique_ptr<Measurement> measurement_;
+  std::unique_ptr<Detector> detector_;
+  cv::VideoCapture cap_;
 };
 #endif

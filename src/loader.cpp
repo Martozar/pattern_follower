@@ -1,7 +1,7 @@
 #include <pattern_follower/loader.h>
 
-bool Loader::loadImages(const cv::String &path, const int &size,
-                        std::vector<cv::Mat> &data) {
+bool loadImages(const cv::String &path, const int &size,
+                std::vector<cv::Mat> &data) {
   std::vector<cv::String> images;
   glob(path, images);
   for (unsigned int i = 0; i < images.size(); i++) {
@@ -13,8 +13,8 @@ bool Loader::loadImages(const cv::String &path, const int &size,
   return true;
 }
 
-bool Loader::loadPattern(const cv::String &filename, const int &size,
-                         std::vector<cv::Mat> &library) {
+bool loadPattern(const cv::String &filename, const int &size,
+                 std::vector<cv::Mat> &library) {
   cv::Mat img = imread(filename, 0);
   if (img.cols != img.rows) {
     return false;

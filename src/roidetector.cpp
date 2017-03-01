@@ -45,10 +45,10 @@ void RoiDetector::detectROI(const Mat &frame,
   std::vector<std::vector<Point>> contours;
   std::vector<Vec4i> hierarchy;
 
-  contourFinder.binarize(frame, grayImage, binaryImage);
-  contourFinder.contours(binaryImage, contours, hierarchy);
+  contourFinder->binarize(frame, grayImage, binaryImage);
+  contourFinder->contours(binaryImage, contours, hierarchy);
 
-  for (unsigned int i = 0; i < contours.size(); i++) {
+  for (int i = 0; i < contours.size(); i++) {
     /* code */
     int vertex = -1;
     std::vector<Point> contour = contours[i];
@@ -60,8 +60,9 @@ void RoiDetector::detectROI(const Mat &frame,
 
     /*We don't need too small, non-convex contours or contours at the lowest
     level of hierarchy*/
-    if (fabs(contourArea(contour)) < 100 || !isContourConvex(contourApprox) ||
-        hierarchy[i][2] == -1 || contourApprox.size() != 4)
+    if (std::fabs(contourArea(contour)) < 100 ||
+        !isContourConvex(contourApprox) || hierarchy[i][2] == -1 ||
+        contourApprox.size() != 4)
       continue;
 
     int averageSize = (grayImage.rows + grayImage.cols) / 2;

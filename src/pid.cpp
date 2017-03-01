@@ -1,47 +1,72 @@
 #include <chrono>
 #include <pattern_follower/pid.h>
 
+PID::PID() {
+  Kp_ = 0;
+  Ki_ = 0;
+  Kd_ = 0;
+  Ka_ = 0;
+  maxOut_ = 0;
+  minOut_ = 0;
+  previousError_ = 0;
+  integral_ = 0;
+  privPresatOut_ = 0;
+  privOut_ = 0;
+  eps_ = 0;
+  lastUpdate_ = std::chrono::steady_clock::now();
+}
+
+PID::PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
+         const double &max, const double &min, const double &eps)
+    : PID() {
+  Kp_ = Kp;
+  Ki_ = Ki;
+  Kd_ = Kd;
+  Ka_ = Ka;
+  maxOut_ = max;
+  minOut_ = min;
+};
 double PID::calculate(const double &setPoint, const double &systemOutput) {
   double error = setPoint - systemOutput;
 
   auto now = std::chrono::steady_clock::now();
 
-  std::chrono::duration<double> diff = now - lastUpdate;
+  std::chrono::duration<double> diff = now - lastUpdate_;
   double dt = diff.count();
-  lastUpdate = now;
+  lastUpdate_ = now;
 
-  if (error >= -eps && error <= eps)
+  if (error >= -eps_ && error <= eps_)
     return 0;
 
-  if (error > eps)
-    error -= eps;
-  else if (error < -eps)
-    error += eps;
+  if (error > eps_)
+    error -= eps_;
+  else if (error < -eps_)
+    error += eps_;
 
-  double Pout = Kp * error;
+  double Pout = Kp_ * error;
 
-  double new_integral = integral + error * dt;
+  double new_integral = integral_ + error * dt;
 
-  double Iout = Ki * new_integral;
+  double Iout = Ki_ * new_integral;
 
-  double derivative = (error - previousError) / dt;
+  double derivative = (error - previousError_) / dt;
 
-  double Dout = Kd * derivative;
+  double Dout = Kd_ * derivative;
 
   double output = Pout + Iout + Dout;
 
-  privPresatOut = output;
-  if (output > max_out) {
-    output = max_out;
-    integral += error * dt * Ka;
-  } else if (output < min_out) {
-    output = min_out;
-    integral += error * dt * Ka;
+  privPresatOut_ = output;
+  if (output > maxOut_) {
+    output = maxOut_;
+    integral_ += error * dt * Ka_;
+  } else if (output < minOut_) {
+    output = minOut_;
+    integral_ += error * dt * Ka_;
   } else
-    integral = new_integral;
+    integral_ = new_integral;
 
-  privOut = output;
-  previousError = error;
+  privOut_ = output;
+  previousError_ = error;
 
   return output;
 }

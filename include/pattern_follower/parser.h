@@ -10,8 +10,6 @@ const cv::String keys =
     "parameters file}"
     "{param_path params        |../calibration/out_camera_data.xml| path to "
     "calibration camera parameters   }"
-    "{patterns p       |../patterns/*.png     | path to patterns               "
-    "}"
     "{simulation s||enable simulation}";
 
 class Parser : public cv::CommandLineParser {
