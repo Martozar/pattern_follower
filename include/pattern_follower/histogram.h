@@ -8,22 +8,20 @@
 class Histogram {
 
 public:
-  Histogram(const int &alpha, const int &radius, const double &density_b) {
-    alpha_ = alpha;
-    radius_ = radius;
-    bins_ = 360 / alpha;
-    densityB_ = density_b;
-    densityA_ = densityB_ * std::sqrt(2) * radius;
-    densities_ = std::vector<int>(bins_);
-  };
+  Histogram(const double &threshLow, const double &threshHigh,
+            const double &robRadius, const int &robotPos,
+            const double &densityB, const double &safety = 0.0,
+            const int &alpha = 5, const int &histRadius = 10);
 
-  void update_histogram(const std::vector<std::vector<Map::Grid>> &grid);
-  void smooth_histogram(const int &window);
-  const std::vector<int> getDensities() const { return densities_; };
+  void update(const std::vector<std::vector<Map::Grid>> &grid);
+  const std::vector<int> getDensities() const { return densities_; }
 
 private:
-  int alpha_, bins_, radius_;
-  double densityA_, densityB_;
-  std::vector<int> densities_;
+  int alpha_, bins_, histRadius_, robotPos_, max_, min_;
+  double densityA_, densityB_, threshLow_, threshHigh_, robRadAndSafety_;
+  std::vector<int> densities_, lastDensities_;
+
+  void calculateDensities(const std::vector<std::vector<Map::Grid>> &grid);
+  void binarize();
 };
 #endif

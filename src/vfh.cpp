@@ -1,89 +1,114 @@
 #include <iostream>
 #include <pattern_follower/vfh.h>
+
+VFH::VFH(const double &threshLow, const double &threshHigh,
+         const double &robRadius, const double &densityB, const int &mapSize,
+         const int &resolution, const double &safety, const int &histRadius,
+         const int &maxSize, const int &alpha, const double &mu1,
+         const double &mu2, const double &mu3)
+    : map_(new Map(mapSize, resolution)),
+      histogram_(new Histogram(threshLow, threshHigh, robRadius, mapSize / 2,
+                               densityB, safety, alpha, histRadius)) {
+  maxSize_ = maxSize;
+  alpha_ = alpha;
+  mu1_ = mu1;
+  mu2_ = mu2;
+  mu3_ = mu3;
+  prevOrient_ = 0;
+  map_->init();
+}
+
 void VFH::findCandidates(const std::vector<int> &bins) {
-  candidateValleys.clear();
+  candidateValleys_.clear();
   std::vector<int> candidate;
-  for (int i = 0; i < bins.size(); i++) {
-    if (bins[i] < threshold) {
+  int histSize = bins.size() - 1;
+  for (int i = 0; i <= histSize; i++) {
+
+    if (!bins[i]) {
       candidate.push_back(i);
     }
-    if (bins[i] >= threshold || i == bins.size() - 1) {
+    if (bins[i] || i == histSize) {
       if (candidate.size() != 0) {
-        candidateValleys.push_back(candidate);
+        // if we are at the end of hist
+        // and its last and first cells are 0
+        // it is a circle
+        if (candidate.size() != histSize + 1 && i == histSize && !bins[0]) {
+          candidate.insert(candidate.end(), candidateValleys_[0].begin(),
+                           candidateValleys_[0].end());
+        }
+        candidateValleys_.push_back(candidate);
         candidate.clear();
       }
     }
   }
 }
 
-int VFH::closestCandidate(const double &dist) {
+double VFH::costFunction(const int &c1, const int &c2) {
+  int diff = c1 - c2;
+  int constant = 360 / alpha_;
+  return std::min(std::min(std::fabs(diff), std::fabs(diff - constant)),
+                  std::fabs(diff + constant));
+}
+double VFH::calculateCost(const int &candidate, const int &target,
+                          const int &curHead) {
+  double cost = 0;
+
+  cost += mu1_ * costFunction(candidate, target);
+
+  cost += mu2_ * costFunction(candidate, curHead);
+
+  cost += mu3_ * costFunction(candidate, prevOrient_);
+
+  return cost;
+}
+
+int VFH::chooseCandidate(const double &dist, const double &curHead) {
+
+  int target = radToDeg(dist) / alpha_;
+  int head = radToDeg(curHead) / alpha_;
+
   int candidate = 0;
-  double min = 10000.;
-  for (int i = 0; i < candidateValleys.size(); i++) {
-    double back = std::fabs(candidateValleys[i].back() * alpha - dist);
-    double front = std::fabs(candidateValleys[i].front() * alpha - dist);
-    if (back < min || front < min) {
-      candidate = i;
-      min = std::min(back, front);
+  double minCost = 10000.0;
+  for (int i = 0; i < candidateValleys_.size(); i++) {
+    if (candidateValleys_[i].size() < maxSize_) {
+      int cNar =
+          (candidateValleys_[i].front() + candidateValleys_[i].back()) / 2;
+      minCost = calculateCost(cNar, target, head);
+      candidate = cNar;
+    } else {
+      int cRight = candidateValleys_[i].front() + maxSize_ / 2;
+      int cLeft = candidateValleys_[i].back() - maxSize_ / 2;
+
+      if (target <= cLeft && target >= cRight) {
+        // if target is choosen, its cost is 0
+        candidate = target;
+        break;
+      }
+
+      double costRight = calculateCost(cRight, target, head);
+      double costLeft = calculateCost(cLeft, target, head);
+      if (costRight < minCost || costLeft < minCost) {
+        if (costRight < costLeft) {
+          minCost = costRight;
+          candidate = cRight;
+        } else {
+          minCost = costLeft;
+          candidate = cLeft;
+        }
+      }
     }
   }
+  std::cout << target << " " << candidate << "\n";
+  prevOrient_ = candidate;
   return candidate;
 }
 
-double VFH::steeringDirection(const double &dist, const int &candidate) {
-
-  auto candidateValley = candidateValleys[candidate];
-  int candidateSize = candidateValley.size();
-  double new_min = 0;
-  double min = 10000.;
-  int nearest = 0;
-  int furtherst = 0;
-
-  for (int i = 0; i < candidateSize; i++) {
-    new_min = std::fabs(candidateValley[i] * alpha - dist);
-    if (new_min < min) {
-      nearest = i;
-      min = new_min;
-    }
-  }
-  double steeringDir = 0;
-  /*if (nearest < candidateSize / 2) {
-    furtherst = std::min(candidateSize - 1, nearest + maxSize);
-  } else {
-    furtherst = std::max(0, nearest - maxSize);
-  }
-  steeringDir =
-      alpha * (candidateValley[nearest] + candidateValley[furtherst]) / 2;*/
-
-  if (candidateSize < maxSize) {
-    steeringDir =
-        ((double)(candidateValley[0] + candidateValley.back()) * alpha) / 2;
-  } else {
-    double right = (candidateValley.back() - maxSize / 2) * alpha;
-    double left = (candidateValley[0] + maxSize / 2) * alpha;
-    std::cout << "Right: " << right << " Left: " << left << "\n";
-    if (dist <= right && dist >= left)
-      steeringDir = dist;
-    else {
-      /*if (std::fabs(dist - right) > std::fabs(dist - left))
-        steeringDir = left;
-      else*/
-      steeringDir = right;
-    }
-  }
-  std::cout << "Target: " << dist << " Steer: " << steeringDir << "\n";
-  return steeringDir;
-}
-
-double VFH::avoidObstacle(const std::vector<int> &bins, const double &dist) {
-
-  double distDeg = radToDeg(dist, true);
-  findCandidates(bins);
-  int candidate = closestCandidate(distDeg);
-  double steer = steeringDirection(distDeg, candidate);
-  if (steer <= 2 * M_PI && steer >= M_PI)
-    steer -= 2 * M_PI;
-  steer = degToRad(steer);
-
-  return steer;
+double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
+                          const cv::Point2d &target, const double &curHead) {
+  double dist = target.y;
+  map_->update(points, target);
+  histogram_->update(map_->getMap());
+  findCandidates(histogram_->getDensities());
+  int candidate = chooseCandidate(dist, curHead);
+  return degToRad(candidate * alpha_ - 180.0);
 }

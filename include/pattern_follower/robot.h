@@ -25,10 +25,11 @@
 class Robot {
 public:
   Robot();
-  Robot(const double &maxVel, const double &radius, const double &acceleration);
+  Robot(const cv::Point2d &setPoint, const double &maxVel, const double &radius,
+        const double &acceleration);
 
-  Robot(const double &maxVel, const double &radius, const double &acceleration,
-        char *IP, int &port);
+  Robot(const cv::Point2d &setPoint, const double &maxVel, const double &radius,
+        const double &acceleration, char *IP, int &port);
 
   static void data_callback(CPositionMessage *pos) { printf("mes"); }
 
@@ -42,20 +43,24 @@ public:
 
   const double &getMaxAngVel() const { return maxAngVel_; }
 
+  const double &getLeftSpeed() const { return velL_; }
+
+  const double &getRightSpeed() const { return velR_; }
+
   const double &getX() const { return x_; }
 
   const double &getY() const { return y_; }
 
   const double &getH() const { return h_; }
 
+  const double &getVel() const { return vel_; }
+
+  const double &getAngVel() const { return angVel_; }
+
   void computeH(const double &dt) {
     h_ += angVel_ * dt;
     normalizeAngle(h_);
   }
-
-  const double &getVel() const { return vel_; }
-
-  const double &getAngVel() const { return angVel_; }
 
   void computePos(const double &dt) {
     x_ += (vel_ * std::cos(h_) * dt);
@@ -69,11 +74,8 @@ public:
       angle += 2 * M_PI;
   }
 
-  void setVel(const double &_vel);
-
-  void setAngVel(const double &_angVel);
-
-  bool move(const double &angle, const double &distance);
+  bool move(const double &angle, const double &distance,
+            bool simulation = true);
 
   void move_simulation(cv::Mat &frame, const double &angle,
                        const double &distance);
@@ -81,7 +83,7 @@ public:
 protected:
 private:
   double radius_, maxVel_, maxAngVel_, velL_, velR_, vel_, angVel_, h_, x_, y_,
-      acceleration_;
+      acceleration_, distance_, angle_;
   std::unique_ptr<PID> angularVelControl_, velControl_;
   RCM rcm_;
   std::unique_ptr<CPositionClient> client_;
@@ -91,6 +93,10 @@ private:
   bool enableMotion();
   void drawRobot(cv::Mat &frame, const double &angle, const double &dist);
   void calculateSpeeds(const double &angle, const double &distance);
+  void setVel(const double &_vel);
+  void setAngVel(const double &_angVel);
+  void setWheelSpeeds(const double &linearVelocity,
+                      const double &angularVelocity);
 };
 
 #endif // ROBOT_H

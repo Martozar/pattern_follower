@@ -1,8 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <math.h>
+#include <cmath>
 double radToDeg(const double &angleInRad, const bool &positiveOnly = false);
 double degToRad(const double &angleInDeg, const bool &positiveOnly = false);
+double atanInPosDeg(const double &x, const double &y);
 
 #endif

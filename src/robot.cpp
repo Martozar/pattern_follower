@@ -11,9 +11,11 @@ Robot::Robot() {
   lastUpdate_ = std::chrono::steady_clock::now();
 }
 
-Robot::Robot(const double &maxVel, const double &radius,
-             const double &acceleration)
+Robot::Robot(const cv::Point2d &setPoint, const double &maxVel,
+             const double &radius, const double &acceleration)
     : Robot() {
+  distance_ = setPoint.x;
+  angle_ = setPoint.y;
   radius_ = radius;
   maxVel_ = maxVel;
   maxAngVel_ = 2 * maxVel_ / radius_;
@@ -24,9 +26,10 @@ Robot::Robot(const double &maxVel, const double &radius,
       new PID(DIST_KP, DIST_KI, DIST_KD, 0.0, maxVel_, -maxVel_, DIST_EPS));
 };
 
-Robot::Robot(const double &maxVel, const double &radius,
-             const double &acceleration, char *IP, int &port)
-    : Robot(maxVel, radius, acceleration) {
+Robot::Robot(const cv::Point2d &setPoint, const double &maxVel,
+             const double &radius, const double &acceleration, char *IP,
+             int &port)
+    : Robot(setPoint, maxVel, radius, acceleration) {
   // client = std::make_unique<CPositionClient>(IP, port, data_callback);
   messageClient_ = std::make_unique<CMessageClient>();
   bool p[2] = {true, true};
@@ -109,28 +112,45 @@ void Robot::setAngVel(const double &angVel) {
     angVel_ = -maxAngVel_;
 }
 
-bool Robot::move(const double &angle, const double &distance) {
-  CMessage message;
-  message.type = MSG_SPEED;
-  message.forward = this->vel_;
-  message.turn = this->angVel_ * 5;
-  if (message.forward > -20 && message.forward < 20)
-    message.turn = 0;
-  message.flipper = 0;
-  //  std::cout << "Forward: " << vel << "\nAng_vel " << angVel << std::endl;
-  bool ret = messageClient_->sendMessage(message);
-  /*bool ret = client->sendControl((this->vel * 1000 / maxVel),
-                                 (this->angVel * 1000 / maxAngVel) / 2);*/
+void Robot::setWheelSpeeds(const double &linearVelocity,
+                           const double &angularVelocity) {
+  setVel(linearVelocity);
+  setAngVel(angularVelocity);
+  velL_ = (vel_ - radius_) / 2.0;
+  velR_ = vel_ - velL_;
+}
 
+bool Robot::move(const double &angle, const double &distance, bool simulation) {
+  bool ret = true;
+  calculateSpeeds(angle, distance);
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> diff = end - lastUpdate_;
+  double dt = diff.count();
+  computeH(dt);
+  lastUpdate_ = end;
+  if (!simulation) {
+    CMessage message;
+    message.type = MSG_SPEED;
+    message.forward = this->vel_;
+    message.turn = this->angVel_ * 5;
+    if (message.forward > -20 && message.forward < 20)
+      message.turn = 0;
+    message.flipper = 0;
+    //  std::cout << "Forward: " << vel << "\nAng_vel " << angVel << std::endl;
+    ret = messageClient_->sendMessage(message);
+    /*bool ret = client->sendControl((this->vel * 1000 / maxVel),
+                                   (this->angVel * 1000 / maxAngVel) / 2);*/
+  }
   return ret;
 }
 
 void Robot::calculateSpeeds(const double &angle, const double &distance) {
   // std::cout << "angle: " << angle << "\ndistance: " << distance << std::endl;
-  double angVel = angularVelControl_->calculate(0.0, angle);
-  double vel = velControl_->calculate(-80.0, -distance);
-  setAngVel(angVel);
-  setVel(vel);
+  double new_angle = angle;
+  normalizeAngle(new_angle);
+  double angVel = angularVelControl_->calculate(angle_, new_angle);
+  double vel = velControl_->calculate(-distance_, -distance);
+  setWheelSpeeds(vel, angVel);
 }
 
 void Robot::move_simulation(cv::Mat &frame, const double &angle,
@@ -146,6 +166,7 @@ void Robot::move_simulation(cv::Mat &frame, const double &angle,
   this->drawRobot(frame, new_angle, distance);
   lastUpdate_ = end;
 }
+
 void Robot::drawRobot(cv::Mat &frame, const double &angle, const double &dist) {
   cv::circle(frame, cv::Point2f(x_, y_), 50, cv::Scalar(0, 255, 255), 2);
   cv::line(frame, cv::Point2f(x_, y_),
