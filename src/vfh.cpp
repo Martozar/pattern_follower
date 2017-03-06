@@ -15,23 +15,29 @@ VFH::VFH(const int &mapSize, const int &resolution, const double &robRadius,
   mu2_ = mu2;
   mu3_ = mu3;
   prevOrient_ = 0;
+  bins_ = 360 / alpha_;
   map_->init();
 }
 
 void VFH::findCandidates(const std::vector<int> &bins) {
   candidateValleys_.clear();
   std::vector<int> candidate;
-  int histSize = bins.size();
   int start = -1;
-  for (int i = 0; i < histSize; i++) {
+  for (int i = 0; i < bins_; i++) {
     if (bins[i] == 1) {
       start = i;
       break;
     }
   }
+  if (start == -1) {
+    candidate.push_back(0);
+    candidate.push_back(bins_ - 1);
+    candidateValleys_.push_back(candidate);
+    return;
+  }
   bool left = true;
-  for (int i = start; i <= (start + histSize); i++) {
-    int mod = i % histSize;
+  for (int i = start; i <= (start + bins_); i++) {
+    int mod = i % bins_;
     if (bins[mod] == 0 && left) {
       candidate.push_back(bins[mod]);
       left = false;
@@ -40,7 +46,7 @@ void VFH::findCandidates(const std::vector<int> &bins) {
     if (bins[mod] == 1 && !left) {
       candidate.push_back(bins[mod - 1]);
       if (candidate.back() < 0) {
-        candidate.back() += histSize;
+        candidate.back() += bins_;
       }
       candidateValleys_.push_back(candidate);
       candidate.clear();
@@ -79,18 +85,18 @@ int VFH::chooseCandidate(const double &dist, const double &curHead) {
   for (int i = 0; i < candidateValleys_.size(); i++) {
     int first = candidateValleys_[i].front();
     int second = candidateValleys_[i].back();
-    int delta = delta(first, second);
+    int diff = delta(first, second);
 
-    if (std::fabs(delta) < 2) {
+    if (std::fabs(diff) < 2) {
       continue;
     }
-    if (std::fabs(delta) < maxSize_) {
+    if (std::fabs(diff) < maxSize_) {
       double narrow = (first + second) / 2.0;
     } else {
       double center = (first + second) / 2.0;
-      double left = (first + maxSize_ / 2) % (360 / alpha_);
+      double left = (first + maxSize_ / 2) % (bins_);
       double right = (second - maxSize_ / 2);
-      right += right < 0 ? (360 / alpha_) : 0;
+      right += right < 0 ? (bins_) : 0;
       if (target >= right && target <= left) {
         // target
       }
@@ -101,13 +107,14 @@ int VFH::chooseCandidate(const double &dist, const double &curHead) {
 
 int VFH::delta(const int &c1, const int &c2) {
   int delta = c1 - c2;
-  if (delta > 180 / alpha_) {
-    delta -= 360 / alpha_;
+  if (delta > bins_ / 2) {
+    delta -= bins_;
   } else if (delta < -180) {
-    delta += 360 / alpha_;
+    delta += bins_;
   }
   return delta;
 }
+
 double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
                           const cv::Point2d &target, const double &curHead) {
   double dist = target.y;
@@ -115,7 +122,7 @@ double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
   map_->show();
   histogram_->update(map_->getMap());
   findCandidates(histogram_->getDensities());
-  int candidate = chooseCandidate(dist, curHead) - 180 / alpha_;
+  int candidate = chooseCandidate(dist, curHead) - bins_ / 2;
   double ret = (degToRad(candidate * alpha_));
   std::cout << "Pred " << ret << "\n";
   ret -= ret > M_PI ? 2 * M_PI : 0;

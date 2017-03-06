@@ -19,7 +19,7 @@ public:
                        const cv::Point2d &target, const double &curHead);
 
 private:
-  int maxSize_, alpha_, prevOrient_;
+  int maxSize_, alpha_, prevOrient_, bins_;
   double mu1_, mu2_, mu3_;
   std::vector<std::vector<int>> candidateValleys_;
 
@@ -31,6 +31,7 @@ private:
   double calculateCost(const int &candidate, const int &target,
                        const int &curHeads);
   double costFunction(const int &c1, const int &c2);
+  int delta(const int &c1, const int &c2);
   int chooseCandidate(const double &dist, const double &curHead);
 };
 #endif
