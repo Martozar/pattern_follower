@@ -11,8 +11,8 @@ RobotControl::RobotControl(const cv::Point2d &setPoint, const double &maxVel,
                            bool simulation)
     : robot_(new Robot(setPoint, maxVel, robRadius * resolution / 200.0,
                        acceleration)),
-      vfh_(new VFH(threshLow, threshHigh, robRadius / 2.0, densityB, mapSize,
-                   resolution, safety, histRadius, maxSize, alpha, mu1, mu2,
+      vfh_(new VFH(mapSize, resolution, robRadius, safety, threshLow,
+                   threshHigh, densityB, histRadius, alpha, maxSize, mu1, mu2,
                    mu3)) {
   simulation_ = simulation;
 };

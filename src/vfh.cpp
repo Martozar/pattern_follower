@@ -1,14 +1,14 @@
 #include <iostream>
 #include <pattern_follower/vfh.h>
 
-VFH::VFH(const double &threshLow, const double &threshHigh,
-         const double &robRadius, const double &densityB, const int &mapSize,
-         const int &resolution, const double &safety, const int &histRadius,
-         const int &maxSize, const int &alpha, const double &mu1,
-         const double &mu2, const double &mu3)
+VFH::VFH(const int &mapSize, const int &resolution, const double &robRadius,
+         const double &safety, const double &threshLow,
+         const double &threshHigh, const double &densityB,
+         const int &histRadius, const int &alpha, const int &maxSize,
+         const double &mu1, const double &mu2, const double &mu3)
     : map_(new Map(mapSize, resolution)),
-      histogram_(new Histogram(threshLow, threshHigh, robRadius, mapSize / 2,
-                               densityB, safety, alpha, histRadius)) {
+      histogram_(
+          new Histogram(threshLow, threshHigh, densityB, alpha, histRadius)) {
   maxSize_ = maxSize;
   alpha_ = alpha;
   mu1_ = mu1;
@@ -21,27 +21,30 @@ VFH::VFH(const double &threshLow, const double &threshHigh,
 void VFH::findCandidates(const std::vector<int> &bins) {
   candidateValleys_.clear();
   std::vector<int> candidate;
-  int histSize = bins.size() - 1;
-  for (int i = 0; i <= histSize; i++) {
-
-    if (!bins[i]) {
-      candidate.push_back(i);
+  int histSize = bins.size();
+  int start = -1;
+  for (int i = 0; i < histSize; i++) {
+    if (bins[i] == 1) {
+      start = i;
+      break;
     }
-    if (bins[i] || i == histSize) {
-      if (candidate.size() != 0) {
-        // if we are at the end of hist
-        // and its last and first cells are 0
-        // it is a circle
-        if (candidate.size() != histSize + 1 && i == histSize && !bins[0]) {
-          std::for_each(candidateValleys_[0].begin(),
-                        candidateValleys_[0].end(), [](int &d) { d += 72; });
-          candidate.insert(candidate.end(), candidateValleys_[0].begin(),
-                           candidateValleys_[0].end());
-          candidateValleys_.erase(candidateValleys_.begin());
-        }
-        candidateValleys_.push_back(candidate);
-        candidate.clear();
+  }
+  bool left = true;
+  for (int i = start; i <= (start + histSize); i++) {
+    int mod = i % histSize;
+    if (bins[mod] == 0 && left) {
+      candidate.push_back(bins[mod]);
+      left = false;
+    }
+
+    if (bins[mod] == 1 && !left) {
+      candidate.push_back(bins[mod - 1]);
+      if (candidate.back() < 0) {
+        candidate.back() += histSize;
       }
+      candidateValleys_.push_back(candidate);
+      candidate.clear();
+      left = true;
     }
   }
 }
@@ -67,54 +70,44 @@ double VFH::calculateCost(const int &candidate, const int &target,
 }
 
 int VFH::chooseCandidate(const double &dist, const double &curHead) {
+  // TODO has to be donnnnne
   std::cout << dist << "\n";
   int target = (radToDeg(dist) + 180) / alpha_;
   std::cout << target << "\n";
   int head = (radToDeg(curHead) + 180) / alpha_;
-
   int candidate = 0;
-  double minCost = 10000.0;
   for (int i = 0; i < candidateValleys_.size(); i++) {
-    if (candidateValleys_[i].size() < maxSize_) {
-      int cNar =
-          (candidateValleys_[i].front() + candidateValleys_[i].back()) / 2;
-      minCost = calculateCost(cNar, target, head);
-      candidate = cNar;
+    int first = candidateValleys_[i].front();
+    int second = candidateValleys_[i].back();
+    int delta = delta(first, second);
+
+    if (std::fabs(delta) < 2) {
+      continue;
+    }
+    if (std::fabs(delta) < maxSize_) {
+      double narrow = (first + second) / 2.0;
     } else {
-      int cRight = candidateValleys_[i].front() + maxSize_ / 2;
-      int cLeft = candidateValleys_[i].back() - maxSize_ / 2;
-
-      /*cRight -= cRight > (360 / alpha_) ? (360 / alpha_) : 0;
-      cLeft += cLeft < 0 ? (360 / alpha_) : 0;*/
-
-      std::cout << cRight << " " << cLeft;
-      int min = std::min(cRight, cLeft);
-      int max = std::max(cRight, cLeft);
-      if ((target <= max && target >= min) ||
-          (target + 72 <= max && target + 72 >= min)) {
-        // if target is choosen, its cost is 0
-        candidate = target;
-        break;
-      }
-
-      double costRight = calculateCost(cRight, target, head);
-      double costLeft = calculateCost(cLeft, target, head);
-      if (costRight < minCost || costLeft < minCost) {
-        if (costRight < costLeft) {
-          minCost = costRight;
-          candidate = cRight;
-        } else {
-          minCost = costLeft;
-          candidate = cLeft;
-        }
+      double center = (first + second) / 2.0;
+      double left = (first + maxSize_ / 2) % (360 / alpha_);
+      double right = (second - maxSize_ / 2);
+      right += right < 0 ? (360 / alpha_) : 0;
+      if (target >= right && target <= left) {
+        // target
       }
     }
   }
-  std::cout << "Targ: " << target << "Head: " << head << "Cand: " << candidate
-            << "\n ";
   return candidate;
 }
 
+int VFH::delta(const int &c1, const int &c2) {
+  int delta = c1 - c2;
+  if (delta > 180 / alpha_) {
+    delta -= 360 / alpha_;
+  } else if (delta < -180) {
+    delta += 360 / alpha_;
+  }
+  return delta;
+}
 double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
                           const cv::Point2d &target, const double &curHead) {
   double dist = target.y;

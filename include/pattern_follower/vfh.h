@@ -9,11 +9,10 @@
 
 class VFH {
 public:
-  VFH(const double &threshLow, const double &threshHigh,
-      const double &robRadius, const double &densityB, const int &mapSize = 21,
-      const int &resolution = 20, const double &safety = 0.0,
-      const int &histRadius = 10, const int &maxSize = 16, const int &alpha = 5,
-      const double &mu1 = 5.0, const double &mu2 = 2.0,
+  VFH(const int &mapSize, const int &resolution, const double &robRadius,
+      const double &safety, const double &threshLow, const double &threshHigh,
+      const double &densityB, const int &histRadius, const int &alpha = 5,
+      const int &maxSize = 16, const double &mu1 = 5.0, const double &mu2 = 2.0,
       const double &mu3 = 2.0);
 
   double avoidObstacle(const std::vector<cv::Point2d> &points,

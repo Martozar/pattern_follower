@@ -1,7 +1,12 @@
 #include <pattern_follower/map.h>
 
-Map::Map(const int &size, const int &resolution)
-    : size_(size), resolution_(resolution), robotPos_(size_ / 2){};
+Map::Map(const int &size, const int &resolution, const int &robotRad,
+         const double &safety) {
+  size_ = size;
+  resolution_ = resolution;
+  robotPos_ = size_ / 2;
+  robotRadAndSafe_ = (((double)robotRad / 2.0) + safety) * (double)resolution;
+};
 
 void Map::init() {
   for (int i = 0; i < size_; i++) {
@@ -9,8 +14,13 @@ void Map::init() {
     for (int j = 0; j < size_; j++) {
       Grid g;
       g.cost = costs::FREE;
-      g.location = cv::Point2i((robotPos_ - i) * resolution_,
-                               (robotPos_ - j) * resolution_);
+      double x = (robotPos_ - i);
+      double y = (robotPos_ - j);
+      g.location = cv::Point2i(x * resolution_, y * resolution_);
+      g.beta = atanInPosDeg(x, y);
+      g.distance = std::sqrt(x * x + y * y) * resolution_;
+      g.gamma = radToDeg(std::asin(robotRadAndSafe_ / g.distance));
+
       tmp.push_back(g);
     }
     map_.push_back(tmp);
