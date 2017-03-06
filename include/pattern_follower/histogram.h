@@ -14,14 +14,15 @@ public:
             const int &alpha = 5, const int &histRadius = 10);
 
   void update(const std::vector<std::vector<Map::Grid>> &grid);
-  const std::vector<int> getDensities() const { return densities_; }
+  const std::vector<int> getDensities() const { return binDensities_; }
 
 private:
   int alpha_, bins_, histRadius_, robotPos_, max_, min_;
   double densityA_, densityB_, threshLow_, threshHigh_, robRadAndSafety_;
-  std::vector<int> densities_, lastDensities_;
+  std::vector<double> densities_;
+  std::vector<int> binDensities_, lastDensities_;
 
   void calculateDensities(const std::vector<std::vector<Map::Grid>> &grid);
-  void binarize();
+  void binarize(int &bin);
 };
 #endif

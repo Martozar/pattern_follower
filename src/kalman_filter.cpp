@@ -22,8 +22,8 @@ void KalmanFilter_::prediction(const double &forVel, const double &angVel) {
   std::chrono::duration<double> diff = now - lastUpdate;
   double dt = diff.count();
   lastUpdate = now;
-  cv::Mat dx = (cv::Mat_<double>(6, 1) << forVel * dt, angVel * dt, forVel,
-                angVel, 0, 0);
+  cv::Mat dx = (cv::Mat_<double>(6, 1) << forVel * dt * 0, angVel * dt * 0,
+                forVel, angVel, 0, 0);
   x = F * x + dx;
   P = F * P * F_transp;
 }

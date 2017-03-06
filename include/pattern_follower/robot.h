@@ -1,6 +1,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
-#include <chrono>
+
+#include <ctime>
 #include <iostream>
 #include <math.h>
 #include <opencv2/opencv.hpp>
@@ -15,12 +16,12 @@
 #define DIST_KP 5.0
 #define DIST_KI 0.0
 #define DIST_KD 1.0
-#define DIST_EPS 5.0
+#define DIST_EPS 0.1
 
 #define ANGLE_KP 3.0
 #define ANGLE_KI 0.0
 #define ANGLE_KD 1.0
-#define ANGLE_EPS 0.15
+#define ANGLE_EPS 0.1
 
 class Robot {
 public:
@@ -88,7 +89,7 @@ private:
   RCM rcm_;
   std::unique_ptr<CPositionClient> client_;
   std::unique_ptr<CMessageClient> messageClient_;
-  std::chrono::steady_clock::time_point lastUpdate_;
+  clock_t lastUpdate_;
   bool initRcm();
   bool enableMotion();
   void drawRobot(cv::Mat &frame, const double &angle, const double &dist);

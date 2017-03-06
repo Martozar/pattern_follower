@@ -7,12 +7,23 @@ RobotControl::RobotControl(const cv::Point2d &setPoint, const double &maxVel,
                            const int &resolution, const double &safety,
                            const int &histRadius, const int &maxSize,
                            const int &alpha, const double &mu1,
-                           const double &mu2, const double &mu3)
-    : robot_(new Robot(setPoint, maxVel, robRadius * resolution / 100.0,
+                           const double &mu2, const double &mu3,
+                           bool simulation)
+    : robot_(new Robot(setPoint, maxVel, robRadius * resolution / 200.0,
                        acceleration)),
-      vfh_(new VFH(threshLow, threshHigh, robRadius, densityB, mapSize,
+      vfh_(new VFH(threshLow, threshHigh, robRadius / 2.0, densityB, mapSize,
                    resolution, safety, histRadius, maxSize, alpha, mu1, mu2,
-                   mu3)){};
+                   mu3)) {
+  simulation_ = simulation;
+};
 
 void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
-                                        const cv::Point2d &target) {}
+                                        const cv::Point2d &target) {
+  double count = 0.0;
+  double dir = vfh_->avoidObstacle(points, target, robot_->getH());
+  std::cout << dir << "\n";
+
+  robot_->move(dir, target.x, simulation_);
+  while (count < 1e5)
+    count++;
+}

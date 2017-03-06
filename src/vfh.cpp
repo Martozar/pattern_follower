@@ -33,8 +33,11 @@ void VFH::findCandidates(const std::vector<int> &bins) {
         // and its last and first cells are 0
         // it is a circle
         if (candidate.size() != histSize + 1 && i == histSize && !bins[0]) {
+          std::for_each(candidateValleys_[0].begin(),
+                        candidateValleys_[0].end(), [](int &d) { d += 72; });
           candidate.insert(candidate.end(), candidateValleys_[0].begin(),
                            candidateValleys_[0].end());
+          candidateValleys_.erase(candidateValleys_.begin());
         }
         candidateValleys_.push_back(candidate);
         candidate.clear();
@@ -49,6 +52,7 @@ double VFH::costFunction(const int &c1, const int &c2) {
   return std::min(std::min(std::fabs(diff), std::fabs(diff - constant)),
                   std::fabs(diff + constant));
 }
+
 double VFH::calculateCost(const int &candidate, const int &target,
                           const int &curHead) {
   double cost = 0;
@@ -63,9 +67,10 @@ double VFH::calculateCost(const int &candidate, const int &target,
 }
 
 int VFH::chooseCandidate(const double &dist, const double &curHead) {
-
-  int target = radToDeg(dist) / alpha_;
-  int head = radToDeg(curHead) / alpha_;
+  std::cout << dist << "\n";
+  int target = (radToDeg(dist) + 180) / alpha_;
+  std::cout << target << "\n";
+  int head = (radToDeg(curHead) + 180) / alpha_;
 
   int candidate = 0;
   double minCost = 10000.0;
@@ -79,7 +84,14 @@ int VFH::chooseCandidate(const double &dist, const double &curHead) {
       int cRight = candidateValleys_[i].front() + maxSize_ / 2;
       int cLeft = candidateValleys_[i].back() - maxSize_ / 2;
 
-      if (target <= cLeft && target >= cRight) {
+      /*cRight -= cRight > (360 / alpha_) ? (360 / alpha_) : 0;
+      cLeft += cLeft < 0 ? (360 / alpha_) : 0;*/
+
+      std::cout << cRight << " " << cLeft;
+      int min = std::min(cRight, cLeft);
+      int max = std::max(cRight, cLeft);
+      if ((target <= max && target >= min) ||
+          (target + 72 <= max && target + 72 >= min)) {
         // if target is choosen, its cost is 0
         candidate = target;
         break;
@@ -98,8 +110,8 @@ int VFH::chooseCandidate(const double &dist, const double &curHead) {
       }
     }
   }
-  std::cout << target << " " << candidate << "\n";
-  prevOrient_ = candidate;
+  std::cout << "Targ: " << target << "Head: " << head << "Cand: " << candidate
+            << "\n ";
   return candidate;
 }
 
@@ -107,8 +119,14 @@ double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
                           const cv::Point2d &target, const double &curHead) {
   double dist = target.y;
   map_->update(points, target);
+  map_->show();
   histogram_->update(map_->getMap());
   findCandidates(histogram_->getDensities());
-  int candidate = chooseCandidate(dist, curHead);
-  return degToRad(candidate * alpha_ - 180.0);
+  int candidate = chooseCandidate(dist, curHead) - 180 / alpha_;
+  double ret = (degToRad(candidate * alpha_));
+  std::cout << "Pred " << ret << "\n";
+  ret -= ret > M_PI ? 2 * M_PI : 0;
+  std::cout << "Po " << ret << "\n";
+  /*ret -= (ret <= M_PI ? 0 : 2 * M_PI);*/
+  return ret;
 }

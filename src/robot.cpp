@@ -8,7 +8,7 @@ Robot::Robot() {
   velR_ = 0;
   vel_ = 0;
   angVel_ = 0;
-  lastUpdate_ = std::chrono::steady_clock::now();
+  lastUpdate_ = clock();
 }
 
 Robot::Robot(const cv::Point2d &setPoint, const double &maxVel,
@@ -18,7 +18,7 @@ Robot::Robot(const cv::Point2d &setPoint, const double &maxVel,
   angle_ = setPoint.y;
   radius_ = radius;
   maxVel_ = maxVel;
-  maxAngVel_ = 2 * maxVel_ / radius_;
+  maxAngVel_ = maxVel_;
   acceleration_ = acceleration;
   angularVelControl_ = std::unique_ptr<PID>(new PID(
       ANGLE_KP, ANGLE_KI, ANGLE_KD, 1.0, maxAngVel_, -maxAngVel_, ANGLE_EPS));
@@ -90,6 +90,7 @@ void Robot::setVel(const double &vel) {
     if (vel_ < vel)
       vel_ = vel;
   }
+  vel_ = vel;
   if (vel_ > maxVel_)
     vel_ = maxVel_;
   else if (vel_ < -maxVel_)
@@ -112,21 +113,17 @@ void Robot::setAngVel(const double &angVel) {
     angVel_ = -maxAngVel_;
 }
 
-void Robot::setWheelSpeeds(const double &linearVelocity,
-                           const double &angularVelocity) {
-  setVel(linearVelocity);
-  setAngVel(angularVelocity);
-  velL_ = (vel_ - radius_) / 2.0;
-  velR_ = vel_ - velL_;
-}
-
 bool Robot::move(const double &angle, const double &distance, bool simulation) {
   bool ret = true;
-  calculateSpeeds(angle, distance);
-  auto end = std::chrono::steady_clock::now();
-  std::chrono::duration<double> diff = end - lastUpdate_;
-  double dt = diff.count();
-  computeH(dt);
+
+  double new_angle = angle;
+  this->normalizeAngle(new_angle);
+  std::cout << "NA " << new_angle << "\n";
+  calculateSpeeds(new_angle, distance);
+  clock_t end = clock();
+
+  double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
+  computeH(elapsed_secs);
   lastUpdate_ = end;
   if (!simulation) {
     CMessage message;
@@ -145,24 +142,32 @@ bool Robot::move(const double &angle, const double &distance, bool simulation) {
 }
 
 void Robot::calculateSpeeds(const double &angle, const double &distance) {
-  // std::cout << "angle: " << angle << "\ndistance: " << distance << std::endl;
-  double new_angle = angle;
-  normalizeAngle(new_angle);
-  double angVel = angularVelControl_->calculate(angle_, new_angle);
+  double angVel = angularVelControl_->calculate(angle_, angle);
   double vel = velControl_->calculate(-distance_, -distance);
+  std::cout << "AngVel " << angVel << " vel " << vel << "\n";
   setWheelSpeeds(vel, angVel);
 }
 
+void Robot::setWheelSpeeds(const double &linearVelocity,
+                           const double &angularVelocity) {
+  setVel(linearVelocity);
+  setAngVel(angularVelocity);
+  velR_ = vel_ + angVel_;
+  velL_ = vel_ - angVel_;
+
+  std::cout << "R " << velR_ << " L " << velL_ << "\n";
+}
 void Robot::move_simulation(cv::Mat &frame, const double &angle,
                             const double &distance) {
 
   double new_angle = angle;
   this->normalizeAngle(new_angle);
   this->calculateSpeeds(new_angle, distance);
-  auto end = std::chrono::steady_clock::now();
-  std::chrono::duration<double> diff = end - lastUpdate_;
-  this->computeH(diff.count());
-  this->computePos(diff.count());
+  clock_t end = clock();
+
+  double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
+  this->computeH(elapsed_secs);
+  this->computePos(elapsed_secs);
   this->drawRobot(frame, new_angle, distance);
   lastUpdate_ = end;
 }

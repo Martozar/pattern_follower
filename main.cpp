@@ -1,6 +1,7 @@
 #include "opencv2/features2d/features2d.hpp"
 #include <pattern_follower/includes.h>
 #include <time.h>
+
 int main(int argc, char **argv) {
   Parser p(argc, argv);
   p.about("Application name v1.0.0\n");
@@ -51,6 +52,7 @@ int main(int argc, char **argv) {
 
   double angle = 0.0;
   double dist = 80.0;
+  RobotControl rc(cv::Point2d(1.0, 1.0), 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
 
   while (true) {
     kf.prediction(0.0, 0.0);
