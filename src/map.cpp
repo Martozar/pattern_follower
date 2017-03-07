@@ -19,8 +19,10 @@ void Map::init() {
       g.location = cv::Point2i(x * resolution_, y * resolution_);
       g.beta = atanInPosDeg(x, y);
       g.distance = std::sqrt(x * x + y * y) * resolution_;
-      g.gamma = radToDeg(std::asin(robotRadAndSafe_ / g.distance));
-
+      if (g.distance > 0)
+        g.gamma = radToDeg(std::asin(robotRadAndSafe_ / g.distance));
+      else
+        g.gamma = 0.0;
       tmp.push_back(g);
     }
     map_.push_back(tmp);
@@ -37,15 +39,16 @@ void Map::update(const std::vector<cv::Point2d> &points,
   }
   map_[robotPos_][robotPos_].cost = costs::ROBOT;
   for (int i = 0; i < points.size(); i++) {
-    int x = robotPos_ - std::round(points[i].y / (double)resolution_);
-    int y = robotPos_ - std::round(points[i].x / (double)resolution_);
+    int x = robotPos_ - std::round(points[i].x / (double)resolution_);
+    int y = robotPos_ - std::round(-points[i].y / (double)resolution_);
     map_[x][y].cost++;
   }
-  int x = robotPos_ - std::round(-target.x * 100 * std::tan(target.y) /
-                                 (double)resolution_);
-  int y = robotPos_ - std::round(target.x * 100 / (double)resolution_);
+
+  /*int x = robotPos_ - std::round(target.x * 100 / (double)resolution_);
+  int y = robotPos_ -
+          std::round(target.x * 100 * std::tan(target.y) / (double)resolution_);
   if (x >= 0 && y >= 0)
-    map_[x][y].cost = 0;
+    map_[x][y].cost = 0;*/
   // std::cout << map_.size() << "\n";
 }
 

@@ -9,14 +9,14 @@ class Histogram {
 
 public:
   Histogram(const double &threshLow, const double &threshHigh,
-            const double &densityB, const int &alpha = 5,
+            const double &densityB, const int &robotPos, const int &alpha = 5,
             const int &histRadius = 10);
 
   void update(const std::vector<std::vector<Map::Grid>> &grid);
   const std::vector<int> getDensities() const { return binDensities_; }
 
 private:
-  int alpha_, bins_, histRadius_, robotPos_, max_, min_;
+  int alpha_, bins_, max_, min_;
   double densityA_, densityB_, threshLow_, threshHigh_, robRadAndSafety_;
   std::vector<int> binDensities_;
 

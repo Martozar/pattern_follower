@@ -32,6 +32,6 @@ private:
                        const int &curHeads);
   double costFunction(const int &c1, const int &c2);
   int delta(const int &c1, const int &c2);
-  int chooseCandidate(const double &dist, const double &curHead);
+  double chooseCandidate(const double &dist, const double &curHead);
 };
 #endif

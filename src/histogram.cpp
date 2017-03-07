@@ -1,21 +1,20 @@
 #include <pattern_follower/histogram.h>
 
 Histogram::Histogram(const double &threshLow, const double &threshHigh,
-                     const double &densityB, const int &alpha,
-                     const int &histRadius) {
+                     const double &densityB, const int &robotPos,
+                     const int &alpha, const int &histRadius) {
   alpha_ = alpha;
-  histRadius_ = histRadius;
   // alpha is chosen so bins is int
   bins_ = 360 / alpha;
   densityB_ = densityB;
   // a - b*((r-1)/2) = 1
-  densityA_ = (double)(1.0 + densityB_ * (histRadius_ - 1.0) *
-                                 (histRadius_ - 1.0) / 4.0);
-  binDensities_ = std::vector<int>(bins_);
+  densityA_ =
+      (double)(1.0 + densityB_ * (histRadius - 1.0) * (histRadius - 1.0) / 4.0);
+  binDensities_ = std::vector<int>(bins_, 0);
   threshLow_ = threshLow;
   threshHigh_ = threshHigh;
-  max_ = robotPos_ + histRadius_;
-  min_ = robotPos_ - histRadius_;
+  max_ = robotPos + histRadius;
+  min_ = robotPos - histRadius;
 };
 
 void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
@@ -38,8 +37,8 @@ void Histogram::calculateDensities(
         if (angle >= grid[i][j].beta - grid[i][j].gamma &&
             angle <= grid[i][j].beta + grid[i][j].gamma) {
           magnitude = (double)(grid[i][j].cost * grid[i][j].cost);
-          magnitude *= (densityA_ -
-                        densityB_ * grid[i][j].distance * grid[i][j].distance);
+          magnitude *= (densityA_ - densityB_ * grid[i][j].distance *
+                                        grid[i][j].distance / 400.0);
         }
       }
     }

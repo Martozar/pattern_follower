@@ -7,8 +7,8 @@ VFH::VFH(const int &mapSize, const int &resolution, const double &robRadius,
          const int &histRadius, const int &alpha, const int &maxSize,
          const double &mu1, const double &mu2, const double &mu3)
     : map_(new Map(mapSize, resolution)),
-      histogram_(
-          new Histogram(threshLow, threshHigh, densityB, alpha, histRadius)) {
+      histogram_(new Histogram(threshLow, threshHigh, densityB, mapSize / 2,
+                               alpha, histRadius)) {
   maxSize_ = maxSize;
   alpha_ = alpha;
   mu1_ = mu1;
@@ -23,7 +23,7 @@ void VFH::findCandidates(const std::vector<int> &bins) {
   candidateValleys_.clear();
   std::vector<int> candidate;
   int start = -1;
-  for (int i = 0; i < bins_; i++) {
+  for (int i = 0; i < bins_ / 2; i++) {
     if (bins[i] == 1) {
       start = i;
       break;
@@ -31,7 +31,7 @@ void VFH::findCandidates(const std::vector<int> &bins) {
   }
   if (start == -1) {
     candidate.push_back(0);
-    candidate.push_back(bins_ - 1);
+    candidate.push_back(bins_ / 2);
     candidateValleys_.push_back(candidate);
     return;
   }
@@ -57,9 +57,8 @@ void VFH::findCandidates(const std::vector<int> &bins) {
 
 double VFH::costFunction(const int &c1, const int &c2) {
   int diff = c1 - c2;
-  int constant = 360 / alpha_;
-  return std::min(std::min(std::fabs(diff), std::fabs(diff - constant)),
-                  std::fabs(diff + constant));
+  return std::min(std::min(std::fabs(diff), std::fabs(diff - bins_)),
+                  std::fabs(diff + bins_));
 }
 
 double VFH::calculateCost(const int &candidate, const int &target,
@@ -75,13 +74,14 @@ double VFH::calculateCost(const int &candidate, const int &target,
   return cost;
 }
 
-int VFH::chooseCandidate(const double &dist, const double &curHead) {
+double VFH::chooseCandidate(const double &dist, const double &curHead) {
   // TODO has to be donnnnne
   std::cout << dist << "\n";
   int target = (radToDeg(dist) + 180) / alpha_;
   std::cout << target << "\n";
   int head = (radToDeg(curHead) + 180) / alpha_;
   int candidate = 0;
+  double min = 1e6;
   for (int i = 0; i < candidateValleys_.size(); i++) {
     int first = candidateValleys_[i].front();
     int second = candidateValleys_[i].back();
@@ -92,13 +92,31 @@ int VFH::chooseCandidate(const double &dist, const double &curHead) {
     }
     if (std::fabs(diff) < maxSize_) {
       double narrow = (first + second) / 2.0;
+      double cost = calculateCost(candidate, target, head);
+      if (cost < min) {
+        candidate = narrow;
+        min = cost;
+      }
+
     } else {
+      std::vector<double> cands;
       double center = (first + second) / 2.0;
       double left = (first + maxSize_ / 2) % (bins_);
       double right = (second - maxSize_ / 2);
       right += right < 0 ? (bins_) : 0;
-      if (target >= right && target <= left) {
-        // target
+
+      cands.push_back(center);
+      cands.push_back(left);
+      cands.push_back(right);
+      if (delta(target, right) > 0 && delta(target, left))
+        cands.push_back(target);
+
+      for (auto c : cands) {
+        double cost = calculateCost(c, target, head);
+        if (cost < min) {
+          candidate = c;
+          min = cost;
+        }
       }
     }
   }
@@ -109,7 +127,7 @@ int VFH::delta(const int &c1, const int &c2) {
   int delta = c1 - c2;
   if (delta > bins_ / 2) {
     delta -= bins_;
-  } else if (delta < -180) {
+  } else if (delta < -(bins_ / 2)) {
     delta += bins_;
   }
   return delta;
