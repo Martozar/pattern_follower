@@ -107,7 +107,7 @@ double VFH::chooseCandidate(const double &dist, const double &curHead) {
       cands.push_back(center);
       cands.push_back(left);
       cands.push_back(right);
-      if (delta(target, left) < 0.0 && delta(target, right) > 0)
+      if (delta(target, left) < 0.0 && delta(target, right) > 0.0)
         cands.push_back(target);
 
       for (auto c : cands) {

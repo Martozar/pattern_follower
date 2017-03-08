@@ -21,7 +21,7 @@
 #define ANGLE_KP 3.0
 #define ANGLE_KI 0.0
 #define ANGLE_KD 1.0
-#define ANGLE_EPS 0.1
+#define ANGLE_EPS 0.05
 
 class Robot {
 public:
