@@ -8,8 +8,9 @@ Histogram::Histogram(const double &threshLow, const double &threshHigh,
   bins_ = 360 / alpha;
   densityB_ = densityB;
   // a - b*((r-1)/2) = 1
+  //HOTFIX
   densityA_ =
-      (double)(1.0 + densityB_ * (histRadius - 1.0) * (histRadius - 1.0) / 4.0);
+      (double)(1.0 + densityB_ * (histRadius * 20.0 - 1.0) * (histRadius*20.0 - 1.0) / 4.0);
   binDensities_ = std::vector<int>(bins_, 0);
   threshLow_ = threshLow;
   threshHigh_ = threshHigh;
@@ -36,9 +37,11 @@ void Histogram::calculateDensities(
       for (int j = min_; j <= max_; j++) {
         if (angle >= grid[i][j].beta - grid[i][j].gamma &&
             angle <= grid[i][j].beta + grid[i][j].gamma) {
-          magnitude = (double)(grid[i][j].cost * grid[i][j].cost);
-          magnitude *= (densityA_ - densityB_ * grid[i][j].distance *
-                                        grid[i][j].distance / 400.0);
+            double tmp_mag = (double)(grid[i][j].cost * grid[i][j].cost);
+            tmp_mag *=
+            tmp_mag *= (densityA_ - densityB_ * grid[i][j].distance *
+                                        grid[i][j].distance);
+            magnitude += tmp_mag;
         }
       }
     }
