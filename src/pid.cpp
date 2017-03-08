@@ -24,7 +24,6 @@ PID::PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
 };
 double PID::calculate(const double &setPoint, const double &systemOutput) {
   double error = setPoint - systemOutput;
-  std::cout << error << " eps " << eps_ << "\n";
 
   auto now = std::chrono::steady_clock::now();
 

@@ -59,7 +59,7 @@ public:
   const double &getAngVel() const { return angVel_; }
 
   void computeH(const double &dt) {
-    h_ += (velR_ - velL_) / 0.2 * dt;
+    h_ += (velL_ - velR_) / 20 * dt;
     normalizeAngle(h_);
   }
 
@@ -93,9 +93,10 @@ private:
   bool initRcm();
   bool enableMotion();
   void drawRobot(cv::Mat &frame, const double &angle, const double &dist);
-  void calculateSpeeds(const double &angle, const double &distance);
-  void setVel(const double &_vel);
-  void setAngVel(const double &_angVel);
+  void calculateSpeeds(const double &angle, const double &distance,
+                       const double &dt);
+  void setVel(const double &_vel, const double &dt);
+  void setAngVel(const double &_angVel, const double &dt);
   void setWheelSpeeds(const double &linearVelocity,
                       const double &angularVelocity);
 };

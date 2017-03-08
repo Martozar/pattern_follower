@@ -27,7 +27,6 @@ void Map::init() {
     }
     map_.push_back(tmp);
   }
-  map_[robotPos_][robotPos_].cost = costs::ROBOT;
 }
 
 void Map::update(const std::vector<cv::Point2d> &points,
@@ -37,7 +36,7 @@ void Map::update(const std::vector<cv::Point2d> &points,
       map_[i][j].cost = costs::FREE;
     }
   }
-  map_[robotPos_][robotPos_].cost = costs::ROBOT;
+  // map_[robotPos_][robotPos_].cost = costs::ROBOT;
   for (int i = 0; i < points.size(); i++) {
     int x = robotPos_ - std::round(points[i].x / (double)resolution_);
     int y = robotPos_ - std::round(-points[i].y / (double)resolution_);

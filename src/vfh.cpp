@@ -79,12 +79,12 @@ double VFH::chooseCandidate(const double &dist, const double &curHead) {
   int target = radCoordToDegCoord(dist) / (double)alpha_;
   int head = radCoordToDegCoord(curHead) / (double)alpha_;
 
-  int candidate = 0;
+  double candidate = 0;
   double min = 1e6;
   for (int i = 0; i < candidateValleys_.size(); i++) {
-    int first = candidateValleys_[i].front();
-    int second = candidateValleys_[i].back();
-    int diff = delta(first, second);
+    double first = candidateValleys_[i].front();
+    double second = candidateValleys_[i].back();
+    double diff = delta(first, second);
 
     if (std::fabs(diff) < 2) {
       continue;
@@ -98,15 +98,16 @@ double VFH::chooseCandidate(const double &dist, const double &curHead) {
       }
     } else {
       std::vector<double> cands;
-      double center = (first + second) / 2;
-      double left = (first + maxSize_ / 2) % (bins_);
-      double right = (second - maxSize_ / 2);
+      double center = (first + second) / 2.0;
+      double left = (first + (double)maxSize_ / 2.0);
+      left -= left >= bins_ ? bins_ : 0;
+      double right = (second - maxSize_ / 2.0);
       right += right < 0 ? (bins_) : 0;
 
       cands.push_back(center);
       cands.push_back(left);
       cands.push_back(right);
-      if (target <= right && target >= left)
+      if (delta(target, left) < 0.0 && delta(target, right) > 0)
         cands.push_back(target);
 
       for (auto c : cands) {
@@ -118,11 +119,12 @@ double VFH::chooseCandidate(const double &dist, const double &curHead) {
       }
     }
   }
+  std::cout << "Target: " << target << " Candidate: " << candidate << "\n";
   return candidate;
 }
 
 int VFH::delta(const int &c1, const int &c2) {
-  int delta = c1 - c2;
+  int delta = c2 - c1;
   if (delta > bins_ / 2) {
     delta -= bins_;
   } else if (delta < -(bins_ / 2)) {
@@ -135,7 +137,7 @@ double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
                           const cv::Point2d &target, const double &curHead) {
   double dist = target.y;
   map_->update(points, target);
-  // map_->show();
+  map_->show();
   histogram_->update(map_->getMap());
   findCandidates(histogram_->getDensities());
   int candidate = chooseCandidate(dist, curHead);

@@ -80,13 +80,13 @@ bool Robot::enableMotion() {
   return result;
 }
 
-void Robot::setVel(const double &vel) {
+void Robot::setVel(const double &vel, const double &dt) {
   if (vel_ < vel) {
-    vel_ += acceleration_;
+    vel_ += acceleration_ * dt;
     if (vel_ > vel)
       vel_ = vel;
   } else if (vel_ > vel) {
-    vel_ -= 3 * acceleration_;
+    vel_ -= 3.0 * acceleration_ * dt;
     if (vel_ < vel)
       vel_ = vel;
   }
@@ -97,13 +97,13 @@ void Robot::setVel(const double &vel) {
     vel_ = -maxVel_;
 }
 
-void Robot::setAngVel(const double &angVel) {
+void Robot::setAngVel(const double &angVel, const double &dt) {
   if (angVel_ < angVel) {
-    angVel_ += acceleration_;
+    angVel_ += acceleration_ * dt;
     if (angVel_ > angVel)
       angVel_ = angVel;
   } else if (vel_ > angVel) {
-    angVel_ -= 3 * acceleration_;
+    angVel_ -= 3.0 * acceleration_ * dt;
     if (angVel_ < angVel)
       angVel_ = angVel;
   }
@@ -118,12 +118,10 @@ bool Robot::move(const double &angle, const double &distance, bool simulation) {
 
   double new_angle = angle;
   this->normalizeAngle(new_angle);
-  calculateSpeeds(new_angle, distance);
   clock_t end = clock();
 
   double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
-  std::cout << "ang vel" << angVel_ << " Head: " << h_ << " elapsed_secs "
-            << elapsed_secs << "\n";
+  calculateSpeeds(new_angle, distance, elapsed_secs);
   computeH(elapsed_secs);
   lastUpdate_ = end;
   if (!simulation) {
@@ -139,16 +137,17 @@ bool Robot::move(const double &angle, const double &distance, bool simulation) {
   return ret;
 }
 
-void Robot::calculateSpeeds(const double &angle, const double &distance) {
+void Robot::calculateSpeeds(const double &angle, const double &distance,
+                            const double &dt) {
   double angVel = angularVelControl_->calculate(angle_, angle);
   double vel = velControl_->calculate(-distance_, -distance);
+  setVel(vel, dt);
+  setAngVel(angVel, dt);
   setWheelSpeeds(vel, angVel);
 }
 
 void Robot::setWheelSpeeds(const double &linearVelocity,
                            const double &angularVelocity) {
-  setVel(linearVelocity);
-  setAngVel(angularVelocity);
   velR_ = vel_ + angVel_;
   velL_ = vel_ - angVel_;
 }
@@ -157,10 +156,11 @@ void Robot::move_simulation(cv::Mat &frame, const double &angle,
 
   double new_angle = angle;
   this->normalizeAngle(new_angle);
-  this->calculateSpeeds(new_angle, distance);
   clock_t end = clock();
 
   double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
+
+  this->calculateSpeeds(new_angle, distance, elapsed_secs);
   this->computeH(elapsed_secs);
   this->computePos(elapsed_secs);
   this->drawRobot(frame, new_angle, distance);

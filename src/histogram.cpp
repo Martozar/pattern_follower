@@ -9,8 +9,8 @@ Histogram::Histogram(const double &threshLow, const double &threshHigh,
   densityB_ = densityB;
   // a - b*((r-1)/2) = 1
   // HOTFIX
-  densityA_ = (double)(1.0 + densityB_ * (histRadius * 20.0 - 1.0) *
-                                 (histRadius * 20.0 - 1.0) / 4.0);
+  densityA_ = (double)(1.0 + densityB_ * (histRadius * 10.0 - 1.0) *
+                                 (histRadius * 10.0 - 1.0) / 4.0);
   binDensities_ = std::vector<int>(bins_, 1);
   threshLow_ = threshLow;
   threshHigh_ = threshHigh;
@@ -22,10 +22,10 @@ void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
   calculateDensities(grid);
   std::cout << "zde\n";
   // binarize();
-  /*for (size_t i = 0; i < binDensities_.size(); i++) {
+  for (size_t i = 0; i < binDensities_.size(); i++) {
     std::cout << binDensities_[i] << " ";
   }
-  std::cout << "\n";*/
+  std::cout << "\n";
 }
 
 void Histogram::calculateDensities(
@@ -44,8 +44,10 @@ void Histogram::calculateDensities(
         }
       }
     }
+    std::cout << magnitude << " ";
     binarize(bin, magnitude);
   }
+  std::cout << "\n";
 }
 
 void Histogram::binarize(const int &bin, const double &mag) {

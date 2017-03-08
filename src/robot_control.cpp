@@ -21,9 +21,5 @@ void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                                         const cv::Point2d &target) {
   double count = 0.0;
   double dir = vfh_->avoidObstacle(points, target, robot_->getH());
-  std::cout << dir << "\n";
-
   robot_->move(dir, target.x, simulation_);
-  while (count < 1e5)
-    count++;
 }
