@@ -59,7 +59,7 @@ public:
   const double &getAngVel() const { return angVel_; }
 
   void computeH(const double &dt) {
-    h_ += angVel_ * dt;
+    h_ += (velR_ - velL_) / 0.2 * dt;
     normalizeAngle(h_);
   }
 

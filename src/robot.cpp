@@ -118,11 +118,12 @@ bool Robot::move(const double &angle, const double &distance, bool simulation) {
 
   double new_angle = angle;
   this->normalizeAngle(new_angle);
-  std::cout << "NA " << new_angle << "\n";
   calculateSpeeds(new_angle, distance);
   clock_t end = clock();
 
   double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
+  std::cout << "ang vel" << angVel_ << " Head: " << h_ << " elapsed_secs "
+            << elapsed_secs << "\n";
   computeH(elapsed_secs);
   lastUpdate_ = end;
   if (!simulation) {
@@ -133,10 +134,7 @@ bool Robot::move(const double &angle, const double &distance, bool simulation) {
     if (message.forward > -20 && message.forward < 20)
       message.turn = 0;
     message.flipper = 0;
-    //  std::cout << "Forward: " << vel << "\nAng_vel " << angVel << std::endl;
     ret = messageClient_->sendMessage(message);
-    /*bool ret = client->sendControl((this->vel * 1000 / maxVel),
-                                   (this->angVel * 1000 / maxAngVel) / 2);*/
   }
   return ret;
 }
@@ -144,7 +142,6 @@ bool Robot::move(const double &angle, const double &distance, bool simulation) {
 void Robot::calculateSpeeds(const double &angle, const double &distance) {
   double angVel = angularVelControl_->calculate(angle_, angle);
   double vel = velControl_->calculate(-distance_, -distance);
-  std::cout << "AngVel " << angVel << " vel " << vel << "\n";
   setWheelSpeeds(vel, angVel);
 }
 
@@ -154,8 +151,6 @@ void Robot::setWheelSpeeds(const double &linearVelocity,
   setAngVel(angularVelocity);
   velR_ = vel_ + angVel_;
   velL_ = vel_ - angVel_;
-
-  std::cout << "R " << velR_ << " L " << velL_ << "\n";
 }
 void Robot::move_simulation(cv::Mat &frame, const double &angle,
                             const double &distance) {

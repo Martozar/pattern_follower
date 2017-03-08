@@ -15,6 +15,17 @@ double degToRad(const double &angleInDeg, const bool &positiveOnly) {
   return angleInRad;
 }
 
-double atanInPosDeg(const double &y, const double &x) {
+double atanInPosDeg(const double &x, const double &y) {
   return -(std::atan2(x, y) / M_PI * 180.0 - 180.0);
+}
+
+double degCoordToRadCoord(const double &angleInDeg) {
+  double angleInRad = degToRad(angleInDeg);
+  angleInRad -= angleInRad > 3.0 * M_PI / 2.0 ? 5.0 * M_PI / 2.0 : M_PI / 2.0;
+  return angleInRad;
+}
+double radCoordToDegCoord(const double &angleInRad) {
+  double angleInDeg = radToDeg(angleInRad);
+  angleInDeg += angleInDeg < -90.0 ? 450.0 : 90.0;
+  return angleInDeg;
 }

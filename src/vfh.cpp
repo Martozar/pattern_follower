@@ -39,12 +39,12 @@ void VFH::findCandidates(const std::vector<int> &bins) {
   for (int i = start; i <= (start + bins_); i++) {
     int mod = i % bins_;
     if (bins[mod] == 0 && left) {
-      candidate.push_back(bins[mod]);
+      candidate.push_back(mod);
       left = false;
     }
 
     if (bins[mod] == 1 && !left) {
-      candidate.push_back(bins[mod - 1]);
+      candidate.push_back(mod - 1);
       if (candidate.back() < 0) {
         candidate.back() += bins_;
       }
@@ -75,11 +75,10 @@ double VFH::calculateCost(const int &candidate, const int &target,
 }
 
 double VFH::chooseCandidate(const double &dist, const double &curHead) {
-  // TODO has to be donnnnne
-  std::cout << dist << "\n";
-  int target = (radToDeg(dist) + 180) / alpha_;
-  std::cout << target << "\n";
-  int head = (radToDeg(curHead) + 180) / alpha_;
+
+  int target = radCoordToDegCoord(dist) / (double)alpha_;
+  int head = radCoordToDegCoord(curHead) / (double)alpha_;
+
   int candidate = 0;
   double min = 1e6;
   for (int i = 0; i < candidateValleys_.size(); i++) {
@@ -97,10 +96,9 @@ double VFH::chooseCandidate(const double &dist, const double &curHead) {
         candidate = narrow;
         min = cost;
       }
-
     } else {
       std::vector<double> cands;
-      double center = (first + second) / 2.0;
+      double center = (first + second) / 2;
       double left = (first + maxSize_ / 2) % (bins_);
       double right = (second - maxSize_ / 2);
       right += right < 0 ? (bins_) : 0;
@@ -108,7 +106,7 @@ double VFH::chooseCandidate(const double &dist, const double &curHead) {
       cands.push_back(center);
       cands.push_back(left);
       cands.push_back(right);
-      if (delta(target, right) > 0 && delta(target, left))
+      if (target <= right && target >= left)
         cands.push_back(target);
 
       for (auto c : cands) {
@@ -137,14 +135,12 @@ double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
                           const cv::Point2d &target, const double &curHead) {
   double dist = target.y;
   map_->update(points, target);
-  map_->show();
+  // map_->show();
   histogram_->update(map_->getMap());
   findCandidates(histogram_->getDensities());
-  int candidate = chooseCandidate(dist, curHead) - bins_ / 2;
+  int candidate = chooseCandidate(dist, curHead);
   double ret = (degToRad(candidate * alpha_));
-  std::cout << "Pred " << ret << "\n";
-  ret -= ret > M_PI ? 2 * M_PI : 0;
-  std::cout << "Po " << ret << "\n";
+  ret -= ret > 3.0 * M_PI / 2.0 ? 5.0 * M_PI / 2.0 : M_PI / 2.0;
   /*ret -= (ret <= M_PI ? 0 : 2 * M_PI);*/
   return ret;
 }
