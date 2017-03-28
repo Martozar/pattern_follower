@@ -1,43 +1,41 @@
 #include <pattern_follower/robot.h>
 
 Robot::Robot() {
-  x_ = 0;
-  y_ = 0;
-  h_ = 0;
-  velL_ = 0;
-  velR_ = 0;
-  vel_ = 0;
-  angVel_ = 0;
-  lastUpdate_ = clock();
-}
-
-Robot::Robot(const cv::Point2d &setPoint, const double &maxVel,
-             const double &radius, const double &acceleration)
-    : Robot() {
-  distance_ = setPoint.x;
-  angle_ = setPoint.y;
-  radius_ = radius;
-  maxVel_ = maxVel;
+  x_ = 0.0;
+  y_ = 0.0;
+  h_ = 0.0;
+  velL_ = 0.0;
+  velR_ = 0.0;
+  vel_ = 0.0;
+  angVel_ = 0.0;
+  prevPosLeft_ = 0.0;
+  prevPosRight_ = 0.0;
+  wheelRad_ = WHEEL_RADIUS;
+  radius_ = RADIUS;
+  maxVel_ = MAX_SPEED;
   maxAngVel_ = maxVel_;
-  acceleration_ = acceleration;
+  acceleration_ = ACCELERATION;
   angularVelControl_ = std::unique_ptr<PID>(new PID(
       ANGLE_KP, ANGLE_KI, ANGLE_KD, 1.0, maxAngVel_, -maxAngVel_, ANGLE_EPS));
   velControl_ = std::unique_ptr<PID>(
       new PID(DIST_KP, DIST_KI, DIST_KD, 0.0, maxVel_, -maxVel_, DIST_EPS));
-};
-
-Robot::Robot(const cv::Point2d &setPoint, const double &maxVel,
-             const double &radius, const double &acceleration, char *IP,
-             int &port)
-    : Robot(setPoint, maxVel, radius, acceleration) {
-  // client = std::make_unique<CPositionClient>(IP, port, data_callback);
-  messageClient_ = std::make_unique<CMessageClient>();
-  bool p[2] = {true, true};
-  messageClient_->init(IP, port, p);
-
-  /*if (initRcm() && enableMotion())
-    std::cout << "Suceed\n";*/
+  lastUpdate_ = clock();
 }
+
+Robot::Robot(const cv::Point2d &setPoint, bool simulation) : Robot() {
+  distance_ = setPoint.x;
+  angle_ = setPoint.y;
+  simulation_ = simulation;
+  if (!simulation) {
+    messageClient_ = std::make_unique<CMessageClient>();
+    bool p[2] = {true, true};
+    messageClient_->init("172.43.50.193", 50004, p);
+    // client = std::make_unique<CPositionClient>(IP, port, data_callback);
+
+    /*if (initRcm() && enableMotion())
+      std::cout << "Suceed\n";*/
+  }
+};
 
 bool Robot::initRcm() {
   bool result = true;
@@ -79,6 +77,21 @@ bool Robot::enableMotion() {
   } while (false);
   return result;
 }
+void Robot::updatePosition(const double &posL, const double &posR) {
+  double dL = (posL - prevPosLeft_) * wheelRad_;
+  double dR = (posR - prevPosRight_) * wheelRad_;
+  prevPosLeft_ = posL;
+  prevPosRight_ = posR;
+  double dDist = (dL + dR) / 2.0;
+  double dTheta = (dR - dL) / (radius_ * 2.0);
+  std::cout << "Dr " << dR << " dl " << dL << " dth " << dTheta << "\n";
+  double dx = dDist * std::cos(h_);
+  double dy = dDist * std::sin(h_);
+  h_ += dTheta;
+  normalizeAngle(h_);
+  x_ += dx;
+  y_ += dy;
+}
 
 void Robot::setVel(const double &vel, const double &dt) {
   if (vel_ < vel) {
@@ -113,18 +126,16 @@ void Robot::setAngVel(const double &angVel, const double &dt) {
     angVel_ = -maxAngVel_;
 }
 
-bool Robot::move(const double &angle, const double &distance, bool simulation) {
+bool Robot::move(const double &angle, const double &distance) {
   bool ret = true;
 
   double new_angle = angle;
   this->normalizeAngle(new_angle);
   clock_t end = clock();
-
   double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
   calculateSpeeds(new_angle, distance, elapsed_secs);
-  computeH(elapsed_secs);
   lastUpdate_ = end;
-  if (!simulation) {
+  if (!simulation_) {
     CMessage message;
     message.type = MSG_SPEED;
     message.forward = this->vel_;
@@ -151,6 +162,7 @@ void Robot::setWheelSpeeds(const double &linearVelocity,
   velR_ = vel_ + angVel_;
   velL_ = vel_ - angVel_;
 }
+
 void Robot::move_simulation(cv::Mat &frame, const double &angle,
                             const double &distance) {
 
@@ -161,10 +173,15 @@ void Robot::move_simulation(cv::Mat &frame, const double &angle,
   double elapsed_secs = double(end - lastUpdate_) / CLOCKS_PER_SEC;
 
   this->calculateSpeeds(new_angle, distance, elapsed_secs);
-  this->computeH(elapsed_secs);
-  this->computePos(elapsed_secs);
   this->drawRobot(frame, new_angle, distance);
   lastUpdate_ = end;
+}
+
+void Robot::normalizeAngle(double &angle) {
+  while (angle > M_PI)
+    angle -= 2.0 * M_PI;
+  while (angle < -M_PI)
+    angle += 2.0 * M_PI;
 }
 
 void Robot::drawRobot(cv::Mat &frame, const double &angle, const double &dist) {

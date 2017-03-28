@@ -21,16 +21,17 @@
 #define ANGLE_KP 3.0
 #define ANGLE_KI 0.0
 #define ANGLE_KD 1.0
-#define ANGLE_EPS 0.05
+#define ANGLE_EPS 0.035
+
+#define ACCELERATION 0.1
+#define MAX_SPEED 2.5
+#define RADIUS 0.1
+#define WHEEL_RADIUS 0.04
 
 class Robot {
 public:
   Robot();
-  Robot(const cv::Point2d &setPoint, const double &maxVel, const double &radius,
-        const double &acceleration);
-
-  Robot(const cv::Point2d &setPoint, const double &maxVel, const double &radius,
-        const double &acceleration, char *IP, int &port);
+  Robot(const cv::Point2d &setPoint, bool simulation = true);
 
   static void data_callback(CPositionMessage *pos) { printf("mes"); }
 
@@ -40,6 +41,7 @@ public:
       client_->sendControl(0, 0);
   };
 
+  void setMaxVel(const double &ratio) { maxVel_ = MAX_SPEED * ratio; }
   const double &getMaxVel() const { return maxVel_; }
 
   const double &getMaxAngVel() const { return maxAngVel_; }
@@ -58,33 +60,22 @@ public:
 
   const double &getAngVel() const { return angVel_; }
 
-  void computeH(const double &dt) {
-    h_ += (velL_ - velR_) / 20 * dt;
-    normalizeAngle(h_);
-  }
+  void updatePosition(const double &posL, const double &posR);
 
-  void computePos(const double &dt) {
-    x_ += (vel_ * std::cos(h_) * dt);
-    y_ += (vel_ * std::sin(h_) * dt);
-  }
+  void normalizeAngle(double &angle);
 
-  void normalizeAngle(double &angle) {
-    while (angle > M_PI)
-      angle -= 2 * M_PI;
-    while (angle < -M_PI)
-      angle += 2 * M_PI;
-  }
-
-  bool move(const double &angle, const double &distance,
-            bool simulation = true);
+  bool move(const double &angle, const double &distance);
 
   void move_simulation(cv::Mat &frame, const double &angle,
                        const double &distance);
 
+  double prevPosLeft_, prevPosRight_;
+
 protected:
 private:
   double radius_, maxVel_, maxAngVel_, velL_, velR_, vel_, angVel_, h_, x_, y_,
-      acceleration_, distance_, angle_;
+      acceleration_, distance_, angle_, wheelRad_;
+  bool simulation_;
   std::unique_ptr<PID> angularVelControl_, velControl_;
   RCM rcm_;
   std::unique_ptr<CPositionClient> client_;

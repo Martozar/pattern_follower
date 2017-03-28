@@ -7,20 +7,27 @@
 #include <pattern_follower/utils.h>
 #include <vector>
 
+#define MAP_SIZE 81
+#define RESOLUTION 5
+#define HISTOGRAM_SIZE 40
+#define ROBOT_RADIUS 2.0
+#define ALPHA 2
+#define MAX_SIZE 16
+#define MU_1 5
+#define MU_2 2
+#define MU_3 2
+
 class VFH {
 public:
-  VFH(const int &mapSize, const int &resolution, const double &robRadius,
-      const double &safety, const double &threshLow, const double &threshHigh,
-      const double &densityB, const int &histRadius, const int &alpha = 5,
-      const int &maxSize = 16, const double &mu1 = 5.0, const double &mu2 = 2.0,
-      const double &mu3 = 2.0);
+  VFH(const double &safety, const double &densityB);
 
   double avoidObstacle(const std::vector<cv::Point2d> &points,
-                       const cv::Point2d &target, const double &curHead);
+                       const cv::Point2d &target, const double &curHead,
+                       double &speedRatio);
 
 private:
-  int maxSize_, alpha_, prevOrient_, bins_;
-  double mu1_, mu2_, mu3_;
+  int maxSize_, alpha_, bins_;
+  double mu1_, mu2_, mu3_, prevOrient_;
   std::vector<std::vector<int>> candidateValleys_;
 
   std::unique_ptr<Map> map_;

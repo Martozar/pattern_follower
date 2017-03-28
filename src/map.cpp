@@ -1,11 +1,11 @@
 #include <pattern_follower/map.h>
 
-Map::Map(const int &size, const int &resolution, const int &robotRad,
+Map::Map(const int &size, const int &resolution, const double &robotRad,
          const double &safety) {
   size_ = size;
   resolution_ = resolution;
   robotPos_ = size_ / 2;
-  robotRadAndSafe_ = (((double)robotRad / 2.0) + safety) * (double)resolution;
+  robotRadAndSafe_ = (robotRad + safety);
 };
 
 void Map::init() {
@@ -17,12 +17,15 @@ void Map::init() {
       double x = (robotPos_ - i);
       double y = (robotPos_ - j);
       g.location = cv::Point2i(x * resolution_, y * resolution_);
-      g.beta = atanInPosDeg(x, y);
-      g.distance = std::sqrt(x * x + y * y) * resolution_;
-      if (g.distance > 0)
+
+      g.distance = std::sqrt(x * x + y * y);
+      if (g.distance > 0) {
         g.gamma = radToDeg(std::asin(robotRadAndSafe_ / g.distance));
-      else
+        g.beta = atanInPosDeg(x, y);
+      } else {
         g.gamma = 0.0;
+        g.beta = -1;
+      }
       tmp.push_back(g);
     }
     map_.push_back(tmp);
@@ -36,19 +39,29 @@ void Map::update(const std::vector<cv::Point2d> &points,
       map_[i][j].cost = costs::FREE;
     }
   }
-  // map_[robotPos_][robotPos_].cost = costs::ROBOT;
   for (int i = 0; i < points.size(); i++) {
     int x = robotPos_ - std::round(points[i].x / (double)resolution_);
     int y = robotPos_ - std::round(-points[i].y / (double)resolution_);
-    map_[x][y].cost++;
+    if (x >= 0 && x < size_ && y >= 0 && y < size_)
+      map_[x][y].cost++;
   }
+  drawCircle(target);
+  std::cout << "Rob " << robotRadAndSafe_ << "\n";
+}
 
-  /*int x = robotPos_ - std::round(target.x * 100 / (double)resolution_);
-  int y = robotPos_ -
-          std::round(target.x * 100 * std::tan(target.y) / (double)resolution_);
-  if (x >= 0 && y >= 0)
-    map_[x][y].cost = 0;*/
-  // std::cout << map_.size() << "\n";
+void Map::drawCircle(const cv::Point2d &target) {
+  int x = robotPos_ - std::round(target.x * 100.0 / (double)resolution_);
+  int y = robotPos_ - std::round(-target.x * 100.0 * std::tan(target.y) /
+                                 (double)resolution_);
+  for (int i = std::max(x - TARGET_RADIUS, 0);
+       i <= std::min(x + TARGET_RADIUS, size_); i++) {
+    for (int j = std::max(y - TARGET_RADIUS, 0);
+         j < std::min(y + TARGET_RADIUS, size_); j++) {
+      if ((x - i) * (x - i) + (y - j) * (y - j) <=
+          TARGET_RADIUS * TARGET_RADIUS)
+        map_[i][j].cost = costs::FREE;
+    }
+  }
 }
 
 void Map::show() {

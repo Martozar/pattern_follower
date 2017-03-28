@@ -21,11 +21,17 @@ double atanInPosDeg(const double &x, const double &y) {
 
 double degCoordToRadCoord(const double &angleInDeg) {
   double angleInRad = degToRad(angleInDeg);
-  angleInRad -= angleInRad > 3.0 * M_PI / 2.0 ? 5.0 * M_PI / 2.0 : M_PI / 2.0;
+  if (angleInRad > 3.0 * M_PI / 2.0)
+    angleInRad = 5.0 * M_PI / 2.0 - angleInRad;
+  else
+    angleInRad = M_PI / 2.0 - angleInRad;
   return angleInRad;
 }
 double radCoordToDegCoord(const double &angleInRad) {
   double angleInDeg = radToDeg(angleInRad);
-  angleInDeg += angleInDeg < -90.0 ? 450.0 : 90.0;
+  if (angleInDeg < -90)
+    angleInDeg = 450.0 - angleInDeg;
+  else
+    angleInDeg = 90.0 - angleInDeg;
   return angleInDeg;
 }

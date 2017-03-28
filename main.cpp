@@ -29,14 +29,6 @@ int main(int argc, char **argv) {
   std::vector<Vec4i> hierarchy;
   std::vector<Point2f> vertices;
 
-  std::unique_ptr<Robot> r;
-  if (simulation)
-    r = std::make_unique<Robot>(cv::Point2d(80.0, 0.0), MAX_VEL_SIM,
-                                MAX_ANG_VEL_SIM, ZRYCHLENI_SIM);
-  else
-    r = std::make_unique<Robot>(cv::Point2d(80.0, 0.0), MAX_VEL_REAL,
-                                MAX_ANG_VEL_REAL, ZRYCHLENI_REAL, IP, port);
-
   CCameraCalibration calibrator;
 
   calibrator.readFromFile(camera_file);
@@ -48,14 +40,14 @@ int main(int argc, char **argv) {
   double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
   Camera camera(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155);
   Measurement measurement(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, fovx);
-  KalmanFilter_ kf(80.0, 0.0);
 
   double angle = 0.0;
   double dist = 80.0;
-  RobotControl rc(cv::Point2d(1.0, 1.0), 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+  KalmanFilter_ kf(dist, angle);
+  RobotControl rc(cv::Point2d(dist, angle), 1.0, simulation);
 
   while (true) {
-    kf.prediction(0.0, 0.0);
+    kf.prediction();
     if (camera.proceed(angle, dist)) {
       kf.update(dist, angle);
     } else {
@@ -64,7 +56,8 @@ int main(int argc, char **argv) {
     }
 
     if (!simulation) {
-      r->move(angle, dist);
+      rc.calculateRobotSpeeds(std::vector<cv::Point2d>(),
+                              cv::Point2d(dist, angle));
     }
     if (waitKey(50) >= 0)
       break;

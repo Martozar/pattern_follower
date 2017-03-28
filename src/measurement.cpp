@@ -34,7 +34,7 @@ double Measurement::angle(const std::vector<Point2f> &vertices) const {
   Moments mu = moments(vertices, false);
   Point2f mc = Point2f(mu.m10 / mu.m00, mu.m01 / mu.m00);
 
-  return (mc.x - center_) * anglePerPixel_;
+  return (center_ - mc.x) * anglePerPixel_;
 }
 
 double Measurement::distance(const std::vector<Point2f> &vertices) const {

@@ -6,7 +6,7 @@
 #include <tuple>
 #include <unistd.h>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 
 #include <pattern_follower/arucodetector.h>
 #include <pattern_follower/cam_calibration.h>
@@ -42,8 +42,5 @@
 #define ANGLE_KP 3.0
 #define ANGLE_KI 0.0
 #define ANGLE_KD 1.0
-
-char *IP = "172.43.50.193";
-int port = 50004;
 
 // using namespace cv;
