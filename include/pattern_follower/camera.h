@@ -15,12 +15,8 @@ public:
   Camera();
 
   Camera(const int &frameSize, const double &patternWidthCm,
-         const int &distance, const int &patternWidthPix);
-
-  Camera(const int &frameSize, const double &patternWidthCm,
          const int &distance, const int &patternWidthPix,
-         const Mat &cameraMatrix, const Mat &distortions,
-         const detectorType &detType);
+         const detectorType &detType = detectorType::PF_ARUCO);
 
   bool proceed(double &angle, double &distance);
 

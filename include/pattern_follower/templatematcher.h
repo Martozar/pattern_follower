@@ -19,7 +19,6 @@ using namespace cv;
 class TemplateMatcher : public Detector {
 public:
   TemplateMatcher();
-  TemplateMatcher(const Mat &cameraMatrix, const Mat &distortions);
 
   virtual void detect(Mat &frame, std::vector<std::vector<Point2f>> &corners,
                       std::vector<int> &ids) override;
@@ -39,7 +38,6 @@ private:
   double confThreshold_;
   std::vector<Mat> library_;
   std::unique_ptr<RoiDetector> roiDetector_;
-  Mat distortions_, cameraMatrix_;
 
   bool identifyPattern(const Mat &src, patInfo &out);
   double correlation(Mat &image_1, Mat &image_2);

@@ -20,12 +20,10 @@ public:
 
 protected:
 private:
-  int normSize, blockSize;
-  double threshAdapt;
+  int normSize;
   std::vector<Point2f> norm2dPRS;
   std::unique_ptr<ContourFinder> contourFinder;
 
-  void binarize(const Mat &src, Mat &image_gray, Mat &dst);
   void normalizePattern(const Mat &src, const std::vector<Point2f> &roi,
                         Rect &rec, Mat &dst);
 };

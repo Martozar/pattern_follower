@@ -2,27 +2,15 @@
 #include <pattern_follower/roidetector.h>
 
 RoiDetector::RoiDetector(const double &_threshAdapt, const int &_blockSize,
-                         const int &_normSize)
-    : contourFinder() {
-  threshAdapt = _threshAdapt;
-  blockSize = _blockSize;
+                         const int &_normSize) {
+  contourFinder = std::unique_ptr<ContourFinder>(
+      new ContourFinder(_threshAdapt, _blockSize));
+  std::cout << "ahoj\n";
   normSize = _normSize;
   norm2dPRS.push_back(Point2f(0, 0));
   norm2dPRS.push_back(Point2f(normSize - 1, 0));
   norm2dPRS.push_back(Point2f(normSize - 1, normSize - 1));
   norm2dPRS.push_back(Point2f(0, normSize - 1));
-}
-
-void RoiDetector::binarize(const Mat &src, Mat &image_gray, Mat &dst) {
-  if (src.channels() == 3)
-    cvtColor(src, image_gray, CV_BGR2GRAY);
-  else
-    src.copyTo(image_gray);
-
-  adaptiveThreshold(image_gray, dst, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C,
-                    CV_THRESH_BINARY_INV, blockSize, threshAdapt);
-
-  dilate(dst, dst, Mat());
 }
 
 void RoiDetector::normalizePattern(const Mat &src,
@@ -44,12 +32,12 @@ void RoiDetector::detectROI(const Mat &frame,
   Mat grayImage, binaryImage;
   std::vector<std::vector<Point>> contours;
   std::vector<Vec4i> hierarchy;
-
   contourFinder->binarize(frame, grayImage, binaryImage);
+
   contourFinder->contours(binaryImage, contours, hierarchy);
 
   for (int i = 0; i < contours.size(); i++) {
-    /* code */
+
     int vertex = -1;
     std::vector<Point> contour = contours[i];
     std::vector<Point2f> contourApprox;
@@ -91,7 +79,6 @@ void RoiDetector::detectROI(const Mat &frame,
     refinedVertices.push_back(contourApprox);
 
     Rect box(pMinX, pMinY, pMaxX - pMinX + 1, pMaxY - pMinY + 1);
-    imshow("q", frame(box));
     for (unsigned int j = 0; j < 4; j++) {
       roi2DPts.push_back(
           Point2f(refinedVertices.back()[(4 + vertex - j) % 4].x - pMinX,

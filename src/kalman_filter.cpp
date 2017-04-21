@@ -16,16 +16,13 @@ KalmanFilter_::KalmanFilter_(const double &init_x, const double &init_y) {
   I = cv::Mat::eye(4, 4, CV_64FC1);
   x = (cv::Mat_<double>(4, 1) << init_x, init_y, 0.0, 0.0);
   Q = cv::Mat::eye(4, 4, CV_64FC1) * 1e-2;
-  std::cout << Q << "\n";
   B = (cv::Mat_<double>(4, 4) << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
        1) *
-      1e-3;
+      1e-100;
 
-  std::cout << B << "\n";
   lastUpdate = std::chrono::steady_clock::now();
 }
 
-// TODO: add robot change position to prediction
 void KalmanFilter_::prediction() {
   auto now = std::chrono::steady_clock::now();
   std::chrono::duration<double> diff = now - lastUpdate;

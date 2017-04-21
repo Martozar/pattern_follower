@@ -1,17 +1,11 @@
 #include <pattern_follower/templatematcher.h>
 
-TemplateMatcher::TemplateMatcher() : roiDetector_() {
-  loadImages("../patterns/*.png", NORM_PATTERN_SIZE, library_);
+TemplateMatcher::TemplateMatcher() {
+  roiDetector_ = std::unique_ptr<RoiDetector>(new RoiDetector);
+  loadImages("/home/michail/pattern_follower/patterns/*.png", NORM_PATTERN_SIZE,
+             library_);
   confThreshold_ = CONF_TRESH;
   normSize_ = NORM_PATTERN_SIZE;
-}
-
-TemplateMatcher::TemplateMatcher(const Mat &cameraMatrix,
-                                 const Mat &distortions)
-    : TemplateMatcher() {
-
-  cameraMatrix_ = cameraMatrix;
-  distortions_ = distortions;
 }
 
 bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
@@ -21,15 +15,17 @@ bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
   src.copyTo(copy);
   Mat inter = copy(Range(normSize_ / 4, 3 * normSize_ / 4),
                    Range(normSize_ / 4, 3 * normSize_ / 4));
-
+  imshow("src", inter);
+  imshow("im", library_[0]);
   out.maxCor = -1.0;
 
   for (unsigned int i = 0; i < library_.size(); i++) {
 
     for (unsigned int j = 0; j < 4; j++) {
       correlation = this->correlation(inter, library_[i]);
-      // std::cout << correlation << "\n";
+      std::cout << "cor " << correlation << "\n";
       if (correlation > out.maxCor) {
+
         out.maxCor = correlation;
         out.index = i + 1;
         if (out.maxCor > confThreshold_) {
@@ -51,10 +47,8 @@ void TemplateMatcher::detect(Mat &frame,
   std::vector<Mat> ROI;
 
   roiDetector_->detectROI(frame, refinedVertices, ROI);
-
   for (unsigned int i = 0; i < ROI.size(); i++) {
     patInfo out;
-    imshow("roi", ROI[i]);
     if (identifyPattern(ROI[i], out)) {
       corners.push_back(refinedVertices[i]);
       if (out.ori != 0) {

@@ -1,0 +1,16 @@
+"/home/michail/build/pattern_follower":
+	path: "/home/michail/pattern_follower/build/pattern_follower"
+	cwd: "/home/michail/pattern_follower/build"
+
+"build/pattern_follower":
+	path: "build/pattern_follower"
+	cwd: "build"
+
+"build/pattern_follower 2":
+	path: "build/pattern_follower"
+	args: ["-s"]
+	cwd: "build"
+
+"build/pattern_follower 3":
+	path: "build/pattern_follower"
+	cwd: "build"

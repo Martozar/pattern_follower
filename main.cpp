@@ -1,6 +1,18 @@
 #include "opencv2/features2d/features2d.hpp"
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
 #include <pattern_follower/includes.h>
+#include <queue>
+#include <thread>
 #include <time.h>
+
+class Application {
+  std::mutex mx;
+  std::condition_variable cv;
+  std::condition_variable pv;
+  std::queue<int> q;
+};
 
 int main(int argc, char **argv) {
   Parser p(argc, argv);
@@ -38,7 +50,8 @@ int main(int argc, char **argv) {
   distCoeffs = calibrator.distortionCoefficients;
 
   double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
-  Camera camera(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155);
+  Camera camera(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155,
+                detectorType::PF_TEMPLATE);
   Measurement measurement(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, fovx);
 
   double angle = 0.0;
