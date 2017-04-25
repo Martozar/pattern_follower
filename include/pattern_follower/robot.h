@@ -13,20 +13,20 @@
 #include <pattern_follower/rcm.h>
 #include <string>
 
-#define DIST_KP 5.0
-#define DIST_KI 0.0
-#define DIST_KD 1.0
-#define DIST_EPS 0.1
+const double DIST_KP = 5.0;
+const double DIST_KI = 0.0;
+const double DIST_KD = 1.0;
+const double DIST_EPS = 0.1;
 
-#define ANGLE_KP 3.0
-#define ANGLE_KI 0.0
-#define ANGLE_KD 1.0
-#define ANGLE_EPS 0.035
+const double ANGLE_KP = 3.0;
+const double ANGLE_KI = 0.0;
+const double ANGLE_KD = 1.0;
+const double ANGLE_EPS = 0.035;
 
-#define ACCELERATION 0.1
-#define MAX_SPEED 2.5
-#define RADIUS 0.1
-#define WHEEL_RADIUS 0.04
+const double ACCELERATION = 0.1;
+const double MAX_SPEED = 2.5;
+const double RADIUS = 0.1;
+const double WHEEL_RADIUS = 0.04;
 
 class Robot {
 public:
@@ -69,12 +69,13 @@ public:
   void move_simulation(cv::Mat &frame, const double &angle,
                        const double &distance);
 
-  double prevPosLeft_, prevPosRight_;
+  double prevPosLeft_{0.0}, prevPosRight_{0.0};
 
 protected:
 private:
-  double radius_, maxVel_, maxAngVel_, velL_, velR_, vel_, angVel_, h_, x_, y_,
-      acceleration_, distance_, angle_, wheelRad_;
+  double radius_, maxVel_, maxAngVel_, acceleration_, distance_, angle_,
+      wheelRad_, velL_{0.0}, velR_{0.0}, vel_{0.0}, angVel_{0.0}, h_{0.0},
+      x_{0.0}, y_{0.0};
   bool simulation_;
   std::unique_ptr<PID> angularVelControl_, velControl_;
   RCM rcm_;

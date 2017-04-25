@@ -1,19 +1,14 @@
 
 #include <pattern_follower/camera.h>
 #include <time.h> /* clock_t, clock, CLOCKS_PER_SEC */
-Camera::Camera() : cap_(0) {}
 
 Camera::Camera(const int &frameSize, const double &patternWidthCm,
                const int &distance, const int &patternWidthPix,
-               const detectorType &detType)
-    : Camera() {
-
-  /*cap.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-  cap.set(CV_CAP_PROP_FRAME_HEIGHT, 720);*/
-
+               const detectorType &detType, const int &port) {
+  cap_(port);
   measurement_ = std::unique_ptr<Measurement>(
       new Measurement(frameSize, patternWidthCm, distance, patternWidthPix));
-
+  kalmanFilter_ = std::unique_ptr<KalmanFilter_>();
   if (detType == detectorType::PF_TEMPLATE) {
     detector_ = std::unique_ptr<Detector>(new TemplateMatcher);
   } else {

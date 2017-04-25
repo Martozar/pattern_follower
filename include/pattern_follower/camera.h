@@ -6,17 +6,18 @@
 #include <pattern_follower/cam_calibration.h>
 #include <pattern_follower/camera_calibration.h>
 #include <pattern_follower/contourfinder.h>
+#include <pattern_follower/kalman_filter.h>
 #include <pattern_follower/measurement.h>
 #include <pattern_follower/roidetector.h>
 #include <pattern_follower/templatematcher.h>
 
+const int PORT = 0;
 class Camera {
 public:
-  Camera();
-
   Camera(const int &frameSize, const double &patternWidthCm,
          const int &distance, const int &patternWidthPix,
-         const detectorType &detType = detectorType::PF_ARUCO);
+         const detectorType &detType = detectorType::PF_ARUCO,
+         const int &port = PORT);
 
   bool proceed(double &angle, double &distance);
 
@@ -25,6 +26,7 @@ public:
 private:
   std::unique_ptr<Measurement> measurement_;
   std::unique_ptr<Detector> detector_;
+  std::unique_ptr<KalmanFilter_> kalmanFilter_;
   cv::VideoCapture cap_;
 };
 #endif

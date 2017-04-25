@@ -11,9 +11,8 @@ using namespace cv;
 
 class RoiDetector {
 public:
-  RoiDetector(const double &_threshAdapt = 5, const int &_blockSize = 45,
-              const int &_normSize = 80);
-  virtual ~RoiDetector(){};
+  RoiDetector(const double &_threshAdapt, const int &_blockSize,
+              const int &_normSize);
   void detectROI(const Mat &frame,
                  std::vector<std::vector<Point2f>> &refinedVertices,
                  std::vector<Mat> &regionsOfInterest);

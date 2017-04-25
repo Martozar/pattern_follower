@@ -7,13 +7,6 @@
 #include <thread>
 #include <time.h>
 
-class Application {
-  std::mutex mx;
-  std::condition_variable cv;
-  std::condition_variable pv;
-  std::queue<int> q;
-};
-
 int main(int argc, char **argv) {
   Parser p(argc, argv);
   p.about("Application name v1.0.0\n");
@@ -52,11 +45,8 @@ int main(int argc, char **argv) {
   double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
   Camera camera(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155,
                 detectorType::PF_TEMPLATE);
-  Measurement measurement(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155, fovx);
 
   double angle = 0.0;
-  double dist = 80.0;
-  KalmanFilter_ kf(dist, angle);
   RobotControl rc(cv::Point2d(dist, angle), 1.0, simulation);
 
   while (true) {

@@ -23,7 +23,7 @@ public:
 
 private:
   int alpha_, bins_, max_, min_, maxAngle_, minAngle_;
-  double densityA_, densityB_, threshLow_, threshHigh_, robRadAndSafety_;
+  double densityA_, densityB_, threshLow_, threshHigh_;
   std::vector<int> binDensities_;
   std::vector<double> magnitude_;
 

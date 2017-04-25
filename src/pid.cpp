@@ -1,19 +1,8 @@
 #include <chrono>
 #include <pattern_follower/pid.h>
 
-PID::PID() {
-  maxOut_ = 0;
-  minOut_ = 0;
-  previousError_ = 0;
-  integral_ = 0;
-  privPresatOut_ = 0;
-  privOut_ = 0;
-  lastUpdate_ = std::chrono::steady_clock::now();
-}
-
 PID::PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
-         const double &max, const double &min, const double &eps)
-    : PID() {
+         const double &max, const double &min, const double &eps) {
   Kp_ = Kp;
   Ki_ = Ki;
   Kd_ = Kd;
@@ -21,6 +10,7 @@ PID::PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
   maxOut_ = max;
   minOut_ = min;
   eps_ = eps;
+  lastUpdate_ = std::chrono::steady_clock::now();
 };
 double PID::calculate(const double &setPoint, const double &systemOutput) {
   double error = setPoint - systemOutput;

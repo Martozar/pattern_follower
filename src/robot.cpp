@@ -1,15 +1,6 @@
 #include <pattern_follower/robot.h>
 
 Robot::Robot() {
-  x_ = 0.0;
-  y_ = 0.0;
-  h_ = 0.0;
-  velL_ = 0.0;
-  velR_ = 0.0;
-  vel_ = 0.0;
-  angVel_ = 0.0;
-  prevPosLeft_ = 0.0;
-  prevPosRight_ = 0.0;
   wheelRad_ = WHEEL_RADIUS;
   radius_ = RADIUS;
   maxVel_ = MAX_SPEED;

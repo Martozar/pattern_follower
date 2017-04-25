@@ -9,8 +9,6 @@ using namespace cv;
 
 class Measurement {
 public:
-  Measurement();
-
   Measurement(const int &frameSize, const double &patternWidthCm,
               const int &distance, const int &pattern_widthPix);
 

@@ -8,6 +8,5 @@ double degToRad(const double &angleInDeg, const bool &positiveOnly = false);
 double atanInPosDeg(const double &x, const double &y);
 double degCoordToRadCoord(const double &angleInDeg);
 double radCoordToDegCoord(const double &angleInRad);
-int mod(const int &x, const int &y);
 
 #endif

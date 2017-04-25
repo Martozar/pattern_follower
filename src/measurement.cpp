@@ -1,15 +1,7 @@
 #include <pattern_follower/measurement.h>
 
-Measurement::Measurement() {
-  center_ = 0;
-  patternWidth_ = 0;
-  focalLength_ = 0;
-  anglePerPixel_ = 0;
-}
-
 Measurement::Measurement(const int &frameSize, const double &patternWidthCm,
-                         const int &distance, const int &patternWidthPix)
-    : Measurement() {
+                         const int &distance, const int &patternWidthPix) {
   center_ = frameSize / 2;
   patternWidth_ = patternWidthCm;
   focalLength_ =
