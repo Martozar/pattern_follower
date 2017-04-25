@@ -1,14 +1,11 @@
 #include <pattern_follower/templatematcher.h>
 
-TemplateMatcher::TemplateMatcher(const double &confThreshold,
-                                 const int &normSize, const cv::String &path,
-                                 const double &adaptThreshold,
-                                 const int &blockSize) {
+TemplateMatcher::TemplateMatcher(const FileNode &fn) {
+  confThreshold_ = fn["conf_threshold"];
+  normSize_ = fn["pattern_width_mm"];
   roiDetector_ = std::unique_ptr<RoiDetector>(
-      new RoiDetector(adaptThreshold, blockSize, normSize));
-  loadImages(path, normSize, library_);
-  confThreshold_ = confThreshold;
-  normSize_ = normSize;
+      new RoiDetector(fn["adapt_threshold"], fn["block_size"], normSize_));
+  loadImages(fn["path"], normSize_, library_);
 }
 
 bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {

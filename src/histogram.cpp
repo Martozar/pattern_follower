@@ -1,25 +1,24 @@
 #include <pattern_follower/histogram.h>
 
-Histogram::Histogram(const double &densityB, const int &robotPos,
-                     const int &alpha, const int &histRadius) {
-  alpha_ = alpha;
+Histogram(const cv::FileNode &fn) {
+  alpha_ = fn["alpha"];
   // alpha is chosen so bins is int
   bins_ = 360 / alpha;
-  densityB_ = densityB;
+  densityB_ = fn["density_b"];
   // a - b*((r-1)/2) = 1
   // HOTFIX
   densityA_ =
       (double)(1.0 + densityB_ * (histRadius - 1.0) * (histRadius - 1.0) / 4.0);
   binDensities_ = std::vector<int>(bins_, 1);
   magnitude_ = std::vector<double>(bins_, 0.0);
-  threshLow_ = THRESHOLD_LOW;
-  threshHigh_ = THRESHOLD_HIGH;
-  max_ = robotPos + histRadius;
-  min_ = robotPos - histRadius;
-  maxAngle_ = 90 + SCANER_ANGLE / 2;
-  minAngle_ = (90 - SCANER_ANGLE / 2);
+  threshLow_ = fn["threshold_low"];
+  threshHigh_ = fn["threshold_high"];
+  max_ = fn["robot_pos"] + fn["histogram_size"];
+  min_ = fn["robot_pos"] - fn["histogram_size"];
+  maxAngle_ = 90 + fn["scaner_angle"] / 2;
+  minAngle_ = (90 - fn["scaner_angle"] / 2);
   minAngle_ = minAngle_ < 0 ? minAngle_ + 360 : minAngle_;
-};
+}
 
 void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
   calculateDensities(grid);

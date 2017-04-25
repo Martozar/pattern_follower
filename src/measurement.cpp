@@ -1,20 +1,23 @@
 #include <pattern_follower/measurement.h>
 
-Measurement::Measurement(const int &frameSize, const double &patternWidthCm,
-                         const int &distance, const int &patternWidthPix) {
+Measurement::Measurement(const FileNode &fn) {
+  int frameSize = (int)fn["frame_size"];
   center_ = frameSize / 2;
-  patternWidth_ = patternWidthCm;
-  focalLength_ =
-      ((double)patternWidthPix * (double)distance) / ((double)patternWidth_);
-
+  patternWidth_ = (double)fn["pattern_width_cm"];
+  double distance = (double)fn["distance"];
+  double patternWidthPix = (double)fn["patter_width_pix"];
+  focalLength_ = patternWidthPix * distance / patternWidth_;
   double fovx = 2 * atan(frameSize / (2 * focalLength_));
   anglePerPixel_ = fovx / frameSize;
 }
 
 Measurement::Measurement(const int &frameSize, const double &patternWidthCm,
                          const double &distance, const double &patternWidthPix,
-                         const double &fovx)
-    : Measurement(frameSize, patternWidthCm, distance, patternWidthPix) {
+                         const double &fovx) {
+  center_ = frameSize / 2;
+  patternWidth_ = patternWidthCm;
+  focalLength_ =
+      ((double)patternWidthPix * (double)distance) / ((double)patternWidth_);
   anglePerPixel_ = fovx / frameSize;
 }
 

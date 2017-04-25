@@ -1,17 +1,17 @@
 #include <chrono>
 #include <pattern_follower/pid.h>
 
-PID::PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
-         const double &max, const double &min, const double &eps) {
-  Kp_ = Kp;
-  Ki_ = Ki;
-  Kd_ = Kd;
-  Ka_ = Ka;
+PID::PID(const cv::FileNode &fn, const double &max, const double &min) {
+  Kp_ = fn["kp"];
+  Ki_ = fn["ki"];
+  Kd_ = fn["kd"];
+  Ka_ = fn["ka"];
+  eps_ = fn["eps"];
   maxOut_ = max;
   minOut_ = min;
-  eps_ = eps;
   lastUpdate_ = std::chrono::steady_clock::now();
-};
+}
+
 double PID::calculate(const double &setPoint, const double &systemOutput) {
   double error = setPoint - systemOutput;
 

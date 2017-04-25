@@ -13,8 +13,7 @@
 class Histogram {
 
 public:
-  Histogram(const double &densityB, const int &robotPos, const int &alpha = 5,
-            const int &histRadius = 10);
+  Histogram(const cv::FileNode &fn);
 
   void update(const std::vector<std::vector<Map::Grid>> &grid);
 

@@ -2,17 +2,15 @@
 #include <pattern_follower/camera.h>
 #include <time.h> /* clock_t, clock, CLOCKS_PER_SEC */
 
-Camera::Camera(const int &frameSize, const double &patternWidthCm,
-               const int &distance, const int &patternWidthPix,
-               const detectorType &detType, const int &port) {
-  cap_(port);
-  measurement_ = std::unique_ptr<Measurement>(
-      new Measurement(frameSize, patternWidthCm, distance, patternWidthPix));
-  kalmanFilter_ = std::unique_ptr<KalmanFilter_>();
-  if (detType == detectorType::PF_TEMPLATE) {
-    detector_ = std::unique_ptr<Detector>(new TemplateMatcher);
-  } else {
+Camera::Camera(const FileNode &fn) {
+  cap_ = cv::VideoCapture((int)fn["port"]);
+  measurement_ =
+      std::unique_ptr<Measurement>(new Measurement(fn["Measurement"]));
+  if (fn["detector_type"] == "aruco") {
     detector_ = std::unique_ptr<Detector>(new ArucoDetector);
+  } else {
+    detector_ =
+        std::unique_ptr<Detector>(new TemplateMatcher(fn["TemplateMatcher"]));
   }
 }
 

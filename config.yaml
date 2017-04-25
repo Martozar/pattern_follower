@@ -1,44 +1,59 @@
+%YAML:1.0s
 Application:
-  simulation: true
+   simulation: 1
 Camera:
-  port: 0
-  frame_size: 640
-  pattern_width_cm: 8
-  distance: 30
-  patter_width_pix: 155
-  detectory_type: "aruco"
+   port: 0
+   detector_type: "aruco"
+   Measurement:
+      frame_size: 640
+      pattern_width_cm: 8
+      distance: 30
+      patter_width_pix: 155
+   TemplateMatcher:
+      conf_threshold: 0.75
+      path: "/home/michail/pattern_follower/patterns/*.png"
+      pattern_width_mm: 80
+      adapt_threshold: 5
+      block_size: 45
 RobotControl:
-  Robot:
-    wheel_radius: 0.04
-    radius: 0.1
-    max_forward_speed: 2.5
-    max_angular_speed: 2.5
-    acceleration: 0.1
-    dist_kp: 5.0
-    dist_ki: 0.0
-    dist_kd: 1.0
-    dist_eps: 0.1
-    angle_kp: 3.0
-    angle_ki: 0.0
-    angle_kd: 1.0
-    angle_eps: 0.035
-    set_point_x: 1.0
-    set_point_y: 0.0
-  VFH:
-    Map:
-      map_size: 81
-      resolution: 5
-      safety: 0.0
-      cell_robot_radius: 2
-      target_radius: 2
-    Histogram:
-      histogram_size: 40
-      alpha: 2
-      threshold_low: 250.0
-      threshold_high: 350.0
-      scaner_angle: 220.0
-      density_b:
-    max_narrow_size: 16
-    mu_1: 5
-    mu_2: 2
-    mu_3: 2
+   Robot:
+      wheel_radius: 0.04
+      radius: 0.1
+      max_forward_speed: 2.5
+      max_angular_speed: 2.5
+      acceleration: 0.1
+      set_point_distance: 1.0
+      set_point_angle: 0.0
+      IP: "172.43.50.193"
+      port: 50004
+      Distance_PID:
+         kp: 5.0
+         ki: 0.0
+         kd: 1.0
+         ka: 0.0
+         eps: 0.1
+      Angle_PID:
+         kp: 3.0
+         ki: 0.0
+         kd: 1.0
+         ka: 0.0
+         eps: 0.035
+   VFH:
+      max_narrow_size: 16
+      mu_1: 5
+      mu_2: 2
+      mu_3: 2
+      Map:
+         map_size: 81
+         resolution: 5
+         safety: 0.0
+         cell_robot_radius: 2.0
+         target_radius: 2
+      Histogram:
+         robot_pos: 41
+         histogram_size: 40
+         alpha: 2
+         threshold_low: 250.0
+         threshold_high: 350.0
+         scaner_angle: 220.0
+         density_b: 0.1

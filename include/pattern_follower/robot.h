@@ -30,8 +30,7 @@ const double WHEEL_RADIUS = 0.04;
 
 class Robot {
 public:
-  Robot();
-  Robot(const cv::Point2d &setPoint, bool simulation = true);
+  Robot(const FileNode &fn, const bool &simulation = true);
 
   static void data_callback(CPositionMessage *pos) { printf("mes"); }
 

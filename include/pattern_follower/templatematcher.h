@@ -13,19 +13,9 @@
 
 using namespace cv;
 
-const int NORM_PATTERN_SIZE = 80;
-const int BLOCK_SIZE = 45;
-const double CONF_TRESH = 0.75;
-const double ADAPT_THRESHOLD = 5;
-
 class TemplateMatcher : public Detector {
 public:
-  TemplateMatcher(
-      const double &confThreshold = CONF_TRESH,
-      const int &normSize = NORM_PATTERN_SIZE,
-      const cv::String &path = "/home/michail/pattern_follower/patterns/*.png",
-      const double &adaptThreshold = ADAPT_THRESHOLD,
-      const int &blockSize = BLOCK_SIZE);
+  TemplateMatcher(const FileNode &fn);
 
   virtual void detect(Mat &frame, std::vector<std::vector<Point2f>> &corners,
                       std::vector<int> &ids) override;

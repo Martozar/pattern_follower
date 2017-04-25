@@ -8,6 +8,9 @@
 #include <time.h>
 
 int main(int argc, char **argv) {
+  FileStorage fs("/home/michail/pattern_follower/config.yaml",
+                 FileStorage::READ);
+
   Parser p(argc, argv);
   p.about("Application name v1.0.0\n");
   if (p.has("help")) {
@@ -25,6 +28,7 @@ int main(int argc, char **argv) {
   String camera_file = p.get<String>("params");
 
   Mat grayImage, binaryImage, frame;
+  Camera c1(fs["Camera"]);
 
   Mat cameraMatrix;
   Mat distCoeffs;
@@ -43,16 +47,13 @@ int main(int argc, char **argv) {
   distCoeffs = calibrator.distortionCoefficients;
 
   double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
-  Camera camera(FRAME_SIZE, NORM_PATTERN_SIZE / 100.0, 30, 155,
-                detectorType::PF_TEMPLATE);
 
   double angle = 0.0;
+  double dist = 80;
   RobotControl rc(cv::Point2d(dist, angle), 1.0, simulation);
 
-  while (true) {
-    kf.prediction();
+  /*while (true) {
     if (camera.proceed(angle, dist)) {
-      kf.update(dist, angle);
     } else {
       dist = kf.getX();
       angle = kf.getY();
@@ -64,5 +65,5 @@ int main(int argc, char **argv) {
     }
     if (waitKey(50) >= 0)
       break;
-  }
+  }*/
 }

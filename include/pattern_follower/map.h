@@ -16,8 +16,7 @@ public:
     double gamma;
   };
 
-  Map(const int &size = 21, const int &resolution = 20,
-      const double &robotRad = 1.0, const double &safety = 0.0);
+  Map(const cv::FileNode &fn);
 
   void init();
   void update(const std::vector<cv::Point2d> &points,
@@ -35,9 +34,8 @@ private:
     GOAL = 10,
     OBSTACLE = 10000
   };
-  int size_, robotPos_;
+  int size_, robotPos_, targetRadius_;
   double resolution_, robotRadAndSafe_;
-  ;
   std::vector<std::vector<Map::Grid>> map_;
 };
 

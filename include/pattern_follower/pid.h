@@ -1,14 +1,15 @@
 #ifndef PID_H
 #define PID_H
 
+#include "opencv2/core/persistence.hpp"
 #include <chrono>
 #include <fstream>
 #include <iostream>
 
 class PID {
 public:
-  PID(const double &Kp, const double &Ki, const double &Kd, const double &Ka,
-      const double &max, const double &min, const double &eps);
+  PID(const cv::FileNode &fn, const double &max, const double &min);
+
   double calculate(const double &setPoint, const double &systemOutput);
 
 protected:

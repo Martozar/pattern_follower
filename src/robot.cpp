@@ -1,32 +1,28 @@
 #include <pattern_follower/robot.h>
 
-Robot::Robot() {
-  wheelRad_ = WHEEL_RADIUS;
-  radius_ = RADIUS;
-  maxVel_ = MAX_SPEED;
-  maxAngVel_ = maxVel_;
-  acceleration_ = ACCELERATION;
-  angularVelControl_ = std::unique_ptr<PID>(new PID(
-      ANGLE_KP, ANGLE_KI, ANGLE_KD, 1.0, maxAngVel_, -maxAngVel_, ANGLE_EPS));
-  velControl_ = std::unique_ptr<PID>(
-      new PID(DIST_KP, DIST_KI, DIST_KD, 0.0, maxVel_, -maxVel_, DIST_EPS));
+Robot::Robot(const FileNode &fn, const bool &simulation) {
+  wheelRad_ = fn["wheel_radius"];
+  radius_ = fn["radius"];
+  maxVel_ = fn["max_forward_speed"];
+  maxAngVel_ = fn["max_angular_speed"];
+  acceleration_ = fn["acceleration"];
+  distance_ = fn["set_point_distance"];
+  angle_ = fn["set_point_angle"];
+  angularVelControl_ =
+      std::unique_ptr<PID>(new PID(fn["Angle_PID"], maxAngVel_, -maxAngVel_));
+  velControl_ =
+      std::unique_ptr<PID>(new PID(fn["Distance_PID"], maxVel_, -maxVel_));
   lastUpdate_ = clock();
-}
-
-Robot::Robot(const cv::Point2d &setPoint, bool simulation) : Robot() {
-  distance_ = setPoint.x;
-  angle_ = setPoint.y;
-  simulation_ = simulation;
   if (!simulation) {
     messageClient_ = std::make_unique<CMessageClient>();
     bool p[2] = {true, true};
-    messageClient_->init("172.43.50.193", 50004, p);
+    messageClient_->init(((std::string)fn["IP"]).c_str(), fn["port"], p);
     // client = std::make_unique<CPositionClient>(IP, port, data_callback);
 
     /*if (initRcm() && enableMotion())
       std::cout << "Suceed\n";*/
   }
-};
+}
 
 bool Robot::initRcm() {
   bool result = true;

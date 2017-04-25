@@ -19,6 +19,7 @@ public:
          const detectorType &detType = detectorType::PF_ARUCO,
          const int &port = PORT);
 
+  Camera(const FileNode &fn);
   bool proceed(double &angle, double &distance);
 
   bool proceed(cv::Mat &image, double &angle, double &distance);
