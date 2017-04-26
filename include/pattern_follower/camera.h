@@ -11,7 +11,6 @@
 #include <pattern_follower/roidetector.h>
 #include <pattern_follower/templatematcher.h>
 
-const int PORT = 0;
 class Camera {
 public:
   Camera(const FileNode &fn);

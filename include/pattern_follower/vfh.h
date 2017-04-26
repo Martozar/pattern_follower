@@ -8,16 +8,6 @@
 #include <pattern_follower/utils.h>
 #include <vector>
 
-#define MAP_SIZE 81
-#define RESOLUTION 5
-#define HISTOGRAM_SIZE 40
-#define ROBOT_RADIUS 2.0
-#define ALPHA 2
-#define MAX_SIZE 16
-#define MU_1 5
-#define MU_2 2
-#define MU_3 2
-
 class VFH {
 public:
   VFH(const cv::FileNode &fn);

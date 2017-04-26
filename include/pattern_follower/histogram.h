@@ -6,10 +6,6 @@
 #include <pattern_follower/utils.h>
 #include <vector>
 
-#define THRESHOLD_LOW 250.0
-#define THRESHOLD_HIGH 350.0
-#define SCANER_ANGLE 220
-
 class Histogram {
 
 public:
@@ -22,7 +18,7 @@ public:
 
 private:
   int alpha_, bins_, max_, min_, maxAngle_, minAngle_;
-  double densityA_, densityB_, threshLow_, threshHigh_;
+  double densityA_, densityB_, threshLow_, threshHigh_, scanerAngle_;
   std::vector<int> binDensities_;
   std::vector<double> magnitude_;
 

@@ -1,12 +1,12 @@
 %YAML:1.0
 Calibration:
-   matrix_path: "/host_home/pattern_follower/calibration/out_camera_data.xml"
-   param_path: "/host_home/pattern_follower/calibration/default.xml"
+   matrix_path: "/home/michail/pattern_follower/calibration/out_camera_data.xml"
+   param_path: "/home/michail/pattern_follower/calibration/default.xml"
 Application:
    simulation: 1
 Camera:
-   port: 1
-   detector_type: "template"
+   port: 0
+   detector_type: "aruco"
    Measurement:
       frame_size: 640
       pattern_width_cm: 8
@@ -14,7 +14,7 @@ Camera:
       patter_width_pix: 155
    TemplateMatcher:
       conf_threshold: 0.75
-      path: "/host_home/pattern_follower/patterns/*.png"
+      path: "/home/michail/pattern_follower/patterns/*.png"
       pattern_width_mm: 80
       adapt_threshold: 5
       block_size: 45
@@ -53,7 +53,7 @@ RobotControl:
          cell_robot_radius: 2.0
          target_radius: 2
       Histogram:
-         robot_pos: 41
+         robot_pos: 40
          histogram_size: 40
          alpha: 2
          threshold_low: 250.0

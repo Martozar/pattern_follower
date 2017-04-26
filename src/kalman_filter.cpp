@@ -39,7 +39,6 @@ void KalmanFilter_::prediction() {
   Q.at<double>(3, 1) = dt * dt / 2.0;
   Q.at<double>(3, 3) = dt / 3.0;
   x = (F - B) * x;
-  std::cout << x << "\n";
   P = F * P * F_transp + Q;
 }
 

@@ -14,10 +14,11 @@ Histogram::Histogram(const cv::FileNode &fn) {
   magnitude_ = std::vector<double>(bins_, 0.0);
   threshLow_ = fn["threshold_low"];
   threshHigh_ = fn["threshold_high"];
+  scanerAngle_ = (double)fn["scaner_angle"];
   max_ = (double)fn["robot_pos"] + (double)fn["histogram_size"];
   min_ = (double)fn["robot_pos"] - (double)fn["histogram_size"];
-  maxAngle_ = 90 + (double)fn["scaner_angle"] / 2;
-  minAngle_ = (90 - (double)fn["scaner_angle"] / 2);
+  maxAngle_ = 90 + scanerAngle_ / 2;
+  minAngle_ = (90 - scanerAngle_ / 2);
   minAngle_ = minAngle_ < 0 ? minAngle_ + 360 : minAngle_;
 }
 
@@ -27,11 +28,13 @@ void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
 
 void Histogram::calculateDensities(
     const std::vector<std::vector<Map::Grid>> &grid) {
+
   for (int bin = 0; bin < bins_; bin++) {
     int angle = bin * alpha_;
-    if ((SCANER_ANGLE <= 180 && (angle <= minAngle_ || angle >= maxAngle_)) ||
-        (SCANER_ANGLE > 180 && (angle <= minAngle_ && angle >= maxAngle_)))
+    if ((scanerAngle_ <= 180 && (angle <= minAngle_ || angle >= maxAngle_)) ||
+        (scanerAngle_ > 180 && (angle <= minAngle_ && angle >= maxAngle_)))
       continue;
+
     double magnitude = 0;
     for (int i = min_; i <= max_; i++) {
       for (int j = min_; j <= max_; j++) {

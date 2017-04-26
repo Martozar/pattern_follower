@@ -132,6 +132,7 @@ double VFH::avoidObstacle(const std::vector<cv::Point2d> &points,
                           const cv::Point2d &target, const double &curHead,
                           double &speedRatio) {
   double dist = target.y;
+
   map_->update(points, target);
   // map_->show();
   histogram_->update(map_->getMap());

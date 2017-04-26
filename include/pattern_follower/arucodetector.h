@@ -11,33 +11,22 @@ using namespace aruco;
 
 class ArucoDetector : public Detector {
 public:
-  ArucoDetector(
-      const Dictionary &dictionary = getPredefinedDictionary(DICT_4X4_100)) {
-    dictionary_ = dictionary;
-  };
+  ArucoDetector(const Ptr<Dictionary> &dictionary =
+                    getPredefinedDictionary(DICT_4X4_100));
 
-  ArucoDetector(const int &count, const int &size) {
-    dictionary_ = aruco::generateCustomDictionary(count, size);
-  }
+  ArucoDetector(const int &count, const int &size);
 
-  void draw(const int &id, const int &size, Mat &output, const int &border) {
-    aruco::drawMarker(dictionary_, id, size, output, border);
-  }
+  void draw(const int &id, const int &size, Mat &output, const int &border);
 
   virtual void detect(Mat &input, std::vector<std::vector<Point2f>> &corners,
-                      std::vector<int> &ids) override {
-    aruco::detectMarkers(input, dictionary_, corners, ids);
-  }
+                      std::vector<int> &ids) override;
 
-  void drawDetected(Mat &input, std::vector<std::vector<Point2f>> &corners,
-                    std::vector<int> &ids) override {
-    if (ids.size() > 0)
-      aruco::drawDetectedMarkers(input, corners, ids);
-  }
+  virtual void drawDetected(Mat &input,
+                            std::vector<std::vector<Point2f>> &corners,
+                            std::vector<int> &ids) override;
 
-protected:
 private:
-  Dictionary dictionary_;
+  Ptr<Dictionary> dictionary_;
 };
 
 #endif // ARUCODETECTOR_H

@@ -13,9 +13,7 @@ using namespace cv;
 class ContourFinder {
 public:
   ContourFinder(const int &_threshold = 5, const int &_blockSize = 45)
-      : threshold(_threshold), blockSize(_blockSize) {
-    std::cout << "created!\n";
-  };
+      : threshold(_threshold), blockSize(_blockSize){};
   const int getThreshold() const { return threshold; };
   void setThreshold(const int &_threshold) { threshold = _threshold; };
   void contours(const Mat &image, std::vector<std::vector<Point>> &contours,

@@ -5,7 +5,7 @@ add_definitions(-std=c++14)
 file(GLOB SOURCES src/*)
 file(GLOB HEADERS include/*)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O4 -march=native -Wfatal-errors")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O4 -march=native -Wfatal-errors -pthread -g")
 
 find_package(OpenCV REQUIRED)
 

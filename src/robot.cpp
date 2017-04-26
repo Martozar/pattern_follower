@@ -8,12 +8,13 @@ Robot::Robot(const FileNode &fn, const bool &simulation) {
   acceleration_ = fn["acceleration"];
   distance_ = fn["set_point_distance"];
   angle_ = fn["set_point_angle"];
+  simulation_ = simulation;
   angularVelControl_ =
       std::unique_ptr<PID>(new PID(fn["Angle_PID"], maxAngVel_, -maxAngVel_));
   velControl_ =
       std::unique_ptr<PID>(new PID(fn["Distance_PID"], maxVel_, -maxVel_));
   lastUpdate_ = clock();
-  if (!simulation) {
+  if (!simulation_) {
     messageClient_ = std::make_unique<CMessageClient>();
     bool p[2] = {true, true};
     messageClient_->init(((std::string)fn["IP"]).c_str(), fn["port"], p);
