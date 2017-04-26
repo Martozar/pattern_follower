@@ -3,14 +3,8 @@
 
 #include <opencv2/opencv.hpp>
 
-const cv::String keys =
-    "{help h usage ?||print this message}"
-    "{calibration calibrate calib c||run calibration}"
-    "{calibration_params cp|../calibration/default.xml|path to calibration "
-    "parameters file}"
-    "{param_path params        |../calibration/out_camera_data.xml| path to "
-    "calibration camera parameters   }"
-    "{simulation s||enable simulation}";
+const cv::String keys = "{help h usage ?||print this message}"
+                        "{config c||path to config file}";
 
 class Parser : public cv::CommandLineParser {
 public:

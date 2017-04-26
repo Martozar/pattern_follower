@@ -27,8 +27,8 @@ int main(int argc, char **argv) {
   String camera_file = p.get<String>("params");
 
   Mat grayImage, binaryImage, frame;
-  Camera c1(fs["Camera"]);
 
+  Camera c1(fs["Camera"]);
   RobotControl rc(fs["RobotControl"], (int)fs["Application"]["simulation"]);
 
   /*Mat cameraMatrix;

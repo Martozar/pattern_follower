@@ -1,4 +1,7 @@
 %YAML:1.0
+Calibration:
+   matrix_path: "/host_home/pattern_follower/calibration/out_camera_data.xml"
+   param_path: "/host_home/pattern_follower/calibration/default.xml"
 Application:
    simulation: 1
 Camera:
