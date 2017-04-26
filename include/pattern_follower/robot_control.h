@@ -6,8 +6,7 @@
 
 class RobotControl {
 public:
-  RobotControl(const cv::Point2d &setPoint, const double &densityB,
-               const double &safety = 0.0, bool simulation = true);
+  RobotControl(const cv::FileNode &fn, const bool &simualtion = true);
 
   void calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                             const cv::Point2d &target);

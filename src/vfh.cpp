@@ -1,15 +1,13 @@
 #include <iostream>
 #include <pattern_follower/vfh.h>
 
-VFH::VFH(const double &safety, const double &densityB)
-    : map_(new Map(MAP_SIZE, RESOLUTION, ROBOT_RADIUS, safety)),
-      histogram_(new Histogram(densityB, MAP_SIZE / 2, ALPHA, HISTOGRAM_SIZE)) {
-  maxSize_ = MAX_SIZE;
-  alpha_ = ALPHA;
-  mu1_ = MU_1;
-  mu2_ = MU_2;
-  mu3_ = MU_3;
-  prevOrient_ = 0.0;
+VFH::VFH(const FileNode &fn)
+    : map_(new Map(fn["Map"])), histogra(new Histogram(fn["Histogram"])) {
+  maxSize_ = fn["max_narrow_size"];
+  alpha_ = fn["Histogram"]["alpha"];
+  mu1_ = fn["mu_1"];
+  mu2_ = fn["mu_2"];
+  mu3_ = fn["mu_3"];
   bins_ = 360 / alpha_;
   map_->init();
 }

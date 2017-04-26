@@ -19,7 +19,7 @@
 
 class VFH {
 public:
-  VFH(const double &safety, const double &densityB);
+  VFH(const FileNode &fn);
 
   double avoidObstacle(const std::vector<cv::Point2d> &points,
                        const cv::Point2d &target, const double &curHead,
@@ -27,7 +27,7 @@ public:
 
 private:
   int maxSize_, alpha_, bins_;
-  double mu1_, mu2_, mu3_, prevOrient_;
+  double mu1_, mu2_, mu3_, prevOrient_{0.0};
   std::vector<std::vector<int>> candidateValleys_;
 
   std::unique_ptr<Map> map_;

@@ -14,11 +14,6 @@
 const int PORT = 0;
 class Camera {
 public:
-  Camera(const int &frameSize, const double &patternWidthCm,
-         const int &distance, const int &patternWidthPix,
-         const detectorType &detType = detectorType::PF_ARUCO,
-         const int &port = PORT);
-
   Camera(const FileNode &fn);
   bool proceed(double &angle, double &distance);
 
