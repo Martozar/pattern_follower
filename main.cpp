@@ -8,8 +8,7 @@
 #include <time.h>
 
 int main(int argc, char **argv) {
-  FileStorage fs("/home/michail/pattern_follower/config.yaml",
-                 FileStorage::READ);
+  FileStorage fs("/host_home/pattern_follower/config.yaml", FileStorage::READ);
 
   Parser p(argc, argv);
   p.about("Application name v1.0.0\n");
@@ -30,7 +29,9 @@ int main(int argc, char **argv) {
   Mat grayImage, binaryImage, frame;
   Camera c1(fs["Camera"]);
 
-  Mat cameraMatrix;
+  RobotControl rc(fs["RobotControl"], (int)fs["Application"]["simulation"]);
+
+  /*Mat cameraMatrix;
   Mat distCoeffs;
   std::vector<int> labels;
   std::vector<Point> locations, approx;
@@ -49,8 +50,7 @@ int main(int argc, char **argv) {
   double fovx = 2 * atan((FRAME_SIZE / 2 * cameraMatrix.at<double>(0)));
 
   double angle = 0.0;
-  double dist = 80;
-  RobotControl rc(fs["RobotControl"], (int)fs["Aplication"]["simulation"]);
+  double dist = 80;*/
 
   /*while (true) {
     if (camera.proceed(angle, dist)) {

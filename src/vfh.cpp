@@ -8,6 +8,7 @@ VFH::VFH(const cv::FileNode &fn)
   mu1_ = fn["mu_1"];
   mu2_ = fn["mu_2"];
   mu3_ = fn["mu_3"];
+  std::cout << mu3_ << "\n";
   bins_ = 360 / alpha_;
   map_->init();
 }

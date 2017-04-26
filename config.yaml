@@ -1,8 +1,8 @@
-%YAML:1.0s
+%YAML:1.0
 Application:
    simulation: 1
 Camera:
-   port: 0
+   port: 1
    detector_type: "template"
    Measurement:
       frame_size: 640
@@ -11,7 +11,7 @@ Camera:
       patter_width_pix: 155
    TemplateMatcher:
       conf_threshold: 0.75
-      path: "/home/michail/pattern_follower/patterns/*.png"
+      path: "/host_home/pattern_follower/patterns/*.png"
       pattern_width_mm: 80
       adapt_threshold: 5
       block_size: 45
