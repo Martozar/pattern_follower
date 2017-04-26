@@ -11,8 +11,8 @@ using namespace aruco;
 
 class ArucoDetector : public Detector {
 public:
-  ArucoDetector(const Ptr<Dictionary> &dictionary =
-                    Ptr<Dictionary>(getPredefinedDictionary(DICT_4X4_100))) {
+  ArucoDetector(
+      const Dictionary &dictionary = getPredefinedDictionary(DICT_4X4_100)) {
     dictionary_ = dictionary;
   };
 
@@ -37,7 +37,7 @@ public:
 
 protected:
 private:
-  Ptr<Dictionary> dictionary_;
+  Dictionary dictionary_;
 };
 
 #endif // ARUCODETECTOR_H

@@ -1,0 +1,2 @@
+/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir
+/host_home/pattern_follower/build/CMakeFiles/pattern_follower-main.dir

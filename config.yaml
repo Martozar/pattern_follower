@@ -3,7 +3,7 @@ Application:
    simulation: 1
 Camera:
    port: 0
-   detector_type: "aruco"
+   detector_type: "template"
    Measurement:
       frame_size: 640
       pattern_width_cm: 8

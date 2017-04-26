@@ -2,6 +2,7 @@
 #define ROIDETECTOR_H
 
 #include <iostream>
+#include <memory>
 #include <opencv2/opencv.hpp>
 #include <pattern_follower/contourfinder.h>
 #include <stdio.h>

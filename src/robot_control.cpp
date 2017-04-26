@@ -1,15 +1,9 @@
 #include <pattern_follower/robot_control.h>
 
-RobotControl::RobotControl(const cv::FileNode &fn,
-                           const bool &simualtion = true)
+RobotControl::RobotControl(const cv::FileNode &fn, const bool &simulation)
     : robot_(new Robot(fn["Robot"], simulation)), vfh_(new VFH(fn["VFH"])) {
   simulation_ = simulation;
 }
-RobotControl::RobotControl(const cv::Point2d &setPoint, const double &densityB,
-                           const double &safety, bool simulation)
-    : robot_(new Robot(setPoint)), vfh_(new VFH(safety, densityB)) {
-  simulation_ = simulation;
-};
 
 void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                                         const cv::Point2d &target) {

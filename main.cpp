@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 
   double angle = 0.0;
   double dist = 80;
-  RobotControl rc(cv::Point2d(dist, angle), 1.0, simulation);
+  RobotControl rc(fs["RobotControl"], (int)fs["Aplication"]["simulation"]);
 
   /*while (true) {
     if (camera.proceed(angle, dist)) {

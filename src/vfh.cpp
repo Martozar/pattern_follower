@@ -1,8 +1,8 @@
 #include <iostream>
 #include <pattern_follower/vfh.h>
 
-VFH::VFH(const FileNode &fn)
-    : map_(new Map(fn["Map"])), histogra(new Histogram(fn["Histogram"])) {
+VFH::VFH(const cv::FileNode &fn)
+    : map_(new Map(fn["Map"])), histogram_(new Histogram(fn["Histogram"])) {
   maxSize_ = fn["max_narrow_size"];
   alpha_ = fn["Histogram"]["alpha"];
   mu1_ = fn["mu_1"];

@@ -2,6 +2,7 @@
 #define VFH_h
 
 #include <cmath>
+#include <memory>
 #include <pattern_follower/histogram.h>
 #include <pattern_follower/map.h>
 #include <pattern_follower/utils.h>
@@ -19,7 +20,7 @@
 
 class VFH {
 public:
-  VFH(const FileNode &fn);
+  VFH(const cv::FileNode &fn);
 
   double avoidObstacle(const std::vector<cv::Point2d> &points,
                        const cv::Point2d &target, const double &curHead,

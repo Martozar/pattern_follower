@@ -1,22 +1,23 @@
 #include <pattern_follower/histogram.h>
 
-Histogram(const cv::FileNode &fn) {
+Histogram::Histogram(const cv::FileNode &fn) {
   alpha_ = fn["alpha"];
   // alpha is chosen so bins is int
-  bins_ = 360 / alpha;
+  bins_ = 360 / alpha_;
   densityB_ = fn["density_b"];
+  double histogramRadius = fn["histogram_size"];
   // a - b*((r-1)/2) = 1
   // HOTFIX
-  densityA_ =
-      (double)(1.0 + densityB_ * (histRadius - 1.0) * (histRadius - 1.0) / 4.0);
+  densityA_ = (double)(1.0 + densityB_ * (histogramRadius - 1.0) *
+                                 (histogramRadius - 1.0) / 4.0);
   binDensities_ = std::vector<int>(bins_, 1);
   magnitude_ = std::vector<double>(bins_, 0.0);
   threshLow_ = fn["threshold_low"];
   threshHigh_ = fn["threshold_high"];
-  max_ = fn["robot_pos"] + fn["histogram_size"];
-  min_ = fn["robot_pos"] - fn["histogram_size"];
-  maxAngle_ = 90 + fn["scaner_angle"] / 2;
-  minAngle_ = (90 - fn["scaner_angle"] / 2);
+  max_ = (double)fn["robot_pos"] + (double)fn["histogram_size"];
+  min_ = (double)fn["robot_pos"] - (double)fn["histogram_size"];
+  maxAngle_ = 90 + (double)fn["scaner_angle"] / 2;
+  minAngle_ = (90 - (double)fn["scaner_angle"] / 2);
   minAngle_ = minAngle_ < 0 ? minAngle_ + 360 : minAngle_;
 }
 

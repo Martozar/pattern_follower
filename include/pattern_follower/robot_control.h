@@ -6,7 +6,7 @@
 
 class RobotControl {
 public:
-  RobotControl(const cv::FileNode &fn, const bool &simualtion = true);
+  RobotControl(const cv::FileNode &fn, const bool &simulation = true);
 
   void calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                             const cv::Point2d &target);
