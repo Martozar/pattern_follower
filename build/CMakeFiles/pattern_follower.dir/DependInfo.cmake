@@ -1,47 +1,47 @@
 # The set of languages for which implicit dependencies are needed:
-set(CMAKE_DEPENDS_LANGUAGES
+SET(CMAKE_DEPENDS_LANGUAGES
   "CXX"
   )
 # The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/michail/pattern_follower/src/CMessage.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/CMessage.cc.o"
-  "/home/michail/pattern_follower/src/CMessageClient.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/CMessageClient.cc.o"
-  "/home/michail/pattern_follower/src/arucodetector.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o"
-  "/home/michail/pattern_follower/src/cam_calibration.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o"
-  "/home/michail/pattern_follower/src/camera.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/camera.cpp.o"
-  "/home/michail/pattern_follower/src/camera_calibration.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o"
-  "/home/michail/pattern_follower/src/contourfinder.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o"
-  "/home/michail/pattern_follower/src/er1robot.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/er1robot.cpp.o"
-  "/home/michail/pattern_follower/src/histogram.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/histogram.cpp.o"
-  "/home/michail/pattern_follower/src/kalman_filter.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/kalman_filter.cpp.o"
-  "/home/michail/pattern_follower/src/loader.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/loader.cpp.o"
-  "/home/michail/pattern_follower/src/map.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/map.cpp.o"
-  "/home/michail/pattern_follower/src/measurement.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/measurement.cpp.o"
-  "/home/michail/pattern_follower/src/parser.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/parser.cpp.o"
-  "/home/michail/pattern_follower/src/pid.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/pid.cpp.o"
-  "/home/michail/pattern_follower/src/pos_client.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/pos_client.cc.o"
-  "/home/michail/pattern_follower/src/rcm.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/rcm.cpp.o"
-  "/home/michail/pattern_follower/src/robot.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/robot.cpp.o"
-  "/home/michail/pattern_follower/src/robot_control.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/robot_control.cpp.o"
-  "/home/michail/pattern_follower/src/roidetector.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/roidetector.cpp.o"
-  "/home/michail/pattern_follower/src/templatematcher.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/templatematcher.cpp.o"
-  "/home/michail/pattern_follower/src/text_socket.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/text_socket.cc.o"
-  "/home/michail/pattern_follower/src/thread_util.cc" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/thread_util.cc.o"
-  "/home/michail/pattern_follower/src/utils.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/utils.cpp.o"
-  "/home/michail/pattern_follower/src/vfh.cpp" "/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/vfh.cpp.o"
+SET(CMAKE_DEPENDS_CHECK_CXX
+  "/host_home/pattern_follower/src/CMessage.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/CMessage.cc.o"
+  "/host_home/pattern_follower/src/CMessageClient.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/CMessageClient.cc.o"
+  "/host_home/pattern_follower/src/arucodetector.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/arucodetector.cpp.o"
+  "/host_home/pattern_follower/src/cam_calibration.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/cam_calibration.cc.o"
+  "/host_home/pattern_follower/src/camera.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/camera.cpp.o"
+  "/host_home/pattern_follower/src/camera_calibration.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/camera_calibration.cc.o"
+  "/host_home/pattern_follower/src/contourfinder.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/contourfinder.cpp.o"
+  "/host_home/pattern_follower/src/er1robot.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/er1robot.cpp.o"
+  "/host_home/pattern_follower/src/histogram.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/histogram.cpp.o"
+  "/host_home/pattern_follower/src/kalman_filter.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/kalman_filter.cpp.o"
+  "/host_home/pattern_follower/src/loader.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/loader.cpp.o"
+  "/host_home/pattern_follower/src/map.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/map.cpp.o"
+  "/host_home/pattern_follower/src/measurement.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/measurement.cpp.o"
+  "/host_home/pattern_follower/src/parser.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/parser.cpp.o"
+  "/host_home/pattern_follower/src/pid.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/pid.cpp.o"
+  "/host_home/pattern_follower/src/pos_client.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/pos_client.cc.o"
+  "/host_home/pattern_follower/src/rcm.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/rcm.cpp.o"
+  "/host_home/pattern_follower/src/robot.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/robot.cpp.o"
+  "/host_home/pattern_follower/src/robot_control.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/robot_control.cpp.o"
+  "/host_home/pattern_follower/src/roidetector.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/roidetector.cpp.o"
+  "/host_home/pattern_follower/src/templatematcher.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/templatematcher.cpp.o"
+  "/host_home/pattern_follower/src/text_socket.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/text_socket.cc.o"
+  "/host_home/pattern_follower/src/thread_util.cc" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/thread_util.cc.o"
+  "/host_home/pattern_follower/src/utils.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/utils.cpp.o"
+  "/host_home/pattern_follower/src/vfh.cpp" "/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir/src/vfh.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
-
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "../include"
-  "/usr/local/include"
-  "/usr/local/include/opencv"
-  )
+SET(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
+SET(CMAKE_TARGET_LINKED_INFO_FILES
   )
 
-# Fortran module output directory.
-set(CMAKE_Fortran_TARGET_MODULE_DIR "")
+# The include file search paths:
+SET(CMAKE_C_TARGET_INCLUDE_PATH
+  "../include"
+  "/usr/local/include/opencv"
+  "/usr/local/include"
+  )
+SET(CMAKE_CXX_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+SET(CMAKE_Fortran_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})
+SET(CMAKE_ASM_TARGET_INCLUDE_PATH ${CMAKE_C_TARGET_INCLUDE_PATH})

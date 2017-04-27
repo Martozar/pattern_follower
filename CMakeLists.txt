@@ -7,7 +7,7 @@ file(GLOB HEADERS include/*)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -Wall -O4 -march=native -Wfatal-errors -pthread -g")
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3.1.0 REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
