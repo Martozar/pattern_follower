@@ -1,9 +1,8 @@
 %YAML:1.0
+simulation: 1
 Calibration:
    matrix_path: "/home/michail/pattern_follower/calibration/out_camera_data.xml"
    param_path: "/home/michail/pattern_follower/calibration/default.xml"
-Application:
-   simulation: 1
 Camera:
    port: 0
    detector_type: "aruco"

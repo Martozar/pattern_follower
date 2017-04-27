@@ -2,8 +2,8 @@
 
 Application::Application(const cv::FileStorage &fs)
     : camera_(new Camera(fs["Camera"])),
-      robotControl_(new RobotControl(fs["RobotControl"],
-                                     (int)fs["Application"]["simulation"])) {}
+      robotControl_(
+          new RobotControl(fs["RobotControl"], (int)fs["simulation"])) {}
 
 Application::~Application() {
   cameraThread_.join();
