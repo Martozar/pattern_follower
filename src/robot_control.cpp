@@ -2,7 +2,7 @@
 
 RobotControl::RobotControl(const cv::FileNode &fn, const bool &simulation)
     : robot_(new Robot(fn["Robot"], simulation)), vfh_(new VFH(fn["VFH"])),
-      kf_(new KalmanFilter_) {
+      kf_(new KalmanFilter_(fn["KalmanFilter"])) {
   simulation_ = simulation;
 }
 

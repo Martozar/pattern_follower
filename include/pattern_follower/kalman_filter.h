@@ -6,7 +6,7 @@
 
 class KalmanFilter_ {
 public:
-  KalmanFilter_(const double &init_x = 0.0, const double &init_y = 0.0);
+  KalmanFilter_(const cv::FileNode &fn);
 
   void prediction();
 

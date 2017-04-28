@@ -1,2 +1,8 @@
-/host_home/pattern_follower/build/CMakeFiles/pattern_follower.dir
-/host_home/pattern_follower/build/CMakeFiles/pattern_follower-main.dir
+/home/michail/pattern_follower/build/CMakeFiles/install.dir
+/home/michail/pattern_follower/build/CMakeFiles/list_install_components.dir
+/home/michail/pattern_follower/build/CMakeFiles/rebuild_cache.dir
+/home/michail/pattern_follower/build/CMakeFiles/edit_cache.dir
+/home/michail/pattern_follower/build/CMakeFiles/pattern_follower.dir
+/home/michail/pattern_follower/build/CMakeFiles/pattern_follower-main.dir
+/home/michail/pattern_follower/build/CMakeFiles/install/local.dir
+/home/michail/pattern_follower/build/CMakeFiles/install/strip.dir

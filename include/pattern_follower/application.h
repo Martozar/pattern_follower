@@ -1,13 +1,16 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 #include <chrono>
-#include <pattern_follower/camera.hpp>
-#include <pattern_follower/robot_control.hpp>
+#include <mutex>
+#include <pattern_follower/camera.h>
+#include <pattern_follower/robot_control.h>
+
+#include <X11/Xlib.h>
 #include <thread>
 
 class Application {
 public:
-  Application(const cv::FileStorage &fs);
+  Application(const std::string &path);
   ~Application();
   void run();
 
@@ -19,6 +22,8 @@ private:
                           const bool &suceed);
   void getGlobalVariable(double &distance, double &angle, bool &suceed);
 
+  void setLaserScanerRead(const std::vector<cv::Point2d> &data);
+
   std::mutex mutex_;
 
   std::unique_ptr<Camera> camera_;
@@ -28,6 +33,7 @@ private:
   std::thread robotControlThread_;
 
   double dist_{80.0}, angle_{0.0};
-  bool suceed_{false};
+  bool suceed_{false}, done_{false};
+  std::vector<cv::Point2d> obstacles_;
 };
 #endif

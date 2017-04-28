@@ -1,9 +1,11 @@
-#include <pattern_follower/application.hpp>
+#include <pattern_follower/application.h>
 
-Application::Application(const cv::FileStorage &fs)
-    : camera_(new Camera(fs["Camera"])),
-      robotControl_(
-          new RobotControl(fs["RobotControl"], (int)fs["simulation"])) {}
+Application::Application(const std::string &path) {
+  cv::FileStorage fs{path, FileStorage::READ};
+  camera_ = std::unique_ptr<Camera>(new Camera(fs["Camera"]));
+  robotControl_ = std::unique_ptr<RobotControl>(
+      new RobotControl(fs["RobotControl"], (int)fs["simulation"]));
+}
 
 Application::~Application() {
   cameraThread_.join();
@@ -11,42 +13,47 @@ Application::~Application() {
 }
 
 void Application::run() {
-  cameraThread_ = std::thread(&Application::cam_proc, this);
-  robotControlThread_ = std::thread(&Application::rc_proc, this);
+  XInitThreads();
+  cameraThread_ = std::thread(&Application::cameraThreadProcess, this);
+  robotControlThread_ =
+      std::thread(&Application::robotControlThreadProcess, this);
 }
 
 void Application::cameraThreadProcess() {
   double dist{0.0}, angle{0.0};
   bool suceed{false};
-  while (true) {
-    suceed = camera->proceed(angle, dist);
+  while (!done_) {
+    suceed = camera_->proceed(angle, dist);
 
-    g_i_mutex.lock();
+    mutex_.lock();
     setGlobalVariables(dist, angle, suceed);
-    g_i_mutex.unlock();
-
-    if (waitKey(50) >= 0)
-      break;
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    if (waitKey(2) >= 0)
+      done_ = true;
+    mutex_.unlock();
   }
 }
 
 void Application::robotControlThreadProcess() {
   double dist{0.0}, angle{0.0};
   bool suceed{false};
-  while (true) {
-    g_i_mutex.lock();
-    getGlobalVariable(dist, angle, suceed);
-    g_i_mutex.unlock();
-    rc->calculateRobotSpeeds(std::vector<cv::Point2d>(),
-                             cv::Point2d(dist, angle), suceed);
+  while (!done_) {
 
-    if (waitKey(50) >= 0)
-      break;
-    std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    mutex_.lock();
+    getGlobalVariable(dist, angle, suceed);
+    if (waitKey(2) >= 0)
+      done_ = true;
+    mutex_.unlock();
+
+    robotControl_->calculateRobotSpeeds(obstacles_, cv::Point2d(dist, angle),
+                                        suceed);
   }
 }
 
+void Application::setLaserScanerRead(const std::vector<cv::Point2d> &data) {
+  mutex_.lock();
+  obstacles_ = data;
+  mutex_.unlock();
+}
 void Application::setGlobalVariables(const double &distance,
                                      const double &angle, const bool &suceed) {
   this->dist_ = distance;

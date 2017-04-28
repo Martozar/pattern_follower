@@ -24,7 +24,7 @@ const double ANGLE_KD = 1.0;
 const double ANGLE_EPS = 0.035;
 
 const double ACCELERATION = 0.1;
-const double MAX_SPEED = 2.5;
+const double MAX_SPEED = 10.0;
 const double RADIUS = 0.1;
 const double WHEEL_RADIUS = 0.04;
 
