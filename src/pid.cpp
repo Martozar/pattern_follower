@@ -13,7 +13,7 @@ PID::PID(const cv::FileNode &fn, const double &max, const double &min) {
 }
 
 double PID::calculate(const double &setPoint, const double &systemOutput) {
-  double error = setPoint - systemOutput;
+  double error = -setPoint + systemOutput;
 
   auto now = std::chrono::steady_clock::now();
 

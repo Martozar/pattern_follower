@@ -2,12 +2,10 @@
 #include <condition_variable>
 #include <iostream>
 #include <pattern_follower/includes.h>
-#include <queue>
 
 #include <time.h>
 
 int main(int argc, char **argv) {
-
   Parser p(argc, argv);
 
   if (p.has("help")) {

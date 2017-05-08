@@ -37,9 +37,9 @@ pattern_follower/camera.h
 -
 pattern_follower/robot_control.h
 -
-X11/Xlib.h
--
 thread
+-
+X11/Xlib.h
 -
 
 ../include/pattern_follower/arucodetector.h

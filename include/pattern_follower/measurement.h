@@ -11,7 +11,7 @@ class Measurement {
 public:
   Measurement(const FileNode &fn);
 
-  Measurement(const int &frameSize, const double &patternWidthCm,
+  Measurement(const int &frameWidth, const double &patternWidth,
               const double &distance, const double &patternWidthPix,
               const double &fovx);
 

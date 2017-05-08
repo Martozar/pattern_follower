@@ -131,6 +131,8 @@ pattern_follower: /usr/local/lib/libopencv_videoio.so.3.1.0
 pattern_follower: /usr/local/lib/libopencv_imgcodecs.so.3.1.0
 pattern_follower: /usr/local/lib/libopencv_imgproc.so.3.1.0
 pattern_follower: /usr/local/lib/libopencv_core.so.3.1.0
+pattern_follower: /usr/local/lib/libhokuyoaist.so
+pattern_follower: /usr/local/lib/libflexiport.so
 pattern_follower: CMakeFiles/pattern_follower-main.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/michail/pattern_follower/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable pattern_follower"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pattern_follower-main.dir/link.txt --verbose=$(VERBOSE)

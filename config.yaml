@@ -1,33 +1,34 @@
 %YAML:1.0
-simulation: 1
+simulation: 1 # (int) 0 if using real robot (simulator, calibration etc.), 1 instead
+laser: 0 # (int) 0 if not using laser, 1 instead (with or without real robot, but has to be connected)
 Calibration:
    matrix_path: "/home/michail/pattern_follower/calibration/out_camera_data.xml"
    param_path: "/home/michail/pattern_follower/calibration/default.xml"
 Camera:
-   port: 0
-   detector_type: "aruco"
+   port: 0 # (int) camera port
+   detector_type: "aruco" # (string) type of detector to be used: "aruco" for ArUco detektor, "template" for TemplateMatcher
    Measurement:
-      frame_size: 512
-      pattern_width_cm: 0.1
-      distance: 1.0
-      patter_width_pix: 50
+      frame_width: 640 # (int) output frame width (calibration parameter)
+      pattern_width: 8 # (int) pattern width (calibration parameter), must have the same units as distance
+      distance: 30 # (double) calibration distance from camera to pattern, must have the same units as pattern width
+      patter_width_pix: 155 # (int) pattern size in pixels at particular distance
    TemplateMatcher:
-      conf_threshold: 0.75
-      path: "/home/michail/pattern_follower/patterns/*.png"
-      pattern_width_mm: 80
+      conf_threshold: 0.75 # (double) threshold for TemplateMatcher
+      path: "/home/michail/pattern_follower/patterns/*.png" # (string) path to pattern library folder
+      pattern_width_mm: 80 # (int) normalized pattern size
       adapt_threshold: 5
       block_size: 45
 RobotControl:
    Robot:
-      wheel_radius: 0.04
-      radius: 0.1
-      max_forward_speed: 10.0
-      max_angular_speed: 10.0
-      acceleration: 1.0
-      set_point_distance: 1.0
-      set_point_angle: 0.0
-      IP: "172.43.50.193"
-      port: 50004
+      wheel_radius: 0.04 # (double) radius of used robot wheels
+      radius: 0.5 # (double) robot radius (half distance between wheels)
+      max_forward_speed: 150.0 # (double) maximal allowed forward speed
+      max_angular_speed: 2.0 # (double) maximal allowed angular speed
+      acceleration: 1.0 # (double) robot acceleration (per cent of maximal speed)
+      set_point_distance: 50.0 # (double) required distance between robot and human (must have the same units as calibrtion parameters)
+      set_point_angle: 0.0 # (double) required angular deflection between robot and human (in radians)
+      IP: "172.43.50.193" # (string) robot IP to connect
+      port: 50004 # (string) robot port to connect
       Distance_PID:
          kp: 5.0
          ki: 0.0
@@ -41,24 +42,25 @@ RobotControl:
          ka: 0.0
          eps: 0.035
    KalmanFilter:
-      x_init: 1.0
-      y_init: 0.0
+      x_init: 50.0 # (double) must have the same units as calibration parameters
+      y_init: 0.0 # (double) must have the same units as calibration parameters
+      mutting: 0.01 # (double) mutting parameter for Kalman filter to prevent computing speeds when pattern is not detected for a long time
    VFH:
-      max_narrow_size: 16
-      mu_1: 5
+      max_narrow_size: 16 # (int) maximal size of a narrow pass
+      mu_1: 5 # (int) mu1 > mu2 + mu3
       mu_2: 2
       mu_3: 2
       Map:
-         map_size: 81
-         resolution: 5
-         safety: 0.0
-         cell_robot_radius: 2.0
-         target_radius: 2
+         map_size: 81 # (int) local map size
+         resolution: 5 # (double) local map resolution (size of a cell, must have the same units as calibrtion parameters)
+         safety: 0.0 # (double)
+         cell_robot_radius: 4.5 # (double) robot radius in the map (represented by cells)
+         target_radius: 5 # (double) target radius in the map (represented by cells)
       Histogram:
-         robot_pos: 40
-         histogram_size: 40
-         alpha: 2
-         threshold_low: 250.0
-         threshold_high: 350.0
+         robot_pos: 40 # (int) robot position in local map (x=y=robot_pos=map_size/2)
+         histogram_size: 40 # (int) histogram radius around center robot cell
+         alpha: 2 # (int) size of one histogram sector (choosed so 360/alpha is int)
+         threshold_low: 250.0 # (int) threshold when binary hist. sector is 0
+         threshold_high: 350.0 # (int) threshold when binary hist. sector is 1
          scaner_angle: 220.0
          density_b: 0.1

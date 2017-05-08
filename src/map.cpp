@@ -41,12 +41,12 @@ void Map::update(const std::vector<cv::Point2d> &points,
   }
   for (int i = 0; i < points.size(); i++) {
     int x = robotPos_ - std::round(points[i].x / (double)resolution_);
-    int y = robotPos_ - std::round(-points[i].y / (double)resolution_);
+    int y = robotPos_ - std::round(points[i].y / (double)resolution_);
     if (x >= 0 && x < size_ && y >= 0 && y < size_)
       map_[x][y].cost++;
   }
   drawCircle(target);
-  std::cout << "Rob " << robotRadAndSafe_ << "\n";
+  // std::cout << "Rob " << robotRadAndSafe_ << "\n";
 }
 
 void Map::drawCircle(const cv::Point2d &target) {
@@ -62,6 +62,7 @@ void Map::drawCircle(const cv::Point2d &target) {
         map_[i][j].cost = costs::FREE;
     }
   }
+  // show();
 }
 
 void Map::show() {

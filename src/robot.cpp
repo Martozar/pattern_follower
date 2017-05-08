@@ -65,6 +65,7 @@ bool Robot::enableMotion() {
   } while (false);
   return result;
 }
+
 void Robot::updatePosition(const double &posL, const double &posR) {
   double dL = (posL - prevPosLeft_) * wheelRad_;
   double dR = (posR - prevPosRight_) * wheelRad_;
@@ -83,11 +84,11 @@ void Robot::updatePosition(const double &posL, const double &posR) {
 
 void Robot::setVel(const double &vel, const double &dt) {
   if (vel_ < vel) {
-    vel_ += acceleration_ * dt;
+    vel_ += acceleration_ * maxVel_ * dt;
     if (vel_ > vel)
       vel_ = vel;
   } else if (vel_ > vel) {
-    vel_ -= 3.0 * acceleration_ * dt;
+    vel_ -= acceleration_ * maxVel_ * dt;
     if (vel_ < vel)
       vel_ = vel;
   }
@@ -100,23 +101,22 @@ void Robot::setVel(const double &vel, const double &dt) {
 
 void Robot::setAngVel(const double &angVel, const double &dt) {
   if (angVel_ < angVel) {
-    angVel_ += acceleration_ * dt;
+    angVel_ += acceleration_ * maxAngVel_ * dt;
     if (angVel_ > angVel)
       angVel_ = angVel;
-  } else if (vel_ > angVel) {
-    angVel_ -= 3.0 * acceleration_ * dt;
+  } else if (angVel_ > angVel) {
+    angVel_ -= acceleration_ * maxAngVel_ * dt;
     if (angVel_ < angVel)
       angVel_ = angVel;
   }
   if (angVel_ > maxAngVel_)
     angVel_ = maxAngVel_;
-  else if (vel_ < -maxAngVel_)
+  else if (angVel_ < -maxAngVel_)
     angVel_ = -maxAngVel_;
 }
 
 bool Robot::move(const double &angle, const double &distance) {
-  bool ret = true;
-
+  bool ret = false;
   double new_angle = angle;
   this->normalizeAngle(new_angle);
   clock_t end = clock();
@@ -124,22 +124,58 @@ bool Robot::move(const double &angle, const double &distance) {
   calculateSpeeds(new_angle, distance, elapsed_secs);
   lastUpdate_ = end;
   if (!simulation_) {
+    CStatusMessage status;
+    if (messageClient_->checkForHeader() == 0) {
+      if (messageClient_->checkForStatus(status) == 0) {
+        double odoLeft = 0.001 * (double)status.odoLeft;
+        double odoRight = 0.001 * (double)status.odoRight;
+        if (lastOdoValid) {
+          double wheelBase = 0.45;
+          double dLeft = odoLeft - lastOdoLeft;
+          double dRight = odoRight - lastOdoRight;
+          double dForward = 0.5 * (dLeft + dRight);
+          double dHeading = (dRight - dLeft) / wheelBase;
+          h_ += dHeading;
+          normalizeAngle(h_);
+          x_ += dForward * std::cos(h_);
+          y_ += dForward * std::sin(h_);
+          lastOdoLeft = odoLeft;
+          lastOdoRight = odoRight;
+        }
+        lastOdoValid = true;
+      }
+    }
     CMessage message;
     message.type = MSG_SPEED;
-    message.forward = this->vel_;
-    message.turn = this->angVel_ * 5;
-    if (message.forward > -20 && message.forward < 20)
+    message.forward = vel_;
+    message.turn = -angVel_ * 10.0;
+
+    if (message.forward > -10 && message.forward < 10)
       message.turn = 0;
     message.flipper = 0;
     ret = messageClient_->sendMessage(message);
   }
+  cv::Mat canvas = cv::Mat::zeros(450.0, 450.0, CV_8UC3);
+  arrowedLine(canvas, cv::Point2d{225.0, 90.0},
+              cv::Point2d{225.0 - 225.0 * vel_ / maxVel_, 90.0},
+              Scalar(0, 255, 255), 5);
+  cv::putText(canvas, std::to_string(vel_), cv::Point2f(225, 70),
+              cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 255));
+  arrowedLine(canvas, cv::Point2d{225.0, 180.0},
+              cv::Point2d{225.0 - 225.0 * angVel_ / maxAngVel_, 180.0},
+              Scalar(0, 255, 255), 5);
+
+  cv::putText(canvas, std::to_string(angVel_), cv::Point2f(225, 160),
+              cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 255));
+  cv::imshow("arrows", canvas);
+
   return ret;
 }
 
 void Robot::calculateSpeeds(const double &angle, const double &distance,
                             const double &dt) {
   double angVel = angularVelControl_->calculate(angle_, angle);
-  double vel = velControl_->calculate(-distance_, -distance);
+  double vel = velControl_->calculate(distance_, distance);
   setVel(vel, dt);
   setAngVel(angVel, dt);
   setWheelSpeeds(vel, angVel);

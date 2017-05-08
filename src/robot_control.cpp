@@ -10,7 +10,7 @@ void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                                         const cv::Point2d &target,
                                         const bool &suceed) {
   cv::Point2d targetForVfh = target;
-
+  std::cout << suceed << " " << target << "\n";
   kf_->prediction();
   if (suceed) {
     cv::Point2d targetPos = calculateTargetPosition(target);
@@ -21,8 +21,8 @@ void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
 
   double ratio{1.0};
   double dir = vfh_->avoidObstacle(points, targetForVfh, robot_->getH(), ratio);
-  robot_->setMaxVel(ratio);
-  robot_->move(dir, target.x);
+  // robot_->setMaxVel(ratio);
+  robot_->move(-dir, targetForVfh.x);
 }
 
 cv::Point2d

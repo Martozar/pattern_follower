@@ -74,8 +74,8 @@ protected:
 private:
   double radius_, maxVel_, maxAngVel_, acceleration_, distance_, angle_,
       wheelRad_, velL_{0.0}, velR_{0.0}, vel_{0.0}, angVel_{0.0}, h_{0.0},
-      x_{0.0}, y_{0.0};
-  bool simulation_;
+      x_{0.0}, y_{0.0}, lastOdoLeft{0.0}, lastOdoRight{0.0};
+  bool simulation_, lastOdoValid{false};
   std::unique_ptr<PID> angularVelControl_, velControl_;
   RCM rcm_;
   std::unique_ptr<CPositionClient> client_;
