@@ -6,27 +6,26 @@ Application::Application(const std::string &path) {
   camera_ = std::unique_ptr<Camera>(new Camera(fs["Camera"]));
   robotControl_ = std::unique_ptr<RobotControl>(
       new RobotControl(fs["RobotControl"], (int)fs["simulation"]));
-  isLaser = (int)fs["laser"];
 }
 
 Application::~Application() {
   cameraThread_.join();
   robotControlThread_.join();
-  if (isLaser) {
-    dataThread_.join();
-    // laser.close();
-  }
+#ifdef WITH_LASER
+  dataThread_.join();
+  laser.close();
+#endif
 }
 
 void Application::run() {
   XInitThreads();
-  if (isLaser) {
-    /*laser.open("type=serial,device=/dev/ttyACM0,timeout=1");
-    laser.set_power(true);
-    laser.set_motor_speed(0);
-    laser.set_multiecho_mode(hokuyoaist::ME_OFF);
-    dataThread_ = std::thread(&Application::dataReadThreadProcess, this);*/
-  }
+#ifdef WITH_LASER
+  laser.open("type=serial,device=/dev/ttyACM0,timeout=1");
+  laser.set_power(true);
+  laser.set_motor_speed(0);
+  laser.set_multiecho_mode(hokuyoaist::ME_OFF);
+  dataThread_ = std::thread(&Application::dataReadThreadProcess, this);
+#endif
   cameraThread_ = std::thread(&Application::cameraThreadProcess, this);
   robotControlThread_ =
       std::thread(&Application::robotControlThreadProcess, this);
@@ -48,8 +47,9 @@ void Application::cameraThreadProcess() {
 }
 
 void Application::dataReadThreadProcess() {
+#ifdef WITH_LASER
   while (!done_) {
-    /*std::cout << "Laser\n";
+    std::cout << "Laser\n";
     hokuyoaist::ScanData data;
     laser.get_new_ranges_by_angle(data, FIRST, LAST, 1);
     mutex_.lock();
@@ -62,8 +62,9 @@ void Application::dataReadThreadProcess() {
     }
     if (waitKey(2) >= 0)
       done_ = true;
-    mutex_.unlock();*/
+    mutex_.unlock();
   }
+#endif
 }
 
 void Application::robotControlThreadProcess() {

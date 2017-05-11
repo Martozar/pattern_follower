@@ -1,3 +1,10 @@
+/**
+ * @file robot.h
+ *
+ * @author Mykhaylo Zelenskyy
+ * @version 1.0
+ */
+
 #ifndef ROBOT_H
 #define ROBOT_H
 
@@ -32,8 +39,6 @@ class Robot {
 public:
   Robot(const FileNode &fn, const bool &simulation = true);
 
-  static void data_callback(CPositionMessage *pos) { printf("mes"); }
-
   virtual ~Robot() {
     rcm_.close();
     if (client_)
@@ -58,6 +63,8 @@ public:
   const double &getVel() const { return vel_; }
 
   const double &getAngVel() const { return angVel_; }
+
+  static void data_callback(CPositionMessage *pos) { printf("mes"); }
 
   void updatePosition(const double &posL, const double &posR);
 

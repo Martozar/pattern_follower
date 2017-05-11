@@ -1,3 +1,10 @@
+/**
+ * @file vfh.h
+ *
+ * @author Mykhaylo Zelenskyy
+ * @version 1.0
+ */
+
 #ifndef VFH_H
 #define VFH_h
 
@@ -12,6 +19,17 @@ class VFH {
 public:
   VFH(const cv::FileNode &fn);
 
+  /**
+   * Caclulate new heading direction to avoid obstacles.
+   *
+   * @param [in] points data from rangefinder. WARNING: must have the units as
+   * map resolution and be in (x,y) format.
+   * @param [in] target position against camera. WARNING: must be in (d,
+   * phi) format, where d is distance from camera to marker and has the same
+   * units as map resolution, and phi is angle between camera and marker.
+   * @param [in] curHead current robot heading direction.
+   * @param [out] speedRatio speed ratio to update max robot speed.
+   */
   double avoidObstacle(const std::vector<cv::Point2d> &points,
                        const cv::Point2d &target, const double &curHead,
                        double &speedRatio);
