@@ -40,10 +40,10 @@ double Measurement::distance(const std::vector<Point2f> &vertices) const {
   Point2f d3 = vertices.at(3) - vertices.at(2);
   Point2f d4 = vertices.at(0) - vertices.at(3);
   // Calculate sizes of all marker's edges.
-  double dis1 = sqrt(d1.x * d1.x + d1.y * d1.y);
-  double dis2 = sqrt(d2.x * d2.x + d2.y * d2.y);
-  double dis3 = sqrt(d3.x * d3.x + d3.y * d3.y);
-  double dis4 = sqrt(d4.x * d4.x + d4.y * d4.y);
+  double dist1 = sqrt(d1.x * d1.x + d1.y * d1.y);
+  double dist2 = sqrt(d2.x * d2.x + d2.y * d2.y);
+  double dist3 = sqrt(d3.x * d3.x + d3.y * d3.y);
+  double dist4 = sqrt(d4.x * d4.x + d4.y * d4.y);
 
   double smallestDistance =
       std::min(std::min(dist1, dist2), std::min(dist3, dist4));
