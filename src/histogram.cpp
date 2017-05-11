@@ -26,7 +26,7 @@ void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
 }
 
 double Histogram::ratio(const int &candidate) {
-  double h = std::min(magnitude_[h], threshHigh_);
+  double h = std::min(magnitude_[candidate], threshHigh_);
   return 1.0 - h / threshHigh_;
 }
 
