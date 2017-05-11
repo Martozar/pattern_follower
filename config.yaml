@@ -20,8 +20,8 @@ Camera:
       block_size: 45
 RobotControl:
    Robot:
-      wheel_radius: 0.04 # (double) radius of used robot wheels
-      radius: 0.5 # (double) robot radius (half distance between wheels)
+      wheel_radius: 4 # (double) radius of used robot wheels
+      radius: 22.5 # (double) robot radius (half distance between wheels)
       max_forward_speed: 150.0 # (double) maximal allowed forward speed
       max_angular_speed: 2.0 # (double) maximal allowed angular speed
       acceleration: 1.0 # (double) robot acceleration (per cent of maximal speed)

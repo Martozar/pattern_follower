@@ -29,6 +29,12 @@ CMakeFiles/pattern_follower-main.dir/main.cpp.o: ../include/pattern_follower/thr
 CMakeFiles/pattern_follower-main.dir/main.cpp.o: ../include/pattern_follower/utils.h
 CMakeFiles/pattern_follower-main.dir/main.cpp.o: ../include/pattern_follower/vfh.h
 CMakeFiles/pattern_follower-main.dir/main.cpp.o: ../main.cpp
+CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/flexiport-2/flexiport/flexiport.h
+CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/hokuyoaist-3/hokuyoaist/hokuyo_errors.h
+CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/hokuyoaist-3/hokuyoaist/hokuyoaist.h
+CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/hokuyoaist-3/hokuyoaist/scan_data.h
+CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/hokuyoaist-3/hokuyoaist/sensor.h
+CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/hokuyoaist-3/hokuyoaist/sensor_info.h
 CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/opencv/cxcore.h
 CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/opencv2/aruco.hpp
 CMakeFiles/pattern_follower-main.dir/main.cpp.o: /usr/local/include/opencv2/aruco/dictionary.hpp

@@ -90,6 +90,8 @@ private:
   void setAngVel(const double &_angVel, const double &dt);
   void setWheelSpeeds(const double &linearVelocity,
                       const double &angularVelocity);
+
+  void checkStatus();
 };
 
 #endif // ROBOT_H

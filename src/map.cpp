@@ -50,9 +50,9 @@ void Map::update(const std::vector<cv::Point2d> &points,
 }
 
 void Map::drawCircle(const cv::Point2d &target) {
-  int x = robotPos_ - std::round(target.x * 100.0 / (double)resolution_);
-  int y = robotPos_ - std::round(-target.x * 100.0 * std::tan(target.y) /
-                                 (double)resolution_);
+  int x = robotPos_ - std::round(target.x / (double)resolution_);
+  int y = robotPos_ -
+          std::round(-target.x * std::tan(target.y) / (double)resolution_);
   for (int i = std::max(x - targetRadius_, 0);
        i <= std::min(x + targetRadius_, size_); i++) {
     for (int j = std::max(y - targetRadius_, 0);

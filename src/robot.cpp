@@ -66,9 +66,27 @@ bool Robot::enableMotion() {
   return result;
 }
 
+void Robot::checkStatus() {
+  CStatusMessage status;
+  if (messageClient_->checkForHeader() == 0) {
+    if (messageClient_->checkForStatus(status) == 0) {
+      double odoLeft = 0.01 * (double)status.odoLeft;
+      double odoRight = 0.01 * (double)status.odoRight;
+      updatePosition(odoLeft, odoRight);
+    }
+  }
+}
+
 void Robot::updatePosition(const double &posL, const double &posR) {
-  double dL = (posL - prevPosLeft_) * wheelRad_;
-  double dR = (posR - prevPosRight_) * wheelRad_;
+
+  double dL = (posL - prevPosLeft_);
+  double dR = (posR - prevPosRight_);
+
+  if (simulation_) {
+    dL *= wheelRad_;
+    dR *= wheelRad_;
+  }
+
   prevPosLeft_ = posL;
   prevPosRight_ = posR;
   double dDist = (dL + dR) / 2.0;
@@ -124,31 +142,10 @@ bool Robot::move(const double &angle, const double &distance) {
   calculateSpeeds(new_angle, distance, elapsed_secs);
   lastUpdate_ = end;
   if (!simulation_) {
-    CStatusMessage status;
-    if (messageClient_->checkForHeader() == 0) {
-      if (messageClient_->checkForStatus(status) == 0) {
-        double odoLeft = 0.001 * (double)status.odoLeft;
-        double odoRight = 0.001 * (double)status.odoRight;
-        if (lastOdoValid) {
-          double wheelBase = 0.45;
-          double dLeft = odoLeft - lastOdoLeft;
-          double dRight = odoRight - lastOdoRight;
-          double dForward = 0.5 * (dLeft + dRight);
-          double dHeading = (dRight - dLeft) / wheelBase;
-          h_ += dHeading;
-          normalizeAngle(h_);
-          x_ += dForward * std::cos(h_);
-          y_ += dForward * std::sin(h_);
-          lastOdoLeft = odoLeft;
-          lastOdoRight = odoRight;
-        }
-        lastOdoValid = true;
-      }
-    }
     CMessage message;
     message.type = MSG_SPEED;
     message.forward = vel_;
-    message.turn = -angVel_ * 10.0;
+    message.turn = angVel_ * 10.0;
 
     if (message.forward > -10 && message.forward < 10)
       message.turn = 0;

@@ -35,6 +35,12 @@ CMakeFiles/pattern_follower.dir/src/application.cpp.o
  ../include/pattern_follower/utils.h
  ../include/pattern_follower/vfh.h
  /home/michail/pattern_follower/src/application.cpp
+ /usr/local/include/flexiport-2/flexiport/flexiport.h
+ /usr/local/include/hokuyoaist-3/hokuyoaist/hokuyo_errors.h
+ /usr/local/include/hokuyoaist-3/hokuyoaist/hokuyoaist.h
+ /usr/local/include/hokuyoaist-3/hokuyoaist/scan_data.h
+ /usr/local/include/hokuyoaist-3/hokuyoaist/sensor.h
+ /usr/local/include/hokuyoaist-3/hokuyoaist/sensor_info.h
  /usr/local/include/opencv/cxcore.h
  /usr/local/include/opencv2/aruco.hpp
  /usr/local/include/opencv2/aruco/dictionary.hpp
