@@ -4,7 +4,7 @@
 
 ### Před instalací
 
-Pro použití tohoto programu je třeba mít nainstalovanou knihovnu OpenCV v. 3.1.
+Pro použití tohoto programu je třeba mít nainstalovanou knihovnu OpenCV v.3.1 (a novější).
 Stáhnout OpenCV lze [zde](http://opencv.org/releases.html).
 
 Zajistěte si, že máte poslední kompilátor GCC 4.9.0 (a novější) nebo Clang 3.5.0 (a novější), protože se používá standart c++14.
