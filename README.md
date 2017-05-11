@@ -44,3 +44,5 @@ Spustit program lze příkazem
 - `$ pattern_follower -c <path_to_config>`
 
 Pokud nebude přidána cesta ke konfiguračnímu souboru, bude použit soubor ze složky, ve které byla vytvořena složka build.
+
+Pro použití korelačního algoritmu, je třeba změnit v konfiguračním souboru cestu k používaným vizuálním značkám. ArUco detektor používá defaultně nastavenou knihovnu.
