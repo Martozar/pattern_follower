@@ -23,7 +23,6 @@ Application::~Application() {
 void Application::run() {
   XInitThreads();
 #ifdef WITH_LASER
-#ifdef WITH_LASER
   if (isLaser) {
     laser.open("type=serial,device=/dev/ttyACM0,timeout=1");
     laser.set_power(true);
