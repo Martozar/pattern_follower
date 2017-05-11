@@ -1,3 +1,10 @@
+/**
+ * @file histogram.h
+ *
+ * @author Mykhaylo Zelenskyy
+ * @version 1.0
+ */
+
 #ifndef HISTOGRAM_H
 #define HISTOGRAM_H
 
@@ -11,9 +18,19 @@ class Histogram {
 public:
   Histogram(const cv::FileNode &fn);
 
+  const std::vector<int> getDensities() const { return binDensities_; }
+
+  /**
+   * Update histogram based on new grid map.
+   * @param [in] grid local map.
+   */
   void update(const std::vector<std::vector<Map::Grid>> &grid);
 
-  const std::vector<int> getDensities() const { return binDensities_; }
+  /**
+   * Calculates speed ratio for choosed sector of histogram.
+   * @param candidate choosed sector of histogram
+   * @return ratio.
+   */
   double ratio(const int &candidate);
 
 private:

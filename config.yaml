@@ -14,7 +14,7 @@ Camera:
       patter_width_pix: 155 # (int) pattern size in pixels at particular distance
    TemplateMatcher:
       conf_threshold: 0.75 # (double) threshold for TemplateMatcher
-      path: "/home/michail/pattern_follower/patterns/*.png" # (string) path to pattern library folder
+      path: "../patterns/*.png" # (string) path to pattern library folder
       pattern_width_mm: 80 # (int) normalized pattern size
       adapt_threshold: 5
       block_size: 45

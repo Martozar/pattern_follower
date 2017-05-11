@@ -10,18 +10,22 @@ void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                                         const cv::Point2d &target,
                                         const bool &suceed) {
   cv::Point2d targetForVfh = target;
-  std::cout << suceed << " " << target << "\n";
   kf_->prediction();
   if (suceed) {
+    // Convert (d, phi) to (x, y)
     cv::Point2d targetPos = calculateTargetPosition(target);
     kf_->update(targetPos.x, targetPos.y);
   } else {
+    // Convert (x, y) to (d, phi)
     targetForVfh = calculateTargetDistance(kf_->getX(), kf_->getY());
   }
 
   double ratio{1.0};
+  // Choose new robot direction.
   double dir = vfh_->avoidObstacle(points, targetForVfh, robot_->getH(), ratio);
   // robot_->setMaxVel(ratio);
+
+  // Apply new robot direction and
   robot_->move(-dir, targetForVfh.x);
 }
 

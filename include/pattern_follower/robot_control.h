@@ -1,3 +1,10 @@
+/**
+ * @file robot_control.h
+ *
+ * @author Mykhaylo Zelenskyy
+ * @version 1.0
+ */
+
 #ifndef ROBOT_CONTROL_H
 #define ROBOT_CONTROL_H
 
@@ -9,10 +16,21 @@ class RobotControl {
 public:
   RobotControl(const cv::FileNode &fn, const bool &simulation = true);
 
+  std::unique_ptr<Robot> &getRobot() { return robot_; }
+
+  /**
+   * Calculates robot speeds and apply them to it.
+   *
+   * @param [in] points data from rangefinder. WARNING: must have the units as
+   * map resolution and be in (x,y) format.
+   * @param [in] target position against camera. WARNING: must be in (d, phi)
+   * format, where d is distance from camera to marker and has the same units as
+   * map resolution, and phi is angle between camera and marker.
+   * @param [in] suceed marker was successfully detekted. If TRUE KF is updated,
+   * else only prediction step is used.
+   */
   void calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
                             const cv::Point2d &target, const bool &suceed);
-
-  std::unique_ptr<Robot> &getRobot() { return robot_; }
 
 private:
   std::unique_ptr<Robot> robot_;

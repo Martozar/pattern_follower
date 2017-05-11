@@ -17,7 +17,6 @@ void Map::init() {
       double x = (robotPos_ - i);
       double y = (robotPos_ - j);
       g.location = cv::Point2i(x * resolution_, y * resolution_);
-
       g.distance = std::sqrt(x * x + y * y);
       if (g.distance > 0) {
         g.gamma = radToDeg(std::asin(robotRadAndSafe_ / g.distance));
@@ -34,19 +33,24 @@ void Map::init() {
 
 void Map::update(const std::vector<cv::Point2d> &points,
                  const cv::Point2d &target) {
+
+  // Set cost of every cell to 0.
   for (int i = 0; i < size_; i++) {
     for (int j = 0; j < size_; j++) {
       map_[i][j].cost = costs::FREE;
     }
   }
+
+  // Update cells' cost.
   for (int i = 0; i < points.size(); i++) {
     int x = robotPos_ - std::round(points[i].x / (double)resolution_);
     int y = robotPos_ - std::round(points[i].y / (double)resolution_);
     if (x >= 0 && x < size_ && y >= 0 && y < size_)
       map_[x][y].cost++;
   }
+
+  // Create safe circle around target to prevent target of being obstacle.
   drawCircle(target);
-  // std::cout << "Rob " << robotRadAndSafe_ << "\n";
 }
 
 void Map::drawCircle(const cv::Point2d &target) {

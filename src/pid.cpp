@@ -13,35 +13,30 @@ PID::PID(const cv::FileNode &fn, const double &max, const double &min) {
 }
 
 double PID::calculate(const double &setPoint, const double &systemOutput) {
-  double error = -setPoint + systemOutput;
 
+  // Calculate time diff.
   auto now = std::chrono::steady_clock::now();
-
   std::chrono::duration<double> diff = now - lastUpdate_;
   double dt = diff.count();
   lastUpdate_ = now;
 
+  // Calculate error.
+  double error = systemOutput - setPoint;
   if (error >= -eps_ && error <= eps_)
     return 0;
-
   if (error > eps_)
     error -= eps_;
   else if (error < -eps_)
     error += eps_;
 
   double Pout = Kp_ * error;
-
   double new_integral = integral_ + error * dt;
-
   double Iout = Ki_ * new_integral;
-
   double derivative = (error - previousError_) / dt;
-
   double Dout = Kd_ * derivative;
-
   double output = Pout + Iout + Dout;
 
-  privPresatOut_ = output;
+  // Apply anti wind-up.
   if (output > maxOut_) {
     output = maxOut_;
     integral_ += error * dt * Ka_;

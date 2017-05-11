@@ -2,10 +2,16 @@
 #include <pattern_follower/kalman_filter.h>
 
 KalmanFilter_::KalmanFilter_(const cv::FileNode &fn) {
-  // F = [1 0 dt 0;
-  //      0  1 0 dt;
-  //      0  0 1 0;
-  //      0  0 0 1]
+  /**
+   * F = [1 0 dt 0;
+   *      0 1 0 dt;
+   *      0 0 1 0;
+   *      0 0 0 1]
+   */
+  /**
+   * H = [1 0 0 0;
+   *      0 1 0 0]
+   */
   F = (cv::Mat_<double>(4, 4) << 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0,
        0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
   cv::transpose(F, F_transp);
@@ -28,8 +34,10 @@ void KalmanFilter_::prediction() {
   std::chrono::duration<double> diff = now - lastUpdate;
   double dt = diff.count();
   lastUpdate = now;
+  // Update control matrix with time diff.
   F.at<double>(0, 2) = dt;
   F.at<double>(1, 3) = dt;
+  // Calculate noise matrix.
   Q.at<double>(0, 0) = dt * dt * dt / 3.0;
   Q.at<double>(0, 2) = dt * dt / 2.0;
   Q.at<double>(1, 1) = dt * dt * dt / 3.0;
@@ -38,19 +46,16 @@ void KalmanFilter_::prediction() {
   Q.at<double>(2, 2) = dt / 3.0;
   Q.at<double>(3, 1) = dt * dt / 2.0;
   Q.at<double>(3, 3) = dt / 3.0;
+  // Update states applying mutting (dx, dy are (1 - mutting) less with every
+  // prediciton step call.)
   x = (F - B) * x;
-  std::cout << x << "\n";
   P = F * P * F_transp + Q;
 }
 
 void KalmanFilter_::update(const double &measured_x, const double &measured_y) {
   cv::Mat Y = (cv::Mat_<double>(2, 1) << measured_x, measured_y) - H * x;
-
   cv::Mat S = H * P * H_transp + R;
   cv::Mat K = P * H_transp * S.inv();
   x = x + K * Y;
   P = (I - K * H) * P;
 }
-
-const double &KalmanFilter_::getX() { return x.at<double>(0); }
-const double &KalmanFilter_::getY() { return x.at<double>(1); }

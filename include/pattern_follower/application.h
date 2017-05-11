@@ -1,5 +1,12 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
+
+#ifdef WITH_LASER
+#include <flexiport/flexiport.h>
+#include <hokuyoaist/hokuyo_errors.h>
+#include <hokuyoaist/hokuyoaist.h>
+#endif
+
 #include <chrono>
 #include <flexiport/flexiport.h>
 #include <hokuyoaist/hokuyo_errors.h>
@@ -41,7 +48,9 @@ private:
   std::thread robotControlThread_;
   std::thread dataThread_;
 
+#ifdef WITH_LASER
   hokuyoaist::Sensor laser;
+#endif
 
   double dist_{80.0}, angle_{0.0};
   bool suceed_{false}, done_{false};

@@ -7,7 +7,6 @@ Histogram::Histogram(const cv::FileNode &fn) {
   densityB_ = fn["density_b"];
   double histogramRadius = fn["histogram_size"];
   // a - b*((r-1)/2) = 1
-  // HOTFIX
   densityA_ = (double)(1.0 + densityB_ * (histogramRadius - 1.0) *
                                  (histogramRadius - 1.0) / 4.0);
   binDensities_ = std::vector<int>(bins_, 1);
@@ -26,11 +25,17 @@ void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
   calculateDensities(grid);
 }
 
+double Histogram::ratio(const int &candidate) {
+  double h = std::min(magnitude_[candidate], threshHigh_);
+  return 1.0 - h / threshHigh_;
+}
+
 void Histogram::calculateDensities(
     const std::vector<std::vector<Map::Grid>> &grid) {
 
   for (int bin = 0; bin < bins_; bin++) {
     int angle = bin * alpha_;
+    // if angle outside lase scaner angle, ignore this histogram sector.
     if ((scanerAngle_ <= 180 && (angle <= minAngle_ || angle >= maxAngle_)) ||
         (scanerAngle_ > 180 && (angle <= minAngle_ && angle >= maxAngle_)))
       continue;
@@ -58,9 +63,4 @@ void Histogram::binarize(const int &bin) {
   else if (magnitude_[bin] < threshLow_)
     binDensities_[bin] = 0;
   magnitude_[bin] = 0.0;
-}
-
-double Histogram::ratio(const int &candidate) {
-  double h = std::min(magnitude_[h], threshHigh_);
-  return 1.0 - h / threshHigh_;
 }

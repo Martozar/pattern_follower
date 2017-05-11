@@ -15,6 +15,7 @@ Camera::Camera(const FileNode &fn) {
 }
 
 bool Camera::proceed(double &angle, double &distance) {
+  // Read frame from camera.
   cv::Mat image;
   cap_ >> image;
   return proceed(image, angle, distance);
@@ -23,13 +24,16 @@ bool Camera::proceed(double &angle, double &distance) {
 bool Camera::proceed(cv::Mat &image, double &angle, double &distance) {
   std::vector<std::vector<cv::Point2f>> cor;
   std::vector<int> ids;
+  // Detect marker.
   detector_->detect(image, cor, ids);
   if (ids.size() > 0) {
     detector_->drawDetected(image, cor, ids);
+    // Calculate angle between marker and camera.
     angle = measurement_->angle(cor.at(0));
+    // Calculate distance from angle to camera.
     distance = measurement_->distance(cor.at(0));
   }
-
+  // Show image with drawn markers.
   imshow("Frame", image);
   return ids.size() > 0;
 }
