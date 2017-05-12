@@ -18,13 +18,14 @@ void RobotControl::calculateRobotSpeeds(const std::vector<cv::Point2d> &points,
   } else {
     // Convert (x, y) to (d, phi)
     targetForVfh = calculateTargetDistance(kf_->getX(), kf_->getY());
+    std::cout << targetForVfh << "\n";
   }
 
   double ratio{1.0};
   // Choose new robot direction.
   double dir = vfh_->avoidObstacle(points, targetForVfh, robot_->getH(), ratio);
-  // robot_->setMaxVel(ratio);
-
+  robot_->setMaxVel(ratio);
+  std::cout << ratio << "\n";
   // Apply new robot direction and
   robot_->move(-dir, targetForVfh.x);
 }

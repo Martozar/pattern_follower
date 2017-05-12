@@ -67,7 +67,7 @@ private:
     GOAL = 10,
     OBSTACLE = 10000
   };
-  int size_, robotPos_, targetRadius_;
+  int size_, robotPos_, targetRadius_, showMap_;
   double resolution_, robotRadAndSafe_;
   std::vector<std::vector<Map::Grid>> map_;
 };

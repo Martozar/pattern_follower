@@ -24,7 +24,7 @@ bool loadPattern(const cv::String &filename, const int &size,
   cv::resize(img, src, cv::Size(size, size));
 
   cv::Mat subImg =
-      src(cv::Range(size / 4, 3 * size / 4), cv::Range(size / 4, 3 * size / 4));
+      src(cv::Range(size / 5, 4 * size / 5), cv::Range(size / 5, 4 * size / 5));
   library.push_back(subImg);
 
   return true;

@@ -1,6 +1,6 @@
 %YAML:1.0
-simulation: 1 # (int) 0 if using real robot (simulator, calibration etc.), 1 instead
-laser: 0 # (int) 0 if not using laser, 1 instead (with or without real robot, but has to be connected)
+simulation: 0 # (int) 0 if using real robot (simulator, calibration etc.), 1 instead
+laser: 1 # (int) 0 if not using laser, 1 instead (with or without real robot, but has to be connected)
 Calibration:
    matrix_path: "/home/michail/pattern_follower/calibration/out_camera_data.xml"
    param_path: "/home/michail/pattern_follower/calibration/default.xml"
@@ -13,7 +13,7 @@ Camera:
       distance: 30 # (double) calibration distance from camera to pattern, must have the same units as pattern width
       patter_width_pix: 155 # (int) pattern size in pixels at particular distance
    TemplateMatcher:
-      conf_threshold: 0.75 # (double) threshold for TemplateMatcher
+      conf_threshold: 0.90 # (double) threshold for TemplateMatcher
       path: "../patterns/*.png" # (string) path to pattern library folder
       pattern_width_mm: 80 # (int) normalized pattern size
       adapt_threshold: 5
@@ -22,8 +22,12 @@ RobotControl:
    Robot:
       wheel_radius: 4 # (double) radius of used robot wheels
       radius: 22.5 # (double) robot radius (half distance between wheels)
-      max_forward_speed: 150.0 # (double) maximal allowed forward speed
+      max_forward_speed: 50.0 # (double) maximal allowed forward speed
       max_angular_speed: 2.0 # (double) maximal allowed angular speed
+      forward_speed_coef: 5 # (double)
+      angular_speed_coef: 35.0
+      #forward_speed_coef: 0.0 #3.5 # (double)
+      #angular_speed_coef: 0.0 #25.0
       acceleration: 1.0 # (double) robot acceleration (per cent of maximal speed)
       set_point_distance: 50.0 # (double) required distance between robot and human (must have the same units as calibrtion parameters)
       set_point_angle: 0.0 # (double) required angular deflection between robot and human (in radians)
@@ -34,7 +38,7 @@ RobotControl:
          ki: 0.0
          kd: 1.0
          ka: 0.0
-         eps: 0.1
+         eps: 5.0
       Angle_PID:
          kp: 3.0
          ki: 0.0
@@ -44,7 +48,7 @@ RobotControl:
    KalmanFilter:
       x_init: 50.0 # (double) must have the same units as calibration parameters
       y_init: 0.0 # (double) must have the same units as calibration parameters
-      mutting: 0.01 # (double) mutting parameter for Kalman filter to prevent computing speeds when pattern is not detected for a long time
+      mutting: 0.1 # (double) mutting parameter for Kalman filter to prevent computing speeds when pattern is not detected for a long time
    VFH:
       max_narrow_size: 16 # (int) maximal size of a narrow pass
       mu_1: 5 # (int) mu1 > mu2 + mu3
@@ -53,14 +57,15 @@ RobotControl:
       Map:
          map_size: 81 # (int) local map size
          resolution: 5 # (double) local map resolution (size of a cell, must have the same units as calibrtion parameters)
-         safety: 0.0 # (double)
+         safety: 3.0 # (double)
          cell_robot_radius: 4.5 # (double) robot radius in the map (represented by cells)
          target_radius: 5 # (double) target radius in the map (represented by cells)
+         show_map: 1 # (int) 1 if you want to draw map
       Histogram:
          robot_pos: 40 # (int) robot position in local map (x=y=robot_pos=map_size/2)
          histogram_size: 40 # (int) histogram radius around center robot cell
          alpha: 2 # (int) size of one histogram sector (choosed so 360/alpha is int)
          threshold_low: 250.0 # (int) threshold when binary hist. sector is 0
-         threshold_high: 350.0 # (int) threshold when binary hist. sector is 1
+         threshold_high: 500.0 # (int) threshold when binary hist. sector is 1
          scaner_angle: 220.0
-         density_b: 0.1
+         density_b: 0.01

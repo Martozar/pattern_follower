@@ -45,7 +45,7 @@ public:
       client_->sendControl(0, 0);
   };
 
-  void setMaxVel(const double &ratio) { maxVel_ = MAX_SPEED * ratio; }
+  void setMaxVel(const double &ratio) { maxVel_ = actualMaxFor_ * ratio; }
   const double &getMaxVel() const { return maxVel_; }
 
   const double &getMaxAngVel() const { return maxAngVel_; }
@@ -77,11 +77,14 @@ public:
 
   double prevPosLeft_{0.0}, prevPosRight_{0.0};
 
+  void checkStatus();
+
 protected:
 private:
   double radius_, maxVel_, maxAngVel_, acceleration_, distance_, angle_,
       wheelRad_, velL_{0.0}, velR_{0.0}, vel_{0.0}, angVel_{0.0}, h_{0.0},
-      x_{0.0}, y_{0.0}, lastOdoLeft{0.0}, lastOdoRight{0.0};
+      x_{0.0}, y_{0.0}, lastOdoLeft{0.0}, lastOdoRight{0.0}, forVelCoef_{1.0},
+      angVelCoef_{1.0}, actualMaxFor_, actualMaxAng_;
   bool simulation_, lastOdoValid{false};
   std::unique_ptr<PID> angularVelControl_, velControl_;
   RCM rcm_;
@@ -97,8 +100,6 @@ private:
   void setAngVel(const double &_angVel, const double &dt);
   void setWheelSpeeds(const double &linearVelocity,
                       const double &angularVelocity);
-
-  void checkStatus();
 };
 
 #endif // ROBOT_H

@@ -3,11 +3,13 @@
 Robot::Robot(const FileNode &fn, const bool &simulation) {
   wheelRad_ = fn["wheel_radius"];
   radius_ = fn["radius"];
-  maxVel_ = fn["max_forward_speed"];
-  maxAngVel_ = fn["max_angular_speed"];
+  actualMaxFor_ = maxVel_ = fn["max_forward_speed"];
+  actualMaxAng_ = maxAngVel_ = fn["max_angular_speed"];
   acceleration_ = fn["acceleration"];
   distance_ = fn["set_point_distance"];
   angle_ = fn["set_point_angle"];
+  forVelCoef_ = fn["forward_speed_coef"];
+  angVelCoef_ = fn["angular_speed_coef"];
   simulation_ = simulation;
   angularVelControl_ =
       std::unique_ptr<PID>(new PID(fn["Angle_PID"], maxAngVel_, -maxAngVel_));
@@ -67,12 +69,16 @@ bool Robot::enableMotion() {
 }
 
 void Robot::checkStatus() {
-  CStatusMessage status;
-  if (messageClient_->checkForHeader() == 0) {
-    if (messageClient_->checkForStatus(status) == 0) {
-      double odoLeft = 0.01 * (double)status.odoLeft;
-      double odoRight = 0.01 * (double)status.odoRight;
-      updatePosition(odoLeft, odoRight);
+  if (!simulation_) {
+    CStatusMessage status;
+    if (messageClient_->checkForHeader() == 0) {
+      if (messageClient_->checkForStatus(status) == 0) {
+        double odoLeft = 0.01 * (double)status.odoLeft;
+        double odoRight = 0.01 * (double)status.odoRight;
+
+        updatePosition(odoLeft, odoRight);
+        lastOdoValid = true;
+      }
     }
   }
 }
@@ -89,15 +95,17 @@ void Robot::updatePosition(const double &posL, const double &posR) {
 
   prevPosLeft_ = posL;
   prevPosRight_ = posR;
-  double dDist = (dL + dR) / 2.0;
-  double dTheta = (dR - dL) / (radius_ * 2.0);
-  std::cout << "Dr " << dR << " dl " << dL << " dth " << dTheta << "\n";
-  double dx = dDist * std::cos(h_);
-  double dy = dDist * std::sin(h_);
-  h_ += dTheta;
-  normalizeAngle(h_);
-  x_ += dx;
-  y_ += dy;
+  if (lastOdoValid) {
+    double dDist = (dL + dR) / 2.0;
+    double dTheta = (dR - dL) / (radius_ * 2.0);
+    // std::cout << "Dr " << dR << " dl " << dL << " dth " << dTheta << "\n";
+    double dx = dDist * std::cos(h_);
+    double dy = dDist * std::sin(h_);
+    h_ += dTheta;
+    normalizeAngle(h_);
+    x_ += dx;
+    y_ += dy;
+  }
 }
 
 void Robot::setVel(const double &vel, const double &dt) {
@@ -144,10 +152,10 @@ bool Robot::move(const double &angle, const double &distance) {
   if (!simulation_) {
     CMessage message;
     message.type = MSG_SPEED;
-    message.forward = vel_;
-    message.turn = angVel_ * 10.0;
+    message.forward = vel_ * forVelCoef_;
+    message.turn = angVel_ * angVelCoef_;
 
-    if (message.forward > -10 && message.forward < 10)
+    if (message.forward > -20 && message.forward < 20)
       message.turn = 0;
     message.flipper = 0;
     ret = messageClient_->sendMessage(message);

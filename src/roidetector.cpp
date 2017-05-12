@@ -23,7 +23,6 @@ void RoiDetector::normalizePattern(const Mat &src,
   Mat subImage = src(rec);
   // Applies a perspective transformation to an inner image.
   warpPerspective(subImage, dst, homography, Size(dst.cols, dst.rows));
-  // imshow("im", dst);
 }
 
 void RoiDetector::detectROI(const Mat &frame,
@@ -47,52 +46,33 @@ void RoiDetector::detectROI(const Mat &frame,
     approxPolyDP(contour, contourApprox, arcLen * 0.02,
                  true); // Approximates a polygonal curve
 
-    // We don't need too small, non-convex contours or contours at the
-    // lowestlevel of hierarchy
+    /*We don't need too small, non-convex contours or contours at the lowest
+    level of hierarchy*/
     if (std::fabs(contourArea(contour)) < 100 ||
         !isContourConvex(contourApprox) || hierarchy[i][2] == -1 ||
         contourApprox.size() != 4)
       continue;
 
-    // TODO: try fitting bounding box.
-    /*int averageSize = (grayImage.rows + grayImage.cols) / 2;
+    int averageSize = (grayImage.rows + grayImage.cols) / 2;
     double d, dMin = (4 * averageSize * averageSize);
-    Point p;
-    int pMinX, pMinY, pMaxX, pMaxY;
 
-    pMinX = pMaxX = contourApprox[0].x;
-    pMinY = pMaxY = contourApprox[0].y;
     for (unsigned int j = 0; j < 4; j++) {
-      p = contourApprox[j];
-      if (p.x < pMinX)
-        pMinX = p.x;
-      else if (p.x > pMaxX)
-        pMaxX = p.x;
-      if (p.y < pMinY)
-        pMinY = p.y;
-      else if (p.y > pMaxY)
-        pMaxY = p.y;
       d = norm(contourApprox[j]);
       if (d < dMin) {
         dMin = d;
         vertex = j;
       }
-    }*/
-
-    Rect box = boundingRect(Mat(contourApprox));
+    }
+    std::cout << vertex << "\n";
     refinedVertices.push_back(contourApprox);
-    /*for (unsigned int j = 0; j < 4; j++) {
-      roi2DPts.push_back(
-          Point2f(refinedVertices.back()[(4 + vertex - j) % 4].x - box.x,
-                  refinedVertices.back()[(4 + vertex - j) % 4].y - box.y));
-    }*/
+    Rect box = boundingRect(Mat(contourApprox));
 
     std::vector<Point2f> roi2DPts;
     for (unsigned int j = 0; j < 4; j++) {
       roi2DPts.push_back(
-          Point2f(contourApprox[j].x - box.x, contourApprox[j].y - box.y));
+          Point2f(refinedVertices.back()[(4 + vertex - j) % 4].x - box.x,
+                  refinedVertices.back()[(4 + vertex - j) % 4].y - box.y));
     }
-    // TODO: hotfix.
     normalizePattern(grayImage, roi2DPts, box, normROI_);
     regionsOfInterest.push_back(normROI_);
   }

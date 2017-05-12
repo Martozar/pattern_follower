@@ -8,9 +8,6 @@
 #endif
 
 #include <chrono>
-#include <flexiport/flexiport.h>
-#include <hokuyoaist/hokuyo_errors.h>
-#include <hokuyoaist/hokuyoaist.h>
 #include <mutex>
 #include <pattern_follower/camera.h>
 #include <pattern_follower/robot_control.h>
@@ -32,14 +29,15 @@ private:
   void cameraThreadProcess();
   void robotControlThreadProcess();
   void dataReadThreadProcess();
+  void robotStatusControl();
 
   void setGlobalVariables(const double &distance, const double &angle,
                           const bool &suceed);
   void getGlobalVariable(double &distance, double &angle, bool &suceed);
 
-  void setLaserScanerRead(const std::vector<cv::Point2d> &data);
-
-  std::mutex mutex_;
+  std::mutex camMutex_;
+  std::mutex laserMutex_;
+  std::mutex robMutex_;
 
   std::unique_ptr<Camera> camera_;
   std::unique_ptr<RobotControl> robotControl_;
@@ -47,6 +45,7 @@ private:
   std::thread cameraThread_;
   std::thread robotControlThread_;
   std::thread dataThread_;
+  std::thread robotStatus_;
 
 #ifdef WITH_LASER
   hokuyoaist::Sensor laser;

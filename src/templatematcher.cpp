@@ -13,17 +13,14 @@ bool TemplateMatcher::identifyPattern(const Mat &src, patInfo &out) {
 
   Mat copy;
   src.copyTo(copy);
-  Mat inter = copy(Range(normSize_ / 4, 3 * normSize_ / 4),
-                   Range(normSize_ / 4, 3 * normSize_ / 4));
-  imshow("src", inter);
-  imshow("im", library_[0]);
+  Mat inter = copy(Range(normSize_ / 5, 4 * normSize_ / 5),
+                   Range(normSize_ / 5, 4 * normSize_ / 5));
   out.maxCor = -1.0;
 
   for (unsigned int i = 0; i < library_.size(); i++) {
 
     for (unsigned int j = 0; j < 4; j++) {
       correlation = this->correlation(inter, library_[i]);
-      std::cout << "cor " << correlation << "\n";
       if (correlation > out.maxCor) {
 
         out.maxCor = correlation;

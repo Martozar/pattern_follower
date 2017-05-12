@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 
-const cv::String keys = "{help h usage ?||print this message}"
+const cv::String keys = "{help h usage||print this message}"
                         "{config c|../config.yaml|path to config file}";
 
 class Parser : public cv::CommandLineParser {

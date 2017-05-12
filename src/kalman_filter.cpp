@@ -49,6 +49,7 @@ void KalmanFilter_::prediction() {
   // Update states applying mutting (dx, dy are (1 - mutting) less with every
   // prediciton step call.)
   x = (F - B) * x;
+  std::cout << x << "\n";
   P = F * P * F_transp + Q;
 }
 

@@ -6,6 +6,7 @@ Map::Map(const cv::FileNode &fn) {
   robotPos_ = size_ / 2;
   robotRadAndSafe_ = (double)fn["cell_robot_radius"] + (double)fn["safety"];
   targetRadius_ = fn["target_radius"];
+  showMap_ = (int)fn["show_map"];
 }
 
 void Map::init() {
@@ -16,7 +17,6 @@ void Map::init() {
       g.cost = costs::FREE;
       double x = (robotPos_ - i);
       double y = (robotPos_ - j);
-      g.location = cv::Point2i(x * resolution_, y * resolution_);
       g.distance = std::sqrt(x * x + y * y);
       if (g.distance > 0) {
         g.gamma = radToDeg(std::asin(robotRadAndSafe_ / g.distance));
@@ -41,16 +41,25 @@ void Map::update(const std::vector<cv::Point2d> &points,
     }
   }
 
+  int targX = robotPos_ - std::round(target.x / (double)resolution_);
+  int targY = robotPos_ -
+              std::round(-target.x * std::tan(target.y) / (double)resolution_);
   // Update cells' cost.
   for (int i = 0; i < points.size(); i++) {
     int x = robotPos_ - std::round(points[i].x / (double)resolution_);
     int y = robotPos_ - std::round(points[i].y / (double)resolution_);
-    if (x >= 0 && x < size_ && y >= 0 && y < size_)
+    bool boundaries = x >= 0 && x < size_ && y >= 0 && y < size_;
+    bool isTargetX = (x >= targX - targetRadius_ && x <= targX + targetRadius_);
+    bool isTargetY = (y >= targY - targetRadius_ && y <= targY + targetRadius_);
+    if (boundaries && !isTargetX && !isTargetY) {
       map_[x][y].cost++;
+    }
   }
 
   // Create safe circle around target to prevent target of being obstacle.
-  drawCircle(target);
+  // drawCircle(target);
+  if (showMap_)
+    show();
 }
 
 void Map::drawCircle(const cv::Point2d &target) {
@@ -58,7 +67,7 @@ void Map::drawCircle(const cv::Point2d &target) {
   int y = robotPos_ -
           std::round(-target.x * std::tan(target.y) / (double)resolution_);
   for (int i = std::max(x - targetRadius_, 0);
-       i <= std::min(x + targetRadius_, size_); i++) {
+       i < std::min(x + targetRadius_, size_); i++) {
     for (int j = std::max(y - targetRadius_, 0);
          j < std::min(y + targetRadius_, size_); j++) {
       if ((x - i) * (x - i) + (y - j) * (y - j) <=
@@ -66,7 +75,6 @@ void Map::drawCircle(const cv::Point2d &target) {
         map_[i][j].cost = costs::FREE;
     }
   }
-  // show();
 }
 
 void Map::show() {
@@ -77,6 +85,7 @@ void Map::show() {
     for (int j = 0; j < size_; j++) {
       double x = res * (i + 1);
       double y = res * (j + 1);
+
       cv::putText(canvas, std::to_string((int)map_[i][j].cost),
                   cv::Point(x + res / 2, y + res / 2),
                   cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5,

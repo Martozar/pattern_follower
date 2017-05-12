@@ -29,13 +29,13 @@ unistd.h
 -
 
 ../include/pattern_follower/application.h
-chrono
--
 flexiport/flexiport.h
 -
 hokuyoaist/hokuyo_errors.h
 -
 hokuyoaist/hokuyoaist.h
+-
+chrono
 -
 mutex
 -

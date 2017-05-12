@@ -12,6 +12,7 @@ Application::Application(const std::string &path) {
 Application::~Application() {
   cameraThread_.join();
   robotControlThread_.join();
+  robotStatus_.join();
 #ifdef WITH_LASER
   if (isLaser) {
     dataThread_.join();
@@ -34,6 +35,20 @@ void Application::run() {
   cameraThread_ = std::thread(&Application::cameraThreadProcess, this);
   robotControlThread_ =
       std::thread(&Application::robotControlThreadProcess, this);
+  robotStatus_ = std::thread(&Application::robotStatusControl, this);
+
+  while (!done_)
+    if (waitKey(20) >= 0)
+      done_ = true;
+}
+
+void Application::robotStatusControl() {
+  while (!done_) {
+    robMutex_.lock();
+    robotControl_->getRobot()->checkStatus();
+    robMutex_.unlock();
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+  }
 }
 
 void Application::cameraThreadProcess() {
@@ -42,32 +57,33 @@ void Application::cameraThreadProcess() {
   while (!done_) {
     suceed = camera_->proceed(angle, dist);
 
-    mutex_.lock();
+    camMutex_.lock();
+    // std::cout << "Camera\n";
     setGlobalVariables(dist, angle, suceed);
-    if (waitKey(2) >= 0)
-      done_ = true;
-    std::cout << "Camera\n";
-    mutex_.unlock();
+    camMutex_.unlock();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
   }
 }
 
 void Application::dataReadThreadProcess() {
 #ifdef WITH_LASER
   while (!done_) {
-    std::cout << "Laser\n";
     hokuyoaist::ScanData data;
     laser.get_new_ranges_by_angle(data, FIRST, LAST, 1);
-    mutex_.lock();
+    laserMutex_.lock();
+
+    obstacles_.clear();
+    // std::cout << "Laser\n";
     for (int i = 0; i < data.ranges_length(); i++) {
       double angle = FIRST + i * STEP;
-      obstacles_.push_back(cv::Point2d(data[i] / 10.0 * std::cos(angle),
-                                       data[i] / 10.0 * std::sin(angle)));
-
+      if (data[i] > 50)
+        obstacles_.push_back(cv::Point2d(data[i] / 10.0 * std::cos(angle),
+                                         data[i] / 10.0 * std::sin(angle)));
       // std::cout << obstacles_.back() << "\n";
     }
-    if (waitKey(2) >= 0)
-      done_ = true;
-    mutex_.unlock();
+    laserMutex_.unlock();
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
   }
 #endif
 }
@@ -78,26 +94,24 @@ void Application::robotControlThreadProcess() {
   std::vector<cv::Point2d> obstacle;
   while (!done_) {
 
-    mutex_.lock();
-
-    std::cout << "Rob\n";
+    camMutex_.lock();
+    // std::cout << "Rob\n";
     getGlobalVariable(dist, angle, suceed);
+    camMutex_.unlock();
+
+    laserMutex_.lock();
     obstacle = obstacles_;
+    laserMutex_.unlock();
 
-    if (waitKey(20) >= 0)
-      done_ = true;
-
-    mutex_.unlock();
+    robMutex_.lock();
     robotControl_->calculateRobotSpeeds(obstacle, cv::Point2d(dist, angle),
                                         suceed);
+    robMutex_.unlock();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(2));
   }
 }
 
-void Application::setLaserScanerRead(const std::vector<cv::Point2d> &data) {
-  mutex_.lock();
-  obstacles_ = data;
-  mutex_.unlock();
-}
 void Application::setGlobalVariables(const double &distance,
                                      const double &angle, const bool &suceed) {
   this->dist_ = distance;
