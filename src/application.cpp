@@ -6,7 +6,10 @@ Application::Application(const std::string &path) {
   camera_ = std::unique_ptr<Camera>(new Camera(fs["Camera"]));
   robotControl_ = std::unique_ptr<RobotControl>(
       new RobotControl(fs["RobotControl"], (int)fs["simulation"]));
-  isLaser = fs["laser"];
+  isLaser = fs["Laser"]["laser"];
+  first = fs["Laser"]["first_bin"];
+  last = -first;
+  step = fs["Laser"]["step"];
 }
 
 Application::~Application() {
@@ -68,22 +71,24 @@ void Application::cameraThreadProcess() {
 
 void Application::dataReadThreadProcess() {
 #ifdef WITH_LASER
+  double angle;
   while (!done_) {
     hokuyoaist::ScanData data;
-    laser.get_new_ranges_by_angle(data, FIRST, LAST, 1);
+    laser.get_new_ranges_by_angle(data, first, last, 1);
     laserMutex_.lock();
 
     obstacles_.clear();
+    angle = first;
     // std::cout << "Laser\n";
     for (int i = 0; i < data.ranges_length(); i++) {
-      double angle = FIRST + i * STEP;
-      if (data[i] > 50)
+      angle += step;
+      if (data[i] > 10)
         obstacles_.push_back(cv::Point2d(data[i] / 10.0 * std::cos(angle),
                                          data[i] / 10.0 * std::sin(angle)));
       // std::cout << obstacles_.back() << "\n";
     }
     laserMutex_.unlock();
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 #endif
 }
@@ -91,7 +96,7 @@ void Application::dataReadThreadProcess() {
 void Application::robotControlThreadProcess() {
   double dist{0.0}, angle{0.0};
   bool suceed{false};
-  std::vector<cv::Point2d> obstacle;
+  static std::vector<cv::Point2d> obstacle;
   while (!done_) {
 
     camMutex_.lock();
@@ -100,10 +105,12 @@ void Application::robotControlThreadProcess() {
     camMutex_.unlock();
 
     laserMutex_.lock();
-    obstacle = obstacles_;
+    if (obstacles_.size() > 0)
+      obstacle = obstacles_;
     laserMutex_.unlock();
 
     robMutex_.lock();
+    std::cout << obstacle.size();
     robotControl_->calculateRobotSpeeds(obstacle, cv::Point2d(dist, angle),
                                         suceed);
     robMutex_.unlock();

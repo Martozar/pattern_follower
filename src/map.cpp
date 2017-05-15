@@ -49,15 +49,17 @@ void Map::update(const std::vector<cv::Point2d> &points,
     int x = robotPos_ - std::round(points[i].x / (double)resolution_);
     int y = robotPos_ - std::round(points[i].y / (double)resolution_);
     bool boundaries = x >= 0 && x < size_ && y >= 0 && y < size_;
-    bool isTargetX = (x >= targX - targetRadius_ && x <= targX + targetRadius_);
-    bool isTargetY = (y >= targY - targetRadius_ && y <= targY + targetRadius_);
+    bool isTargetX =
+        false; //(x >= targX - targetRadius_ && x <= targX + targetRadius_);
+    bool isTargetY =
+        false; //(y >= targY - targetRadius_ && y <= targY + targetRadius_);
     if (boundaries && !isTargetX && !isTargetY) {
       map_[x][y].cost++;
     }
   }
 
   // Create safe circle around target to prevent target of being obstacle.
-  // drawCircle(target);
+  drawCircle(target);
   if (showMap_)
     show();
 }
@@ -97,5 +99,6 @@ void Map::show() {
   cv::putText(canvas, std::to_string(costs::ROBOT),
               cv::Point(robotPos_ * res + res / 2, robotPos_ * res + res / 2),
               cv::FONT_HERSHEY_COMPLEX_SMALL, 0.5, cv::Scalar(255, 255, 255));
-  imshow("map", canvas);
+  cv::imshow("map", canvas);
+  cv::waitKey(1);
 }

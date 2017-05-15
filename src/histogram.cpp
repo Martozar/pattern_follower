@@ -9,6 +9,7 @@ Histogram::Histogram(const cv::FileNode &fn) {
   // a - b*((r-1)/2) = 1
   densityA_ = (double)(1.0 + densityB_ * (histogramRadius - 1.0) *
                                  (histogramRadius - 1.0) / 4.0);
+
   binDensities_ = std::vector<int>(bins_, 1);
   magnitude_ = std::vector<double>(bins_, 0.0);
   threshLow_ = fn["threshold_low"];
@@ -26,6 +27,7 @@ void Histogram::update(const std::vector<std::vector<Map::Grid>> &grid) {
 }
 
 double Histogram::ratio(const int &candidate) {
+  std::cout << "Mag " << magnitude_[candidate] << "\n";
   double h = std::min(magnitude_[candidate], threshHigh_);
   return 1.0 - h / threshHigh_;
 }
@@ -44,7 +46,6 @@ void Histogram::calculateDensities(
       for (int j = min_; j <= max_; j++) {
         if (angle >= grid[i][j].beta - grid[i][j].gamma &&
             angle <= grid[i][j].beta + grid[i][j].gamma) {
-
           double tmp_mag = (double)(grid[i][j].cost * grid[i][j].cost);
           tmp_mag *= (densityA_ -
                       densityB_ * grid[i][j].distance * grid[i][j].distance);

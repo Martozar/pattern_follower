@@ -173,6 +173,7 @@ bool Robot::move(const double &angle, const double &distance) {
   cv::putText(canvas, std::to_string(angVel_), cv::Point2f(225, 160),
               cv::FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(0, 0, 255));
   cv::imshow("arrows", canvas);
+  waitKey(1);
 
   return ret;
 }

@@ -51,7 +51,7 @@ private:
   hokuyoaist::Sensor laser;
 #endif
 
-  double dist_{80.0}, angle_{0.0};
+  double dist_{80.0}, angle_{0.0}, first{0.0}, last{0.0}, step{0.0};
   bool suceed_{false}, done_{false};
   int isLaser;
   std::vector<cv::Point2d> obstacles_;

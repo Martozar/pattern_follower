@@ -1,11 +1,14 @@
 %YAML:1.0
 simulation: 0 # (int) 0 if using real robot (simulator, calibration etc.), 1 instead
-laser: 1 # (int) 0 if not using laser, 1 instead (with or without real robot, but has to be connected)
+Laser:
+   laser: 1 # (int) 0 if not using laser, 1 instead (with or without real robot, but has to be connected)
+   first_bin: -1.91986 # (double) first used laser bin, the last is last_bin = -first_bin to make Measurement semetric
+   step: 0.006135920 # (double) step between two used bin (in rads)
 Calibration:
    matrix_path: "/home/michail/pattern_follower/calibration/out_camera_data.xml"
    param_path: "/home/michail/pattern_follower/calibration/default.xml"
 Camera:
-   port: 0 # (int) camera port
+   port: 1 # (int) camera port
    detector_type: "aruco" # (string) type of detector to be used: "aruco" for ArUco detektor, "template" for TemplateMatcher
    Measurement:
       frame_width: 640 # (int) output frame width (calibration parameter)
@@ -22,10 +25,10 @@ RobotControl:
    Robot:
       wheel_radius: 4 # (double) radius of used robot wheels
       radius: 22.5 # (double) robot radius (half distance between wheels)
-      max_forward_speed: 50.0 # (double) maximal allowed forward speed
-      max_angular_speed: 2.0 # (double) maximal allowed angular speed
+      max_forward_speed: 70.0 # (double) maximal allowed forward speed
+      max_angular_speed: 5.0 # (double) maximal allowed angular speed
       forward_speed_coef: 5 # (double)
-      angular_speed_coef: 35.0
+      angular_speed_coef: 14.0
       #forward_speed_coef: 0.0 #3.5 # (double)
       #angular_speed_coef: 0.0 #25.0
       acceleration: 1.0 # (double) robot acceleration (per cent of maximal speed)
@@ -40,7 +43,7 @@ RobotControl:
          ka: 0.0
          eps: 5.0
       Angle_PID:
-         kp: 3.0
+         kp: 5.0
          ki: 0.0
          kd: 1.0
          ka: 0.0
@@ -68,4 +71,4 @@ RobotControl:
          threshold_low: 250.0 # (int) threshold when binary hist. sector is 0
          threshold_high: 500.0 # (int) threshold when binary hist. sector is 1
          scaner_angle: 220.0
-         density_b: 0.01
+         density_b: 0.0001
